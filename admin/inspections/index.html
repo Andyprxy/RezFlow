@@ -1,0 +1,792 @@
+<style>
+    /* ---------------------------------------------------
+       FLUID COMPACT LAYOUT & SIDEBAR CONFIG
+       --------------------------------------------------- */
+    .glass-segmented {
+        background: rgba(230, 230, 235, 0.45); backdrop-filter: blur(20px); border-radius: 12px; padding: 3px; 
+        border: 1px solid rgba(255, 255, 255, 0.5); box-shadow: inset 0 1px 4px rgba(0,0,0,0.03); 
+        display: inline-flex; flex-wrap: wrap; gap: 3px; align-items: center;
+    }
+    
+    .glass-seg-btn {
+        padding: 4px 10px; font-size: 0.65rem; font-weight: 700; color: #64748b; border-radius: 8px; 
+        transition: all 0.2s ease; cursor: pointer; display: flex; align-items: center; gap: 4px; border: 1px solid transparent;
+    }
+    @media (min-width: 640px) { .glass-seg-btn { padding: 6px 12px; font-size: 0.7rem; gap: 6px; border-radius: 10px; } }
+    .glass-seg-btn:hover:not(.active) { background: rgba(255, 255, 255, 0.4); color: #334155; }
+    .glass-seg-btn.active {
+        background: rgba(255, 255, 255, 0.95); color: #1d1d1f; box-shadow: 0 2px 6px rgba(0,0,0,0.04); border: 1px solid rgba(255, 255, 255, 1);
+    }
+    .glass-seg-btn.active.accent-blue { color: #0071e3; } 
+    .glass-seg-btn.active.accent-emerald { color: #10b981; }
+    .glass-seg-btn.active.accent-amber { color: #f59e0b; }
+    .glass-seg-btn.active.accent-indigo { color: #4f46e5; }
+    .glass-seg-btn.active.accent-rose { color: #e11d48; }
+
+    /* Right Sidebar */
+    .hub-sidebar { width: 22%; max-width: 240px; min-width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 0.75rem; transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), min-width 0.4s; position: relative; }
+    .hub-sidebar.collapsed { width: 48px !important; min-width: 48px !important; }
+    .hub-sidebar.collapsed .nav-text { display: none !important; }
+    .hub-sidebar.collapsed .nav-block { padding: 6px !important; }
+    .hub-sidebar.collapsed .block-btn { padding: 10px 0 !important; justify-content: center !important; }
+    .hub-sidebar.collapsed .block-btn i { margin: 0 !important; font-size: 1.1rem; }
+    
+    .nav-block { background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 1); box-shadow: 0 4px 20px -10px rgba(0,0,0,0.05); border-radius: 14px; padding: 8px; transition: all 0.3s ease; }
+    .block-btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 6px 10px; border-radius: 10px; font-size: 0.65rem; font-weight: 700; transition: all 0.2s ease; cursor: pointer; white-space: nowrap; overflow: hidden; }
+    
+    /* Compact Table Constraints */
+    .compact-table th { padding: 8px 10px; font-size: 0.55rem; letter-spacing: 0.05em; text-transform: uppercase; font-weight: 800; color: #94a3b8; border-bottom: 1px solid rgba(226, 232, 240, 0.5); white-space: nowrap; }
+    .compact-table td { padding: 6px 10px; border-bottom: 1px solid rgba(226, 232, 240, 0.4); vertical-align: middle; font-size: 0.65rem; white-space: nowrap; }
+    .glass-panel { background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05); border-radius: 20px; }
+    
+    /* Inspection Specific UI */
+    .status-badge { padding: 3px 6px; font-size: 0.55rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; border-radius: 6px; display: inline-block; }
+    .status-complete { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+    .status-incomplete { background: #fff1f2; color: #e11d48; border: 1px solid #fecdd3; }
+    
+    .item-dot { width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 9px; margin: 0 auto; }
+    .item-ok { background: #ecfdf5; color: #10b981; border: 1px solid #d1fae5; }
+    .item-damaged { background: #fffbeb; color: #f97316; border: 1px solid #ffedd5; }
+    .item-missing { background: #fef2f2; color: #ef4444; border: 1px solid #fee2e2; }
+
+    .pie-chart-container { position: relative; width: 80px; height: 80px; border-radius: 50%; background: conic-gradient(#10b981 0% 0%, #f43f5e 0% 100%); box-shadow: 0 4px 15px rgba(0,0,0,0.05), inset 0 2px 5px rgba(255,255,255,0.5); transition: background 0.5s ease-out; margin: 0 auto; }
+    .pie-chart-inner { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 50px; height: 50px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(8px); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
+    
+    .retractable-wrapper { transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease, margin 0.4s ease; max-height: 200px; opacity: 1; overflow: hidden; }
+    .retractable-wrapper.collapsed { max-height: 0; opacity: 0; margin-top: 0; margin-bottom: 0; }
+    
+    /* High-End Modals */
+    .modal-overlay { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; background: rgba(29, 29, 31, 0.4); backdrop-filter: blur(12px); z-index: 3000; display: flex; align-items: center; justify-content: center; position: fixed; inset: 0; padding: 1rem; }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .modal-content { transform: scale(0.95) translateY(20px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1); background: #ffffff; border-radius: 24px; padding: 1.25rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); max-height: 90vh; overflow-y: auto; width: 100%; }
+    .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
+
+    .magic-border-container { position: relative; padding: 2px; border-radius: 26px; overflow: hidden; background: transparent; }
+    .magic-border-container::before { content: ''; position: absolute; top: 50%; left: 50%; width: 200%; height: 200%; background: conic-gradient(from 0deg, transparent 40%, rgba(79, 70, 229, 0.2) 60%, #4f46e5 80%, #3730a3 100%); transform-origin: 0 0; animation: magic-spin 3s linear infinite; z-index: 0; }
+    @keyframes magic-spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+    .magic-border-inner { position: relative; z-index: 10; background: #ffffff; border-radius: 24px; width: 100%; height: 100%; padding: 1.25rem; }
+</style>
+
+<!-- Main Component Structure -->
+<div class="flex-1 flex flex-col sm:flex-row w-full h-full min-h-0 gap-3 overflow-hidden relative">
+    
+    <!-- Canvas (Left) -->
+    <div class="flex-1 flex flex-col min-w-0 min-h-0 overflow-y-auto custom-scroll pr-1 pb-10">
+        
+        <!-- Primary KPI View Switcher -->
+        <div class="flex justify-start sm:justify-center w-full mb-3 z-10 relative shrink-0">
+            <div class="glass-segmented shadow-sm bg-white/50 backdrop-blur-md max-w-full overflow-x-auto custom-scroll">
+                <button onclick="window.setInspectionFilter('All')" id="insp-btn-all" class="glass-seg-btn active accent-blue text-[9px] sm:text-[10px]">
+                    <i class="fa-solid fa-list-check"></i> All Logs
+                </button>
+                <div class="w-px h-4 bg-slate-300/50 mx-1"></div>
+                <button onclick="window.setInspectionFilter('Complete')" id="insp-btn-complete" class="glass-seg-btn accent-emerald text-[9px] sm:text-[10px]">
+                    <i class="fa-solid fa-check-double"></i> Passed / Clean
+                </button>
+                <div class="w-px h-4 bg-slate-300/50 mx-1"></div>
+                <button onclick="window.setInspectionFilter('Incomplete')" id="insp-btn-incomplete" class="glass-seg-btn accent-rose text-[9px] sm:text-[10px]">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Flagged Issues
+                </button>
+            </div>
+        </div>
+
+        <!-- Data Grid -->
+        <div class="glass-panel rounded-[20px] lg:rounded-[24px] overflow-hidden mt-1 shrink-0 flex flex-col">
+            
+            <div class="px-3 py-3 border-b border-white/60 flex flex-col xl:flex-row gap-3 justify-between xl:items-center bg-white/50 backdrop-blur-md">
+                <div class="flex items-center gap-2 shrink-0">
+                    <div class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shadow-sm"><i class="fa-solid fa-clipboard-list text-xs"></i></div>
+                    <h3 class="font-black text-slate-800 text-xs sm:text-sm whitespace-nowrap">Inspection Logs</h3>
+                </div>
+                
+                <div class="flex items-center gap-2 flex-wrap xl:flex-nowrap justify-end w-full xl:w-auto">
+                    <!-- Download Report Button -->
+                    <button onclick="window.downloadInspectionsReport()" class="bg-[#1d1d1f] hover:bg-[#333336] text-white font-bold px-3 py-1.5 rounded-lg shadow-md flex items-center gap-1.5 shrink-0 text-[10px] transition-all">
+                        <i class="fa-solid fa-download"></i> <span class="hidden sm:inline">Export</span>
+                    </button>
+
+                    <div class="relative w-full sm:w-48">
+                        <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 transform -translate-y-1/2 text-slate-400 text-[9px]"></i>
+                        <input type="text" id="search-inspections" onkeyup="window.filterTable('search-inspections', 'inspections-body')" placeholder="Search logs, blocks..." class="w-full bg-white/80 border border-slate-200 rounded-lg py-1 pl-7 pr-2 text-[10px] outline-none focus:border-indigo-400 shadow-sm">
+                    </div>
+                    <button onclick="if(typeof window.fetchInspectionsData === 'function') window.fetchInspectionsData(true);" class="bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 font-bold px-2 py-1 rounded-lg shadow-sm flex items-center text-[10px]"><i class="fa-solid fa-rotate text-indigo-500"></i></button>
+                </div>
+            </div>
+            
+            <div class="overflow-x-auto custom-scroll bg-white/40 backdrop-blur-sm max-h-[65vh]">
+                <table class="w-full text-left border-collapse compact-table min-w-[1000px]">
+                    <thead class="bg-white/70 sticky top-0 backdrop-blur-md z-10 shadow-sm border-b border-slate-200/40 text-[9px]">
+                        <tr>
+                            <th>Profile</th>
+                            <th>Block & Floor</th>
+                            <th>Room</th>
+                            <th class="text-center">Bed</th>
+                            <th class="text-center">Desk</th>
+                            <th class="text-center">Wardrobe</th>
+                            <th class="text-center">Chair</th>
+                            <th class="text-center">Microwave</th>
+                            <th class="text-center">Fridge</th>
+                            <th class="text-center">Stove</th>
+                            <th class="text-center">Shower</th>
+                            <th>Comments</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inspections-body" class="divide-y divide-slate-100/50"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT SIDEBAR (Default Open on Desktop) -->
+    <div id="insp-right-sidebar" class="hub-sidebar bg-transparent shrink-0">
+        <div class="nav-block flex items-center justify-between !p-1.5 bg-white/80 cursor-pointer hover:bg-white transition-colors" onclick="window.toggleInspSidebar()">
+            <div class="flex items-center gap-1.5 w-full">
+                <div class="w-7 h-7 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-[8px] shadow-sm flex items-center justify-center text-white text-[10px] shrink-0"><i class="fa-solid fa-bolt"></i></div>
+                <div class="flex flex-col flex-1 overflow-hidden nav-text">
+                    <span class="font-black text-[10px] tracking-tight text-slate-900 leading-none truncate">Audit<span class="text-indigo-500">Ctrl</span></span>
+                    <span class="text-[6px] font-bold tracking-widest text-slate-400 uppercase mt-0.5 truncate">Progress & Analytics</span>
+                </div>
+            </div>
+            <i id="insp-sidebar-toggle-icon" class="fa-solid fa-chevron-right text-slate-300 text-[8px] pr-1"></i>
+        </div>
+
+        <!-- Live Analytics Block -->
+        <div class="nav-block bg-white/80 nav-text">
+            <div class="flex justify-between items-center w-full mb-1 border-b border-slate-100 pb-1">
+                <span class="text-[7px] font-bold tracking-widest text-slate-400 uppercase">Live Progress</span>
+                <button onclick="window.toggleProgress()" class="w-4 h-4 rounded-full hover:bg-slate-100 text-slate-400 flex items-center justify-center transition-colors"><i id="progress-toggle-icon" class="fa-solid fa-chevron-up text-[8px]"></i></button>
+            </div>
+
+            <!-- Block Filter (East/West) -->
+            <div class="flex justify-center mt-2 mb-1">
+                <div class="glass-segmented scale-[0.85] origin-center bg-slate-50">
+                    <button onclick="window.filterRegion('All')" id="reg-tab-all" class="glass-seg-btn active accent-indigo text-[8px] !px-2 py-0.5">All</button>
+                    <button onclick="window.filterRegion('East')" id="reg-tab-east" class="glass-seg-btn text-[8px] !px-2 py-0.5">East</button>
+                    <button onclick="window.filterRegion('West')" id="reg-tab-west" class="glass-seg-btn text-[8px] !px-2 py-0.5">West</button>
+                </div>
+            </div>
+            
+            <!-- Progress Bar Container -->
+            <div id="progress-wrapper" class="retractable-wrapper">
+                <div class="py-1 px-1">
+                    <div class="flex justify-between items-end mb-1">
+                        <span id="progress-text" class="text-[8px] font-bold text-slate-600">0 / 445</span>
+                        <span id="progress-pct" class="text-[9px] font-black text-indigo-600">0%</span>
+                    </div>
+                    <div class="w-full bg-slate-200/80 rounded-full h-2 shadow-inner overflow-hidden border border-slate-300">
+                        <div id="progress-fill" class="bg-gradient-to-r from-indigo-500 to-purple-500 h-full rounded-full transition-all duration-700 ease-out" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-1.5 mt-1.5">
+                    <div class="bg-emerald-50 border border-emerald-100 p-1.5 rounded-lg text-center shadow-sm"><p class="text-[7px] font-bold text-emerald-600 uppercase tracking-widest mb-0.5">Passed</p><p id="stat-complete" class="text-sm font-black text-slate-800 leading-tight">0</p></div>
+                    <div class="bg-rose-50 border border-rose-100 p-1.5 rounded-lg text-center shadow-sm"><p class="text-[7px] font-bold text-rose-600 uppercase tracking-widest mb-0.5">Flagged</p><p id="stat-incomplete" class="text-sm font-black text-slate-800 leading-tight">0</p></div>
+                </div>
+            </div>
+        </div>
+
+        <button onclick="window.openStatsModal()" class="block-btn bg-[#1d1d1f] hover:bg-indigo-600 text-white shadow-md transition-all nav-text group">
+            <i class="fa-solid fa-chart-pie group-hover:scale-110 transition-transform"></i> Detailed Reports
+        </button>
+
+        <!-- Actions & Routing -->
+        <div class="nav-block nav-text mt-1">
+            <p class="px-1 text-[6px] font-extrabold text-slate-400 uppercase tracking-widest mb-1 truncate">Quick Tools</p>
+            <div class="space-y-1">
+                <button onclick="document.getElementById('manualInspectionModal').classList.add('active')" class="block-btn bg-teal-600 hover:bg-teal-700 text-white justify-center gap-1 !py-1.5 shadow-sm border-none transition-colors">
+                    <i class="fa-solid fa-plus text-[9px]"></i> <span class="truncate text-[8px]">Log Walk-In Report</span>
+                </button>
+                <button onclick="window.setInspectionFilter('Incomplete')" class="block-btn bg-amber-50 text-amber-600 border border-amber-100 hover:bg-amber-100 justify-center gap-1 !py-1.5 shadow-sm transition-colors">
+                    <i class="fa-solid fa-screwdriver-wrench text-[9px]"></i> <span class="truncate text-[8px]">View Pending Repairs</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="mt-auto shrink-0 bg-[#111827] p-1.5 rounded-[12px] border border-slate-700 shadow-lg flex items-center gap-2 nav-text">
+            <div class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-white border border-white/20 shrink-0"><i class="fa-solid fa-bolt text-[6px]"></i></div>
+            <div class="flex flex-col">
+                <span class="text-[5px] font-bold text-slate-400 uppercase tracking-widest leading-none">Engineered By</span>
+                <span class="text-[8px] font-black text-white tracking-widest mt-0.5 leading-none">AUTOMANIA</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- INSPECTIONS MODALS                         -->
+<!-- ========================================== -->
+
+<!-- Escalate to Maintenance Modal -->
+<div id="escalateTicketModal" class="modal-overlay">
+    <div class="modal-content magic-border-container max-w-sm relative">
+        <div class="magic-border-inner flex flex-col">
+            <button onclick="document.getElementById('escalateTicketModal').classList.remove('active')" class="absolute top-4 right-4 w-6 h-6 bg-slate-50 border border-slate-200 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 z-20"><i class="fa-solid fa-xmark text-[10px]"></i></button>
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-indigo-50 text-indigo-600 border border-indigo-100 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+                <div><h2 class="text-base font-black text-slate-900 tracking-tight leading-none">Ops Escalation</h2><p class="text-[8px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Route to Maintenance</p></div>
+            </div>
+            
+            <form onsubmit="window.submitEscalation(event)">
+                <input type="hidden" id="esc-student-id">
+                <div class="mb-3">
+                    <label class="block text-[7px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Room / Space</label>
+                    <input type="text" id="esc-room" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 text-[9px] font-bold outline-none focus:border-indigo-400 shadow-sm" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="block text-[7px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Maintenance Category</label>
+                    <select id="esc-category" class="w-full bg-white border border-slate-200 rounded-xl py-2 px-3 text-[9px] outline-none focus:border-indigo-400 shadow-sm" required>
+                        <option value="Hardware">Hardware / Furniture</option>
+                        <option value="Plumbing">Plumbing</option>
+                        <option value="Electrical">Electrical</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-[7px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Damage Description (Auto-Pulled)</label>
+                    <textarea id="esc-desc" rows="3" class="w-full bg-white border border-slate-200 rounded-xl py-2 px-3 text-[9px] outline-none focus:border-indigo-400 shadow-sm resize-none" required></textarea>
+                </div>
+                <button type="submit" id="btn-submit-esc" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-[10px] py-2 shadow-md flex justify-center items-center gap-2 text-[10px]"><i class="fa-solid fa-paper-plane"></i> Send to Ops Queue</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Manual Report Modal -->
+<div id="manualInspectionModal" class="modal-overlay">
+    <div class="modal-content max-w-md relative">
+        <button onclick="document.getElementById('manualInspectionModal').classList.remove('active')" class="absolute top-4 right-4 w-6 h-6 bg-slate-50 border border-slate-200 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 z-20"><i class="fa-solid fa-xmark text-[10px]"></i></button>
+        <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 bg-teal-50 text-teal-600 border border-teal-100 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-file-pen"></i></div>
+            <div><h2 class="text-base font-black text-slate-900 tracking-tight leading-none">Log Inspection</h2><p class="text-[8px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Manual Walk-In Capture</p></div>
+        </div>
+        <form onsubmit="window.submitManualInspection(event)">
+            <div class="grid grid-cols-2 gap-3 mb-3">
+                <div><label class="block text-[7px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Student Number / Profile</label><input type="text" id="man-insp-id" class="w-full bg-white border border-slate-200 rounded-xl py-2 px-3 text-[9px] font-mono outline-none focus:border-teal-400 shadow-sm" required></div>
+                <div><label class="block text-[7px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Room / Block</label><input type="text" id="man-insp-room" class="w-full bg-white border border-slate-200 rounded-xl py-2 px-3 text-[9px] font-mono outline-none focus:border-teal-400 shadow-sm" required></div>
+            </div>
+            <div class="mb-3">
+                <label class="block text-[7px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Identified Issues (Comma Separated)</label>
+                <input type="text" id="man-insp-issues" class="w-full bg-white border border-slate-200 rounded-xl py-2 px-3 text-[9px] outline-none focus:border-teal-400 shadow-sm" placeholder="e.g. Damaged Mirror, Missing Chair">
+            </div>
+            <div class="mb-4">
+                <label class="block text-[7px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Resident Notes / General Comments</label>
+                <textarea id="man-insp-notes" rows="2" class="w-full bg-white border border-slate-200 rounded-xl py-2 px-3 text-[9px] outline-none focus:border-teal-400 shadow-sm resize-none" placeholder="Additional details..."></textarea>
+            </div>
+            <button type="submit" id="btn-submit-man-insp" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-[10px] py-2 shadow-md flex justify-center items-center gap-2 text-[10px]"><i class="fa-solid fa-cloud-arrow-up"></i> Push to Ledger</button>
+        </form>
+    </div>
+</div>
+
+<!-- DETAILED REPORTS MODAL -->
+<div id="statsModal" class="modal-overlay">
+    <div class="modal-content relative flex flex-col bg-slate-50 max-w-[900px]">
+        <button onclick="document.getElementById('statsModal').classList.remove('active')" class="absolute top-5 right-5 w-8 h-8 bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 transition-colors z-20 shadow-sm"><i class="fa-solid fa-xmark"></i></button>
+        
+        <div class="flex items-center gap-3 mb-6 px-2">
+            <div class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center text-lg shadow-sm border border-indigo-200"><i class="fa-solid fa-chart-pie"></i></div>
+            <div>
+                <h2 class="text-xl font-black text-slate-900 tracking-tight leading-none">Detailed Inspection Report</h2>
+                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Overall Item Summary</p>
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-4">
+            
+            <!-- 1. Room Health Pie Chart -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col items-center justify-center relative">
+                <h3 class="text-xs font-black text-slate-800 mb-4 flex items-center w-full gap-2"><i class="fa-solid fa-heart-pulse text-emerald-500"></i> Overall Room Conditions</h3>
+                <div id="modal-health-pie" class="pie-chart-container scale-90 mt-2">
+                    <div class="pie-chart-inner">
+                        <span id="modal-health-pct" class="text-xl font-black text-slate-800 leading-none">0%</span>
+                        <span class="text-[7px] font-bold text-slate-400 uppercase tracking-widest mt-1">Good</span>
+                    </div>
+                </div>
+                <div class="flex justify-between w-full mt-4 text-[9px] font-bold">
+                    <span id="modal-good-count" class="text-emerald-600 bg-emerald-50 px-2 py-1 rounded border border-emerald-100">0 Good</span>
+                    <span id="modal-damaged-count" class="text-rose-600 bg-rose-50 px-2 py-1 rounded border border-rose-100">0 Damaged</span>
+                </div>
+            </div>
+
+            <!-- 2. Inspector Leaderboard -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                <h3 class="text-xs font-black text-slate-800 mb-4 flex items-center gap-2"><i class="fa-solid fa-ranking-star text-amber-500"></i> Inspector Leaderboard</h3>
+                <div id="modal-inspector-list" class="space-y-3 max-h-40 overflow-y-auto custom-scroll pr-2">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+
+            <!-- 3. Vulnerable Assets -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                <h3 class="text-xs font-black text-slate-800 mb-4 flex items-center gap-2"><i class="fa-solid fa-house-crack text-rose-500"></i> Most Damaged Items</h3>
+                <div id="modal-asset-list" class="space-y-3 max-h-40 overflow-y-auto custom-scroll pr-2">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+
+            <!-- Damaged Units Register -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm md:col-span-3">
+                <h3 class="text-xs font-black text-slate-800 mb-4 flex items-center gap-2"><i class="fa-solid fa-clipboard-list text-slate-400"></i> List of Rooms Needing Fixes</h3>
+                <div class="overflow-x-auto custom-scroll max-h-64">
+                    <table class="w-full text-left border-collapse compact-table">
+                        <thead><tr class="bg-slate-50"><th class="w-1/4 rounded-tl-lg">Unit / Room</th><th class="w-3/4 rounded-tr-lg">Identified Issues (Damaged / Missing)</th></tr></thead>
+                        <tbody id="modal-damaged-units" class="divide-y divide-slate-100">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ----------------------------------------------------
+    // STATE & CONFIG
+    // ----------------------------------------------------
+    window.inspectionFilterStatus = 'All'; // All, Complete, Incomplete
+    window.inspectionRegion = 'All'; // All, East, West
+    const ROOM_TOTALS = { All: 445, East: 280, West: 165 };
+    const inventoryKeys = ['Bed', 'Desk', 'Wardrobe', 'Chair', 'Microwave', 'Fridge', 'Stove', 'Shower'];
+
+    window.toggleInspSidebar = function() {
+        const sidebar = document.getElementById('insp-right-sidebar');
+        if(sidebar) {
+            sidebar.classList.toggle('collapsed');
+            const icon = document.getElementById('insp-sidebar-toggle-icon');
+            if(icon) {
+                if(sidebar.classList.contains('collapsed')) { icon.className = "fa-solid fa-chevron-left text-slate-300 text-[8px] pr-1"; } 
+                else { icon.className = "fa-solid fa-chevron-right text-slate-300 text-[8px] pr-1"; }
+            }
+        }
+    };
+
+    // Auto-collapse only on mobile view
+    if (window.innerWidth < 768) { window.toggleInspSidebar(); }
+
+    window.toggleProgress = function() {
+        const wrapper = document.getElementById('progress-wrapper');
+        const icon = document.getElementById('progress-toggle-icon');
+        wrapper.classList.toggle('collapsed');
+        if(wrapper.classList.contains('collapsed')) { icon.classList.replace('fa-chevron-up', 'fa-chevron-down'); } 
+        else { icon.classList.replace('fa-chevron-down', 'fa-chevron-up'); }
+    };
+
+    window.filterTable = function(inputId, tbodyId) {
+        const input = document.getElementById(inputId); const filter = input.value.toLowerCase(); const tbody = document.getElementById(tbodyId); if(!tbody) return;
+        const tr = tbody.getElementsByTagName('tr');
+        for (let i = 0; i < tr.length; i++) {
+            if (tr[i].classList.contains('no-results')) continue;
+            tr[i].style.display = tr[i].textContent.toLowerCase().includes(filter) ? '' : 'none';
+        }
+    };
+
+    // ----------------------------------------------------
+    // DATA PIPELINE (reziflow-inspectionz mapping)
+    // ----------------------------------------------------
+    window.fetchInspectionsData = async function(forcedRefresh = false) {
+        const body = document.getElementById('inspections-body');
+        if (forcedRefresh && body) { body.innerHTML = '<tr><td colspan="14" class="p-8 text-center"><i class="fa-solid fa-circle-notch fa-spin text-indigo-500 text-2xl"></i></td></tr>'; }
+        
+        try {
+            const res = await fetch('https://n8n.automania.cloud/webhook/reziflow-inspectionz', { 
+                method: 'GET',
+                headers: { 'Accept': 'application/json' }
+            });
+            
+            if (res.ok) {
+                let rawData = await res.json();
+                if (typeof rawData === 'string') rawData = JSON.parse(rawData);
+                if (rawData.data && Array.isArray(rawData.data)) rawData = rawData.data;
+                
+                let arr = [];
+                if (Array.isArray(rawData)) { arr = rawData.flat(Infinity); } 
+                else if (typeof rawData === 'object') { arr = [rawData]; }
+                
+                arr = arr.map(i => i.json ? i.json : i);
+
+                window.globalInspectionsData = arr.map(item => ({
+                    RoomProfileBlock: item.Block_Selected || 'Unknown',
+                    SelectedFloor: item.Floor_Selected || 'Unknown',
+                    SelectedRoom: item.Room || item.Room_Selected || 'Unknown',
+                    Bed: item.Bed,
+                    Desk: item.Desk,
+                    Wardrobe: item.Wardrobe,
+                    Chair: item.Chair,
+                    Microwave: item.Microwave,
+                    Fridge: item.Fridge,
+                    Stove: item.Stove,
+                    Shower: item.Shower,
+                    General_Comments: item.General_Comments || item.Comments || '',
+                    Timestamp: item.Timestamp ? new Date(item.Timestamp).toLocaleString('en-ZA', { 
+                        month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' 
+                    }) : 'Unknown Time',
+                    InspectorProfile: item.Profile || 'System'
+                }));
+                if(forcedRefresh && typeof window.showToast === 'function') window.showToast('Data refreshed successfully.', 'success');
+            }
+        } catch (error) {
+            console.error("Fetch Error Details:", error);
+        }
+        window.renderInspectionsData();
+    };
+
+    // ----------------------------------------------------
+    // RENDERING LOGIC MATRIX
+    // ----------------------------------------------------
+    window.setInspectionFilter = function(filter) {
+        window.inspectionFilterStatus = filter;
+        ['All', 'Complete', 'Incomplete'].forEach(tab => {
+            const el = document.getElementById(`insp-btn-${tab.toLowerCase()}`);
+            if(el) el.classList.remove('active', 'accent-blue', 'accent-emerald', 'accent-rose');
+        });
+        const activeEl = document.getElementById(`insp-btn-${filter.toLowerCase()}`);
+        if(activeEl) {
+            activeEl.classList.add('active');
+            if(filter === 'All') activeEl.classList.add('accent-blue');
+            if(filter === 'Complete') activeEl.classList.add('accent-emerald');
+            if(filter === 'Incomplete') activeEl.classList.add('accent-rose');
+        }
+        window.renderInspectionsData();
+    };
+
+    window.filterRegion = function(region) {
+        window.inspectionRegion = region;
+        ['All', 'East', 'West'].forEach(r => {
+            const el = document.getElementById(`reg-tab-${r.toLowerCase()}`);
+            if(el) el.classList.remove('active', 'accent-indigo');
+        });
+        const activeEl = document.getElementById(`reg-tab-${region.toLowerCase()}`);
+        if(activeEl) activeEl.classList.add('active', 'accent-indigo');
+        window.renderInspectionsData();
+    };
+
+    window.renderInspectionsData = function() {
+        const tbody = document.getElementById('inspections-body');
+        if (!tbody || !window.globalInspectionsData) return;
+
+        let htmlStr = '';
+        let totalComplete = 0; let totalIncomplete = 0;
+
+        // 1. Augment Data with precise health scores
+        let augmentedData = window.globalInspectionsData.map(item => {
+            let missingCount = 0;
+            let damagedCount = 0;
+            let issuesList = [];
+            inventoryKeys.forEach(k => {
+                if (item[k] === 'Missing') { missingCount++; issuesList.push(`${k} (Missing)`); }
+                if (item[k] === 'Damaged') { damagedCount++; issuesList.push(`${k} (Damaged)`); }
+            });
+            const totalIssues = missingCount + damagedCount;
+            return { ...item, missingCount, damagedCount, totalIssues, issuesList };
+        });
+
+        // 2. Apply Wing/Region Filter based on Room Name Prefix
+        let regionFiltered = augmentedData.filter(item => {
+            if (window.inspectionRegion === 'All') return true;
+            const rm = String(item.SelectedRoom).trim().toUpperCase();
+            if (window.inspectionRegion === 'East') return rm.startsWith('E');
+            if (window.inspectionRegion === 'West') return rm.startsWith('W');
+            return true;
+        });
+
+        // 3. Analytics Update (Based strictly on item conditions)
+        regionFiltered.forEach(item => {
+            if (item.totalIssues === 0) totalComplete++; else totalIncomplete++;
+        });
+
+        const totalCapacity = ROOM_TOTALS[window.inspectionRegion];
+        const inspectedCount = regionFiltered.length;
+        const progressPct = totalCapacity === 0 ? 0 : Math.min(100, Math.round((inspectedCount / totalCapacity) * 100));
+        
+        if (document.getElementById('progress-text')) document.getElementById('progress-text').textContent = `${inspectedCount} / ${totalCapacity}`;
+        if (document.getElementById('progress-pct')) document.getElementById('progress-pct').textContent = `${progressPct}%`;
+        if (document.getElementById('progress-fill')) document.getElementById('progress-fill').style.width = `${progressPct}%`;
+        
+        // Sync Sidebar Analytics with exact logic
+        if (document.getElementById('stat-complete')) document.getElementById('stat-complete').textContent = totalComplete;
+        if (document.getElementById('stat-incomplete')) document.getElementById('stat-incomplete').textContent = totalIncomplete;
+
+        // 4. Apply Status Filter
+        let tableFiltered = regionFiltered.filter(item => {
+            if (window.inspectionFilterStatus === 'Complete') return item.totalIssues === 0;
+            if (window.inspectionFilterStatus === 'Incomplete') return item.totalIssues > 0;
+            return true;
+        });
+
+        // 5. Dynamic Sorting: Natural Alphanumeric if All, else Severity
+        if (window.inspectionFilterStatus === 'All') {
+            tableFiltered.sort((a, b) => String(a.SelectedRoom || '').localeCompare(String(b.SelectedRoom || ''), undefined, {numeric: true, sensitivity: 'base'}));
+        } else {
+            tableFiltered.sort((a, b) => {
+                if (b.missingCount !== a.missingCount) return b.missingCount - a.missingCount;
+                if (b.damagedCount !== a.damagedCount) return b.damagedCount - a.damagedCount;
+                return new Date(b.Timestamp || 0).getTime() - new Date(a.Timestamp || 0).getTime();
+            });
+        }
+
+        if (tableFiltered.length === 0) {
+            tbody.innerHTML = `<tr class="no-results"><td colspan="14" class="p-10 text-center text-slate-400 font-bold text-[10px]">No records found for this view.</td></tr>`;
+        } else {
+            tableFiltered.forEach(item => {
+                const getIcon = (stat) => {
+                    if (stat === 'Damaged') return '<div class="item-dot item-damaged" title="Damaged"><i class="fa-solid fa-wrench"></i></div>';
+                    if (stat === 'Missing') return '<div class="item-dot item-missing" title="Missing"><i class="fa-solid fa-xmark"></i></div>';
+                    return '<div class="item-dot item-ok" title="Good"><i class="fa-solid fa-check"></i></div>'; 
+                };
+
+                const isClean = item.totalIssues === 0;
+                const statusBadge = isClean 
+                    ? `<span class="status-badge status-complete">Passed</span>` 
+                    : `<span class="status-badge status-incomplete">Flagged</span>`;
+
+                const safeProfile = String(item.InspectorProfile || '').replace(/'/g, "\\'");
+                const safeRoom = String(item.SelectedRoom || '').replace(/'/g, "\\'");
+                const safeDesc = String(item.issuesList.join(', ') || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
+
+                const actionBtn = !isClean
+                    ? `<button onclick="window.openEscalationModal('${safeProfile}', '${safeRoom}', '${safeDesc}')" class="bg-white border border-indigo-200 hover:bg-indigo-50 text-indigo-600 text-[8px] font-bold px-2.5 py-1.5 rounded-lg transition-all shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-screwdriver-wrench"></i> Escalate</button>`
+                    : `<span class="text-[8px] font-bold text-slate-400 border border-dashed border-slate-300 bg-white/50 px-2 py-1 rounded-lg">No Action Needed</span>`;
+
+                htmlStr += `
+                    <tr class="hover:bg-slate-50/50 transition-colors">
+                        <td class="font-bold text-indigo-600 text-[9px]"><i class="fa-solid fa-user-pen mr-1 text-slate-400"></i> ${item.InspectorProfile}</td>
+                        <td class="text-slate-600 font-medium text-[9px]">${item.RoomProfileBlock} <span class="text-slate-400 ml-1">Fl. ${item.SelectedFloor}</span></td>
+                        <td class="font-black text-slate-800 text-[10px]">${item.SelectedRoom}</td>
+                        <td class="text-center">${getIcon(item.Bed)}</td>
+                        <td class="text-center">${getIcon(item.Desk)}</td>
+                        <td class="text-center">${getIcon(item.Wardrobe)}</td>
+                        <td class="text-center">${getIcon(item.Chair)}</td>
+                        <td class="text-center">${getIcon(item.Microwave)}</td>
+                        <td class="text-center">${getIcon(item.Fridge)}</td>
+                        <td class="text-center">${getIcon(item.Stove)}</td>
+                        <td class="text-center">${getIcon(item.Shower)}</td>
+                        <td class="text-slate-500 italic max-w-[120px] truncate" title="${item.General_Comments}">${item.General_Comments || 'None'}</td>
+                        <td class="text-center">${statusBadge}</td>
+                        <td class="text-right">${actionBtn}</td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = htmlStr;
+        }
+    };
+
+    // ----------------------------------------------------
+    // DETAILED STATS MODAL LOGIC
+    // ----------------------------------------------------
+    window.openStatsModal = function() {
+        document.getElementById('statsModal').classList.add('active');
+        
+        let inspectorMap = {};
+        let itemDamageMap = {};
+        let damageReports = [];
+
+        inventoryKeys.forEach(k => itemDamageMap[k] = { damaged: 0, missing: 0 });
+
+        if(!window.globalInspectionsData) return;
+
+        window.globalInspectionsData.forEach(item => {
+            const inspector = item.InspectorProfile;
+            inspectorMap[inspector] = (inspectorMap[inspector] || 0) + 1;
+
+            let unitIssues = [];
+            inventoryKeys.forEach(key => {
+                if (item[key] === 'Damaged') { itemDamageMap[key].damaged++; unitIssues.push(`${key} (Damaged)`); }
+                if (item[key] === 'Missing') { itemDamageMap[key].missing++; unitIssues.push(`${key} (Missing)`); }
+            });
+
+            if (unitIssues.length > 0) {
+                damageReports.push({ unit: `${item.RoomProfileBlock}, Room ${item.SelectedRoom}`, issues: unitIssues, inspector: inspector });
+            }
+        });
+
+        // 1. Render Room Health Pie Chart
+        const totalLoggedRooms = window.globalInspectionsData.length;
+        const totalDamagedRooms = damageReports.length;
+        const totalGoodRooms = totalLoggedRooms - totalDamagedRooms;
+        const goodPct = totalLoggedRooms === 0 ? 0 : Math.round((totalGoodRooms / totalLoggedRooms) * 100);
+
+        document.getElementById('modal-health-pct').textContent = `${goodPct}%`;
+        document.getElementById('modal-good-count').textContent = `${totalGoodRooms} Good`;
+        document.getElementById('modal-damaged-count').textContent = `${totalDamagedRooms} Damaged`;
+        document.getElementById('modal-health-pie').style.background = `conic-gradient(#10b981 0% ${goodPct}%, #f43f5e ${goodPct}% 100%)`;
+
+        // 2. Render Inspector Leaderboard
+        const inspectorList = document.getElementById('modal-inspector-list');
+        inspectorList.innerHTML = '';
+        const sortedInspectors = Object.entries(inspectorMap).sort((a,b) => b[1] - a[1]);
+        const maxCount = sortedInspectors[0] ? sortedInspectors[0][1] : 1;
+
+        sortedInspectors.forEach(([name, count]) => {
+            const widthPct = Math.max((count / maxCount) * 100, 10);
+            inspectorList.innerHTML += `
+                <div class="flex items-center gap-3">
+                    <div class="w-16 text-[10px] font-bold text-slate-600 truncate text-right">${name}</div>
+                    <div class="flex-1 bg-slate-100 rounded-full h-4 overflow-hidden relative">
+                        <div class="bg-indigo-400 h-full rounded-full flex items-center justify-end pr-2" style="width: ${widthPct}%;">
+                            <span class="text-[8px] font-black text-white">${count}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        // 3. Render Most Damaged Items List
+        const assetList = document.getElementById('modal-asset-list');
+        assetList.innerHTML = '';
+        const sortedAssets = inventoryKeys.sort((a,b) => {
+            const totalA = itemDamageMap[a].damaged + itemDamageMap[a].missing;
+            const totalB = itemDamageMap[b].damaged + itemDamageMap[b].missing;
+            return totalB - totalA;
+        });
+
+        sortedAssets.forEach(key => {
+            const issues = itemDamageMap[key].damaged + itemDamageMap[key].missing;
+            if (issues > 0) {
+                assetList.innerHTML += `
+                    <div class="flex items-center justify-between p-2 bg-slate-50 rounded-lg border border-slate-100">
+                        <span class="text-[10px] font-bold text-slate-700">${key}</span>
+                        <div class="flex gap-2">
+                            ${itemDamageMap[key].damaged > 0 ? `<span class="px-2 py-0.5 bg-amber-100 text-amber-700 text-[9px] rounded-md font-bold">${itemDamageMap[key].damaged} Damaged</span>` : ''}
+                            ${itemDamageMap[key].missing > 0 ? `<span class="px-2 py-0.5 bg-rose-100 text-rose-700 text-[9px] rounded-md font-bold">${itemDamageMap[key].missing} Missing</span>` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+        });
+        if(assetList.innerHTML === '') assetList.innerHTML = '<p class="text-[10px] text-emerald-500 font-bold p-2 text-center mt-4"><i class="fa-solid fa-check-circle"></i> Everything is in good condition.</p>';
+
+        // 4. Render Damaged Units Register
+        const registry = document.getElementById('modal-damaged-units');
+        registry.innerHTML = '';
+        if (damageReports.length === 0) {
+            registry.innerHTML = `<tr><td colspan="2" class="p-4 text-center text-[10px] text-slate-400">All surveyed rooms are in good condition.</td></tr>`;
+        } else {
+            damageReports.forEach(report => {
+                const issueBadges = report.issues.map(iss => {
+                    const isMissing = iss.includes('Missing');
+                    return `<span class="inline-block px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider mb-1 mr-1 ${isMissing ? 'bg-rose-50 text-rose-600 border border-rose-200' : 'bg-amber-50 text-amber-600 border border-amber-200'}">${iss}</span>`;
+                }).join('');
+
+                registry.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="align-top"><div class="font-bold text-[10px] text-slate-800 mt-1">${report.unit}</div><div class="text-[8px] text-slate-400 mt-0.5">Logged by ${report.inspector}</div></td>
+                        <td class="pt-2">${issueBadges}</td>
+                    </tr>
+                `;
+            });
+        }
+    };
+
+    // ----------------------------------------------------
+    // ESCALATION & MANUAL LOGGING MODALS
+    // ----------------------------------------------------
+    window.openEscalationModal = function(profile, room, description) {
+        document.getElementById('esc-student-id').value = profile; 
+        document.getElementById('esc-room').value = room;
+        
+        const cleanDesc = description.replace(/Missing/g, "Missing").replace(/Damaged/g, "Damaged");
+        document.getElementById('esc-desc').value = `Inspection flagged the following issues upon audit:\n${cleanDesc}`;
+        
+        document.getElementById('escalateTicketModal').classList.add('active');
+    };
+
+    window.submitEscalation = async function(e) {
+        e.preventDefault(); const btn = document.getElementById('btn-submit-esc'); const ogHtml = btn.innerHTML;
+        const payload = {
+            Profile: document.getElementById('esc-student-id').value,
+            Room: document.getElementById('esc-room').value,
+            Category: document.getElementById('esc-category').value,
+            Description: document.getElementById('esc-desc').value,
+            Ticket_Source: "Inspection Escalation"
+        };
+        
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Routing...'; btn.disabled = true;
+        try {
+            await fetch('https://n8n.automania.cloud/webhook/phumelelela-escalate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            document.getElementById('escalateTicketModal').classList.remove('active');
+            if(typeof window.showToast === 'function') window.showToast("Routed to Maintenance successfully.");
+        } catch(err) { if(typeof window.showToast === 'function') window.showToast("Network Error", "error"); } finally { btn.innerHTML = ogHtml; btn.disabled = false; }
+    };
+
+    window.submitManualInspection = async function(e) {
+        e.preventDefault(); const btn = document.getElementById('btn-submit-man-insp'); const ogHtml = btn.innerHTML;
+        
+        // Mock payload for immediate UI injection on manual capture
+        const payload = {
+            InspectorProfile: 'Manual Admin',
+            SelectedRoom: document.getElementById('man-insp-room').value,
+            RoomProfileBlock: 'Unknown',
+            Bed: 'Good', Desk: 'Good', Wardrobe: 'Good', Chair: 'Good', Microwave: 'Good', Fridge: 'Good', Stove: 'Good', Shower: 'Good',
+            General_Comments: document.getElementById('man-insp-notes').value || 'None',
+            Timestamp: new Date().toLocaleString('en-ZA', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+        };
+        
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Pushing...'; btn.disabled = true;
+        try {
+            if(!window.globalInspectionsData) window.globalInspectionsData = [];
+            window.globalInspectionsData.unshift(payload);
+            window.renderInspectionsData();
+            
+            document.getElementById('manualInspectionModal').classList.remove('active');
+            e.target.reset();
+            if(typeof window.showToast === 'function') window.showToast("Inspection securely logged.");
+        } catch(err) { if(typeof window.showToast === 'function') window.showToast("Network Error", "error"); } finally { btn.innerHTML = ogHtml; btn.disabled = false; }
+    };
+
+    window.downloadInspectionsReport = function() {
+        const searchVal = document.getElementById('search-inspections')?.value.toLowerCase() || '';
+        let csvContent = "data:text/csv;charset=utf-8,";
+        let filename = `ReziFlow_Inspections_Ledger`;
+
+        csvContent += "Timestamp,Inspector,Block,Floor,Room,Bed,Desk,Wardrobe,Chair,Microwave,Fridge,Stove,Shower,Comments,Calculated Status\n";
+        
+        let baseData = window.globalInspectionsData || [];
+        
+        // Rebuild augmented data for export matching the exact render logic
+        let augmentedData = baseData.map(item => {
+            let missingCount = 0; let damagedCount = 0;
+            inventoryKeys.forEach(k => {
+                if (item[k] === 'Missing') missingCount++;
+                if (item[k] === 'Damaged') damagedCount++;
+            });
+            return { ...item, totalIssues: missingCount + damagedCount };
+        });
+        
+        let filteredData = augmentedData.filter(item => {
+            const rm = String(item.SelectedRoom).trim().toUpperCase();
+            if (window.inspectionRegion === 'East' && !rm.startsWith('E')) return false;
+            if (window.inspectionRegion === 'West' && !rm.startsWith('W')) return false;
+            
+            if (window.inspectionFilterStatus === 'Complete' && item.totalIssues > 0) return false;
+            if (window.inspectionFilterStatus === 'Incomplete' && item.totalIssues === 0) return false;
+            
+            return JSON.stringify(item).toLowerCase().includes(searchVal);
+        });
+        
+        if (window.inspectionFilterStatus === 'All') {
+            filteredData.sort((a, b) => String(a.SelectedRoom || '').localeCompare(String(b.SelectedRoom || ''), undefined, {numeric: true, sensitivity: 'base'}));
+        } else {
+            filteredData.sort((a, b) => {
+                if (b.missingCount !== a.missingCount) return b.missingCount - a.missingCount;
+                if (b.damagedCount !== a.damagedCount) return b.damagedCount - a.damagedCount;
+                return new Date(b.Timestamp || 0).getTime() - new Date(a.Timestamp || 0).getTime();
+            });
+        }
+
+        if(filteredData.length === 0) return typeof window.showToast === 'function' ? window.showToast("No data to export.", "error") : alert("No data");
+
+        filteredData.forEach(item => {
+            const cleanComments = String(item.General_Comments || '').replace(/"/g, '""');
+            const calcStatus = item.totalIssues === 0 ? 'Passed' : 'Flagged';
+            csvContent += `"${item.Timestamp || ''}","${item.InspectorProfile || ''}","${item.RoomProfileBlock || ''}","${item.SelectedFloor || ''}","${item.SelectedRoom || ''}","${item.Bed || ''}","${item.Desk || ''}","${item.Wardrobe || ''}","${item.Chair || ''}","${item.Microwave || ''}","${item.Fridge || ''}","${item.Stove || ''}","${item.Shower || ''}","${cleanComments}","${calcStatus}"\n`;
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a"); link.setAttribute("href", encodedUri); link.setAttribute("download", `${filename}_${new Date().toISOString().split('T')[0]}.csv`);
+        document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    };
+
+    // Auto-Fetch on script load
+    setTimeout(() => { window.fetchInspectionsData(false); }, 200);
+</script>
