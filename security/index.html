@@ -1,0 +1,1652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ReziOps | Security Command</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif; 
+            background-color: #f5f5f7; color: #1d1d1f; -webkit-font-smoothing: antialiased;
+            overflow: hidden; 
+        }
+
+        /* ---------------------------------------------------
+           FLUID COMPACT LAYOUT & SIDEBAR CONFIG
+           --------------------------------------------------- */
+        .glass-segmented {
+            background: rgba(230, 230, 235, 0.45); backdrop-filter: blur(20px); border-radius: 12px; padding: 3px; 
+            border: 1px solid rgba(255, 255, 255, 0.5); box-shadow: inset 0 1px 4px rgba(0,0,0,0.03); 
+            display: inline-flex; flex-wrap: wrap; gap: 3px; align-items: center;
+        }
+        
+        .glass-seg-btn {
+            padding: 4px 10px; font-size: 0.65rem; font-weight: 700; color: #64748b; border-radius: 8px; 
+            transition: all 0.2s ease; cursor: pointer; display: flex; align-items: center; gap: 4px; border: 1px solid transparent;
+        }
+        @media (min-width: 640px) { .glass-seg-btn { padding: 6px 12px; font-size: 0.7rem; gap: 6px; border-radius: 10px; } }
+        .glass-seg-btn:hover:not(.active) { background: rgba(255, 255, 255, 0.4); color: #334155; }
+        .glass-seg-btn.active {
+            background: rgba(255, 255, 255, 0.95); color: #1d1d1f; box-shadow: 0 2px 6px rgba(0,0,0,0.04); border: 1px solid rgba(255, 255, 255, 1);
+        }
+        .glass-seg-btn.active.accent-blue { color: #0071e3; } 
+        .glass-seg-btn.active.accent-amber { color: #f59e0b; }
+        .glass-seg-btn.active.accent-rose { color: #e11d48; }
+
+        /* Right Sidebar */
+        .hub-sidebar { width: 22%; max-width: 224px; min-width: 160px; flex-shrink: 0; display: flex; flex-direction: column; gap: 0.75rem; transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), min-width 0.4s; position: relative; }
+        .hub-sidebar.collapsed { width: 48px !important; min-width: 48px !important; }
+        .hub-sidebar.collapsed .nav-text { display: none !important; }
+        .hub-sidebar.collapsed .nav-block { padding: 6px !important; }
+        .hub-sidebar.collapsed .block-btn { padding: 10px 0 !important; justify-content: center !important; }
+        .hub-sidebar.collapsed .block-btn i { margin: 0 !important; font-size: 1.1rem; }
+        
+        .nav-block { background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 1); box-shadow: 0 4px 20px -10px rgba(0,0,0,0.05); border-radius: 14px; padding: 8px; transition: all 0.3s ease; }
+        .block-btn { width: 100%; display: flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 10px; font-size: 0.65rem; font-weight: 700; transition: all 0.2s ease; cursor: pointer; white-space: nowrap; overflow: hidden; }
+        
+        .btn-primary-rose { background-color: #e11d48; color: white; border: 1.5px solid #e11d48; box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25); }
+        .btn-primary-rose:hover { background-color: #be123c; }
+        .btn-secondary-white { background-color: #ffffff; color: #334155; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+        .btn-secondary-white:hover { border-color: #cbd5e1; background-color: #f8fafc; }
+        .block-btn-active { background-color: #ffffff; color: #e11d48; border: 1.5px solid #0f172a; box-shadow: 0 4px 10px rgba(0,0,0,0.03); transform: scale(1.02); }
+        .block-btn-inactive { background-color: transparent; color: #64748b; border: 1.5px solid transparent; }
+        .block-btn-inactive:hover { background-color: rgba(255,255,255,0.6); color: #334155; }
+
+        /* Animation Keyframes */
+        @keyframes paneFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-paneFade { animation: paneFade 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        /* Compact Table Constraints */
+        .compact-table th { padding: 8px 10px; font-size: 0.55rem; letter-spacing: 0.05em; text-transform: uppercase; font-weight: 800; color: #94a3b8; border-bottom: 1px solid rgba(226, 232, 240, 0.5); }
+        .compact-table td { padding: 6px 10px; border-bottom: 1px solid rgba(226, 232, 240, 0.4); vertical-align: middle; font-size: 0.68rem; }
+        .glass-panel { background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05); border-radius: 20px; }
+        
+        .custom-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .custom-scroll { overscroll-behavior: contain; }
+
+        /* High-End Modals */
+        .modal-overlay { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; background: rgba(29, 29, 31, 0.4); backdrop-filter: blur(12px); z-index: 3000; display: flex; align-items: center; justify-content: center; position: fixed; inset: 0; padding: 1rem; }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-content { transform: scale(0.95) translateY(20px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1); background: #ffffff; border-radius: 24px; padding: 1.25rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); max-height: 90vh; overflow-y: auto; }
+        .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
+
+        .magic-border-container { position: relative; padding: 2px; border-radius: 26px; overflow: hidden; background: transparent; }
+        .magic-border-container::before { content: ''; position: absolute; top: 50%; left: 50%; width: 200%; height: 200%; background: conic-gradient(from 0deg, transparent 40%, rgba(225, 29, 72, 0.2) 60%, #e11d48 80%, #be123c 100%); transform-origin: 0 0; animation: magic-spin 3s linear infinite; z-index: 0; }
+        @keyframes magic-spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+        .magic-border-inner { position: relative; z-index: 10; background: #ffffff; border-radius: 24px; width: 100%; height: 100%; padding: 1.25rem; }
+
+        /* Security Specifics */
+        .pin-input { letter-spacing: 1.5em; font-variant-numeric: tabular-nums; }
+        .pin-input:focus { outline: none; }
+        
+        @keyframes radarPulse { 0% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(225, 29, 72, 0); } 100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); } }
+        .radar-active { animation: radarPulse 2s infinite; }
+
+        @keyframes sosFlash { 0%, 100% { background-color: rgba(225, 29, 72, 0); } 50% { background-color: rgba(225, 29, 72, 0.3); } }
+        .screen-flash { position: fixed; inset: 0; pointer-events: none; z-index: 9999; animation: sosFlash 1s ease-in-out infinite; }
+        
+        @keyframes logSlideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        .animate-logSlide { animation: logSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        /* Patrol Scanner Animation */
+        @keyframes scanLine { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
+        .scanner-line { position: absolute; left: 0; right: 0; height: 2px; background: rgba(52, 211, 153, 0.8); box-shadow: 0 0 10px rgba(52,211,153,1); animation: scanLine 2s linear infinite; }
+        
+        .detail-row-content { animation: paneFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .tap-effect:active { transform: scale(0.96); transition: transform 0.1s ease; }
+    </style>
+</head>
+<body class="flex flex-col lg:flex-row h-screen w-full relative overflow-hidden bg-[#f5f5f7]">
+
+    <!-- Preload Audio Assets -->
+    <audio id="standard-alert" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" preload="auto"></audio>
+    <audio id="sos-alarm" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" preload="auto"></audio>
+
+    <!-- Background Blobs -->
+    <div class="fixed top-[-15%] left-[-10%] w-[60%] h-[60%] bg-rose-300 rounded-full mix-blend-multiply filter blur-[140px] opacity-[0.15] z-0 pointer-events-none"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-slate-400 rounded-full mix-blend-multiply filter blur-[120px] opacity-[0.15] z-0 pointer-events-none"></div>
+
+    <!-- Mobile Header -->
+    <div class="lg:hidden flex items-center justify-between p-3 sm:p-4 bg-white/80 backdrop-blur-2xl border-b border-slate-200 z-50 sticky top-0">
+        <div class="flex items-center gap-2"><i class="fa-solid fa-shield-halved text-rose-600 text-lg"></i><span class="font-black text-lg tracking-tight text-slate-800">Rezi<span class="text-rose-500">Guard</span></span></div>
+        <button onclick="window.toggleSecSidebar()" class="w-9 h-9 rounded-full bg-white shadow-sm border border-slate-200 flex items-center justify-center text-slate-600"><i class="fa-solid fa-bars"></i></button>
+    </div>
+
+    <!-- Main Workspace -->
+    <div class="flex-1 flex flex-col sm:flex-row w-full h-full min-h-0 gap-3 overflow-hidden relative p-3 sm:p-4 lg:p-6">
+        
+        <!-- Canvas (Left) -->
+        <div class="flex-1 flex flex-col min-w-0 min-h-0 overflow-y-auto custom-scroll pr-1 pb-10">
+            
+            <header class="mb-4 flex items-center justify-between shrink-0">
+                <div>
+                    <h1 id="matrixTitle" class="text-xl sm:text-2xl font-black tracking-tight text-slate-800">Live Overwatch</h1>
+                    <p id="matrixSub" class="text-[10px] sm:text-xs text-slate-500 font-medium">Active Threats & Facility Status</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button class="w-8 h-8 rounded-full bg-white border border-rose-200 flex items-center justify-center text-rose-500 hover:bg-rose-50 transition-colors shadow-sm radar-active">
+                        <i class="fa-solid fa-bell text-[10px]"></i>
+                    </button>
+                    <div class="h-8 px-3 rounded-full bg-slate-900 border border-slate-700 flex items-center gap-2 shadow-sm text-xs font-bold text-white hidden sm:flex">
+                        <div class="w-5 h-5 rounded-full bg-slate-700 text-white flex items-center justify-center text-[9px]"><i class="fa-solid fa-user-police"></i></div> Guard Desk 01
+                    </div>
+                </div>
+            </header>
+
+            <!-- Primary KPI / Filter Grid -->
+            <div class="flex justify-start w-full mb-3 z-10 relative shrink-0" id="sec-kpi-grid">
+                <div class="glass-segmented shadow-sm w-full sm:w-auto overflow-x-auto custom-scroll flex-nowrap">
+                    <button onclick="window.setSecurityFilter('all')" id="sec-stat-all" class="glass-seg-btn active accent-blue">
+                        <i class="fa-solid fa-layer-group"></i> All Active
+                        <span id="kpi-sec-all" class="bg-blue-50 border border-blue-100 text-blue-600 px-1.5 py-0.5 rounded-full text-[8px] ml-1">-</span>
+                    </button>
+                    <div class="w-px h-4 bg-slate-300/50 mx-1"></div>
+                    <button onclick="window.setSecurityFilter('routine')" id="sec-stat-routine" class="glass-seg-btn accent-amber">
+                        <i class="fa-solid fa-eye"></i> Routine
+                        <span id="kpi-sec-routine" class="bg-amber-50 border border-amber-100 text-amber-600 px-1.5 py-0.5 rounded-full text-[8px] ml-1">-</span>
+                    </button>
+                    <div class="w-px h-4 bg-slate-300/50 mx-1"></div>
+                    <button onclick="window.setSecurityFilter('critical')" id="sec-stat-critical" class="glass-seg-btn accent-rose">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Critical
+                        <span id="kpi-sec-critical" class="bg-rose-50 border border-rose-100 text-rose-600 px-1.5 py-0.5 rounded-full text-[8px] ml-1">-</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- TAB 1: Live Alerts -->
+            <div id="sec-pane-live" class="sec-dashboard-tab flex-col h-full animate-paneFade flex">
+                <div class="glass-panel overflow-hidden flex flex-col h-full border border-rose-100/50 shadow-[0_0_40px_rgba(225,29,72,0.03)]">
+                    <div class="px-3 py-3 border-b border-white/60 flex flex-col sm:flex-row gap-3 justify-between sm:items-center bg-white/50 backdrop-blur-md">
+                        <div class="flex items-center gap-2">
+                            <div class="w-7 h-7 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center shadow-sm"><i class="fa-solid fa-shield-halved text-[10px]"></i></div>
+                            <h3 class="font-black text-slate-800 text-xs sm:text-sm tracking-tight whitespace-nowrap">Live Security Feeds</h3>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                            <button onclick="window.downloadSecurityReport('live')" class="bg-[#1d1d1f] hover:bg-[#333336] text-white font-bold px-3 py-1.5 rounded-lg shadow-md flex items-center gap-1.5 shrink-0 text-[10px] transition-all">
+                                <i class="fa-solid fa-download"></i> <span class="hidden sm:inline">Report</span>
+                            </button>
+                            <div class="relative w-full sm:w-40">
+                                <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 transform -translate-y-1/2 text-slate-400 text-[9px]"></i>
+                                <input type="text" id="search-security-live" onkeyup="window.filterTable('search-security-live', 'security-live-body')" placeholder="Search alerts..." class="w-full bg-white/80 border border-slate-200 rounded-lg py-1 pl-7 pr-2 text-[10px] outline-none focus:border-rose-400 shadow-sm">
+                            </div>
+                            <button onclick="if(typeof window.fetchSecurityData === 'function') window.fetchSecurityData(true);" class="bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 font-bold px-2 py-1 rounded-lg shadow-sm shrink-0"><i class="fa-solid fa-rotate text-rose-500 text-[10px]"></i></button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto custom-scroll bg-white/30 backdrop-blur-sm flex-1">
+                        <table class="w-full text-left border-collapse compact-table min-w-[700px]">
+                            <thead class="bg-white/70 sticky top-0 backdrop-blur-md z-10 shadow-sm border-b border-slate-200/40">
+                                <tr>
+                                    <th class="w-24">Timestamp</th>
+                                    <th class="w-40">Location & Reporter</th>
+                                    <th class="w-20">Alert Level</th>
+                                    <th>Details</th>
+                                    <th class="w-32 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="security-live-body" class="divide-y divide-slate-100/50"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: Alert History -->
+            <div id="sec-pane-history" class="sec-dashboard-tab hidden flex-col h-full animate-paneFade">
+                <div class="glass-panel overflow-hidden flex flex-col h-full">
+                    <div class="px-3 py-3 border-b border-white/60 flex flex-col sm:flex-row gap-3 justify-between sm:items-center bg-white/50 backdrop-blur-md">
+                        <div class="flex items-center gap-2">
+                            <div class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shadow-sm"><i class="fa-solid fa-clock-rotate-left text-[10px]"></i></div>
+                            <h3 class="font-black text-slate-800 text-xs sm:text-sm tracking-tight">Alert History <span class="bg-emerald-100 text-emerald-700 text-[8px] px-1.5 py-0.5 rounded-md font-bold uppercase ml-1">Cleared</span></h3>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                            <button onclick="window.downloadSecurityReport('history')" class="bg-[#1d1d1f] hover:bg-[#333336] text-white font-bold px-3 py-1.5 rounded-lg shadow-md flex items-center gap-1.5 shrink-0 text-[10px] transition-all">
+                                <i class="fa-solid fa-download"></i> <span class="hidden sm:inline">Report</span>
+                            </button>
+                            <div class="relative w-full sm:w-40">
+                                <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 transform -translate-y-1/2 text-slate-400 text-[9px]"></i>
+                                <input type="text" id="search-security-hist" onkeyup="window.filterTable('search-security-hist', 'security-hist-body')" placeholder="Search history..." class="w-full bg-white/80 border border-slate-200 rounded-lg py-1 pl-7 pr-2 text-[10px] outline-none focus:border-emerald-400 shadow-sm">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto custom-scroll bg-white/30 backdrop-blur-sm flex-1">
+                        <table class="w-full text-left border-collapse compact-table min-w-[700px]">
+                            <thead class="bg-white/70 sticky top-0 backdrop-blur-md z-10 shadow-sm border-b border-slate-200/40">
+                                <tr>
+                                    <th class="w-24">Timestamp</th>
+                                    <th class="w-40">Location & Reporter</th>
+                                    <th class="w-20">Alert Level</th>
+                                    <th>Details</th>
+                                    <th class="w-24 text-right">View</th>
+                                </tr>
+                            </thead>
+                            <tbody id="security-hist-body" class="divide-y divide-slate-100/50"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: Visitor Gateway -->
+            <div id="sec-pane-gateway" class="sec-dashboard-tab hidden flex-col h-full animate-paneFade">
+                <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 h-full">
+                    
+                    <!-- Terminal -->
+                    <div class="xl:col-span-2 glass-panel rounded-[24px] p-6 lg:p-8 text-center relative overflow-hidden bg-white/80 flex flex-col justify-center">
+                        <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 to-cyan-400"></div>
+                        <h2 class="text-base sm:text-lg font-black text-slate-800 mb-1 uppercase tracking-widest mt-2">Visitor Authentication</h2>
+                        <p class="text-[10px] sm:text-xs text-slate-500 mb-6 font-medium">Enter the 6-digit access PIN provided by the guest.</p>
+                        
+                        <div class="max-w-xs mx-auto w-full">
+                            <div class="bg-white border-2 border-slate-200 rounded-2xl p-1 mb-4 shadow-inner focus-within:border-blue-500 focus-within:bg-blue-50/30 transition-all">
+                                <input type="text" id="terminal-pin" maxlength="6" class="pin-input w-full bg-transparent text-center text-3xl font-black text-slate-800 py-3 rounded-xl" placeholder="••••••" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                            </div>
+                            <button onclick="window.verifyVisitorPIN()" id="btn-verify-pin" class="w-full bg-slate-900 hover:bg-blue-600 text-white text-xs font-bold py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 uppercase tracking-widest">
+                                <i class="fa-solid fa-fingerprint"></i> Validate Access
+                            </button>
+                        </div>
+                        <div id="pin-response" class="mt-6 hidden p-4 rounded-xl border text-left transition-all max-w-sm mx-auto w-full"></div>
+                    </div>
+
+                    <!-- Live Feed -->
+                    <div class="glass-panel rounded-[24px] p-4 bg-white/60 flex flex-col h-[300px] lg:h-auto">
+                        <div class="flex items-center justify-between mb-4 pb-2 border-b border-white/50 shrink-0">
+                            <h3 class="font-black text-slate-800 text-xs uppercase tracking-widest">Live Scans</h3>
+                            <div class="w-2 h-2 bg-emerald-500 rounded-full radar-active"></div>
+                        </div>
+                        <div class="flex-1 space-y-3 overflow-y-auto custom-scroll pr-1" id="visitor-scan-feed">
+                            <div class="text-center text-slate-400 text-[10px] py-10 font-medium italic">Awaiting Terminal Input...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: Tactical Patrols -->
+            <div id="sec-pane-patrols" class="sec-dashboard-tab hidden flex-col h-full animate-paneFade">
+                <div class="glass-panel flex flex-col h-full border border-rose-100/30 shadow-sm p-4 sm:p-6 rounded-[24px] bg-white/60 relative overflow-hidden">
+                    
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 shrink-0 border-b border-white/60 pb-4">
+                        <div>
+                            <h2 class="text-base sm:text-lg font-black text-slate-800 tracking-tight">Active Patrol Route</h2>
+                            <p class="text-[10px] text-slate-500 font-medium mt-0.5">Complete all 6 checkpoints to validate route.</p>
+                        </div>
+                        <div class="bg-rose-50 border border-rose-200 rounded-xl px-4 py-2 flex items-center gap-3 shadow-sm">
+                            <i class="fa-solid fa-stopwatch text-rose-500 text-lg animate-pulse"></i>
+                            <div class="flex flex-col">
+                                <span class="text-[7px] font-bold text-rose-400 uppercase tracking-widest">Next Patrol Due</span>
+                                <span id="patrol-timer" class="font-mono font-black text-rose-600 text-xl leading-none">40:00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="w-full bg-slate-200/70 rounded-full h-2 overflow-hidden shadow-inner mb-6 shrink-0">
+                        <div id="patrol-progress" class="bg-emerald-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+
+                    <!-- Checkpoints Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 overflow-y-auto custom-scroll pr-1 pb-4 flex-1" id="checkpoints-grid">
+                        <!-- Populated by JS -->
+                    </div>
+
+                    <!-- Submit Button (Hidden until all 6 are verified) -->
+                    <div id="patrol-submit-container" class="hidden shrink-0 mt-4 border-t border-white/60 pt-4 animate-paneFade">
+                        <button onclick="window.submitPatrolRoute(this)" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-[14px] py-4 shadow-xl transition-all flex items-center justify-center gap-2 uppercase tracking-widest text-sm">
+                            <i class="fa-solid fa-file-shield"></i> Submit Official Patrol Route
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT SIDEBAR (Open by Default) -->
+        <div id="sec-right-sidebar" class="hub-sidebar bg-transparent shrink-0">
+            
+            <div onclick="window.toggleSecSidebar()" class="nav-block flex items-center justify-between !p-1.5 bg-white/80 cursor-pointer hover:bg-white transition-colors">
+                <div class="flex items-center gap-1.5 w-full">
+                    <div class="w-7 h-7 bg-gradient-to-br from-rose-500 to-red-600 rounded-[8px] shadow-sm flex items-center justify-center text-white text-[10px] shrink-0">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div class="flex flex-col nav-text flex-1 overflow-hidden">
+                        <span class="font-black text-[10px] tracking-tight text-slate-900 leading-none truncate">Sec<span class="text-rose-500">Ctrl</span></span>
+                        <span class="text-[6px] font-bold tracking-widest text-slate-400 uppercase mt-0.5 truncate">Command Toggle</span>
+                    </div>
+                </div>
+                <i id="sec-sidebar-toggle-icon" class="fa-solid fa-chevron-right text-slate-300 text-[8px] pr-1"></i>
+            </div>
+
+            <div class="nav-block">
+                <p class="px-1 text-[6px] font-extrabold text-slate-400 uppercase tracking-widest mb-1 nav-text truncate">Surveillance</p>
+                <div class="space-y-1">
+                    <button onclick="window.switchSecurityTab('live', this, true)" class="block-btn block-btn-active" title="Live Alerts">
+                        <i class="fa-solid fa-satellite-dish text-[11px] w-4 text-center text-rose-500 animate-pulse"></i> 
+                        <span class="nav-text truncate text-[8px]">Live Alerts</span>
+                    </button>
+                    <button onclick="window.switchSecurityTab('history', this, false)" class="block-btn block-btn-inactive" title="Alert History">
+                        <i class="fa-solid fa-clock-rotate-left text-[11px] w-4 text-center text-slate-500"></i> 
+                        <span class="nav-text truncate text-[8px]">Alert History</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="nav-block">
+                <p class="px-1 text-[6px] font-extrabold text-slate-400 uppercase tracking-widest mb-1 nav-text truncate">Access & Field</p>
+                <div class="space-y-1">
+                    <button onclick="window.switchSecurityTab('gateway', this, false)" class="block-btn block-btn-inactive" title="Visitor Gateway">
+                        <i class="fa-solid fa-door-open text-[11px] w-4 text-center text-slate-500"></i> 
+                        <span class="nav-text truncate text-[8px]">Visitor Gateway</span>
+                    </button>
+                    <button onclick="window.switchSecurityTab('patrols', this, false)" class="block-btn block-btn-inactive" title="Patrol Logs">
+                        <i class="fa-solid fa-person-military-pointing text-[11px] w-4 text-center text-slate-500"></i> 
+                        <span class="nav-text truncate text-[8px]">Patrol Logs</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="nav-block">
+                <p class="px-1 text-[6px] font-extrabold text-slate-400 uppercase tracking-widest mb-1 nav-text truncate">Quick Actions</p>
+                <div class="space-y-1">
+                    <button onclick="document.getElementById('logIncidentModal').classList.add('active')" class="block-btn btn-secondary-white justify-center gap-1 !py-1.5" title="Report Incident">
+                        <i class="fa-solid fa-file-shield text-slate-500 text-[9px]"></i> 
+                        <span class="nav-text truncate text-[8px]">Report Incident</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="nav-block">
+                <p class="px-1 text-[6px] font-extrabold text-slate-400 uppercase tracking-widest mb-1 nav-text truncate">Emergency Dispatch</p>
+                <div class="space-y-1.5">
+                    
+                    <!-- Upgraded Panic Button -->
+                    <button onclick="window.openDispatchModal('Armed Response', 'fa-shield-halved', 'rose')" class="block-btn btn-primary-rose justify-center gap-1 !py-1.5 relative overflow-hidden" title="Panic Button">
+                        <span class="absolute right-2 top-2 flex h-2 w-2">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                        </span>
+                        <i class="fa-solid fa-bell text-[9px] relative z-10"></i> 
+                        <span class="nav-text truncate text-[8px] relative z-10">Panic Button</span>
+                    </button>
+                    
+                    <!-- Telephone link to Ambulance -->
+                    <a href="tel:0616520417" class="block-btn bg-amber-500 hover:bg-amber-600 text-white justify-center gap-1 !py-1.5 shadow-md border-none transition-colors" title="Contact Ambulance">
+                        <i class="fa-solid fa-truck-medical text-[9px]"></i> 
+                        <span class="nav-text truncate text-[8px]">Contact Ambulance</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="mt-auto shrink-0 bg-[#111827] p-1.5 rounded-[12px] border border-slate-700 shadow-lg flex items-center gap-2">
+                <div class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-white border border-white/20 shrink-0"><i class="fa-solid fa-bolt text-[6px]"></i></div>
+                <div class="flex flex-col nav-text overflow-hidden">
+                    <span class="text-[5px] font-bold text-slate-400 uppercase tracking-widest leading-none truncate">Engineered By</span>
+                    <span class="text-[8px] font-black text-white tracking-widest mt-0.5 leading-none truncate">AUTOMANIA</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODALS -->
+    <!-- ========================================== -->
+
+    <!-- Patrol Camera Scanner Modal (Live Feed) -->
+    <div id="cameraModal" class="modal-overlay">
+        <div class="modal-content w-full max-w-sm relative bg-slate-900 border border-slate-700 p-4">
+            <button onclick="window.closeScannerModal()" class="absolute top-3 right-3 w-6 h-6 bg-slate-800 rounded-full flex items-center justify-center text-slate-400 hover:text-white transition-colors z-20"><i class="fa-solid fa-xmark text-[10px]"></i></button>
+            <div class="mb-3 text-center">
+                <h2 class="text-sm font-black text-white tracking-widest uppercase"><i class="fa-solid fa-camera mr-1 text-emerald-400"></i> Scanning Sector</h2>
+                <p id="camera-sector-name" class="text-[9px] font-bold text-slate-400 mt-1 uppercase tracking-widest">--</p>
+            </div>
+            
+            <!-- Live Camera Viewport -->
+            <div class="relative w-full aspect-[4/3] bg-black rounded-xl overflow-hidden border-2 border-slate-800 mb-4 flex items-center justify-center shadow-inner">
+                <video id="camera-feed" class="w-full h-full object-cover" autoplay playsinline></video>
+                <canvas id="camera-canvas" class="hidden"></canvas>
+                <img id="camera-preview" class="hidden w-full h-full object-cover" />
+                
+                <!-- Animated Scan Line -->
+                <div id="scanner-line" class="scanner-line"></div>
+                <!-- HUD Elements -->
+                <div class="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-emerald-500"></div>
+                <div class="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-emerald-500"></div>
+                <div class="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-emerald-500"></div>
+                <div class="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 border-emerald-500"></div>
+            </div>
+            
+            <input type="hidden" id="camera-checkpoint-id">
+            
+            <!-- Contextual Buttons -->
+            <button id="btn-capture-scan" onclick="window.capturePatrolScan(this)" class="w-full flex bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl py-3 shadow-lg shadow-emerald-900/50 justify-center items-center gap-2 text-xs uppercase tracking-widest transition-colors">
+                <i class="fa-solid fa-camera"></i> Take Picture
+            </button>
+            
+            <button id="btn-verify-scan" onclick="window.verifyPatrolScan(this)" class="w-full hidden bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl py-3 shadow-lg shadow-blue-900/50 justify-center items-center gap-2 text-xs uppercase tracking-widest transition-colors">
+                <i class="fa-solid fa-fingerprint"></i> Upload & Verify
+            </button>
+        </div>
+    </div>
+
+    <!-- Log Incident Modal -->
+    <div id="logIncidentModal" class="modal-overlay">
+        <div class="modal-content magic-border-container w-full max-w-sm">
+            <div class="magic-border-inner flex flex-col relative">
+                <button onclick="document.getElementById('logIncidentModal').classList.remove('active')" class="absolute top-0 right-0 w-6 h-6 bg-slate-50 border border-slate-200 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 transition-colors"><i class="fa-solid fa-xmark text-[10px]"></i></button>
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-8 h-8 bg-slate-100 text-slate-600 border border-slate-200 rounded-lg flex items-center justify-center text-sm"><i class="fa-solid fa-file-shield"></i></div>
+                    <h2 class="text-base font-black text-slate-900 tracking-tight">Report Incident</h2>
+                </div>
+                <form onsubmit="window.submitIncident(event)">
+                    <div class="mb-3">
+                        <label class="block text-[7px] sm:text-[8px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Room / Location</label>
+                        <input type="text" id="inc-room" class="w-full bg-white border border-slate-200 rounded-xl py-2 px-3 text-[9px] font-medium outline-none focus:border-rose-400 shadow-sm" placeholder="e.g. Block A Gate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-[7px] sm:text-[8px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Alert Level</label>
+                        <select id="inc-level" class="w-full bg-white border border-slate-200 rounded-xl py-2 px-3 text-[9px] font-medium outline-none focus:border-rose-400 shadow-sm" required>
+                            <option value="" disabled selected>Select severity...</option>
+                            <option value="ROUTINE">Routine / Minor</option>
+                            <option value="WARNING">Warning / Suspicious</option>
+                            <option value="CRITICAL">CRITICAL / Emergency</option>
+                        </select>
+                    </div>
+                    <div class="mb-5">
+                        <label class="block text-[7px] sm:text-[8px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Incident Details</label>
+                        <textarea id="inc-desc" rows="2" class="w-full bg-white border border-slate-200 rounded-xl py-2 px-3 text-[9px] font-medium outline-none focus:border-rose-400 resize-none shadow-sm" placeholder="Describe the situation..." required></textarea>
+                    </div>
+                    <button type="submit" id="btn-submit-inc" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-[10px] py-2 shadow-md flex justify-center items-center gap-2 text-[10px]">Log to System</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Emergency Dispatch Modal -->
+    <div id="dispatchModal" class="modal-overlay">
+        <div class="modal-content w-full max-w-sm relative">
+            <button onclick="document.getElementById('dispatchModal').classList.remove('active')" class="absolute top-4 right-4 w-6 h-6 bg-slate-50 border border-slate-200 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 transition-colors z-20"><i class="fa-solid fa-xmark text-[10px]"></i></button>
+            <div class="flex items-center gap-3 mb-4">
+                <div id="dispatch-icon-bg" class="w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-sm border"><i id="dispatch-icon" class="fa-solid"></i></div>
+                <div>
+                    <h2 class="text-base font-black text-slate-900 tracking-tight leading-none">Emergency Dispatch</h2>
+                    <p class="text-[8px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Target: <span id="dispatch-target-name" class="text-slate-700"></span></p>
+                </div>
+            </div>
+            <div class="bg-rose-50/50 border border-rose-100 p-3 rounded-xl mb-4 flex gap-2 items-start">
+                <i class="fa-solid fa-triangle-exclamation text-rose-500 text-xs mt-0.5"></i>
+                <p class="text-[9px] font-medium text-rose-800">You are about to trigger a high-priority dispatch via the n8n logic engine. This will alert external rapid response units.</p>
+            </div>
+            <form onsubmit="window.submitDispatch(event)">
+                <input type="hidden" id="dispatch-target-val">
+                <div class="mb-4">
+                    <label class="block text-[7px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Dispatch Location / Room</label>
+                    <input type="text" id="dispatch-location" class="w-full bg-white border border-slate-200 rounded-xl py-2 px-3 text-[10px] outline-none focus:border-rose-400 shadow-sm" placeholder="e.g. Block B, Floor 2" required>
+                </div>
+                <button type="submit" id="btn-submit-dispatch" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-[10px] py-2.5 shadow-md flex justify-center items-center gap-2 text-[10px] uppercase tracking-widest"><i class="fa-solid fa-satellite-dish"></i> Execute</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Hidden Toast Notification -->
+    <div id="toast-container" class="fixed top-6 left-0 right-0 z-[5000] flex justify-center px-4 pointer-events-none transform -translate-y-[150%] transition-transform duration-300">
+        <div id="toast-message" class="bg-[#1d1d1f] text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 font-medium text-sm">
+            <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400"></i>
+            <span id="toast-text">Action completed successfully.</span>
+        </div>
+    </div>
+
+    <script>
+        // ----------------------------------------------------
+        // DATA PARSERS & HELPERS
+        // ----------------------------------------------------
+        window.parseN8n = function(d) { 
+            if (!d) return []; let arr = []; 
+            if (Array.isArray(d)) arr = d; else if (d.data && Array.isArray(d.data)) arr = d.data; else if (typeof d === 'object') arr = [d]; 
+            arr = arr.map(i => i.json ? i.json : i); 
+            return arr.filter(i => i && typeof i === 'object' && Object.keys(i).length > 0); 
+        };
+
+        window.formatSafeDate = function(val) {
+            if (!val) return { date: '--', time: '' };
+            const s = String(val);
+            if (s.includes('T')) return { date: s.split('T')[0], time: (s.split('T')[1] || '').split('.')[0] };
+            if (s.includes(' ')) return { date: s.split(' ')[0], time: s.split(' ')[1] || '' };
+            return { date: s, time: '' };
+        };
+
+        // Date Grouping Helper for Chat
+        window.getChatDateHeader = function(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+
+            if (date.toDateString() === today.toDateString()) {
+                return 'Today';
+            } else if (date.toDateString() === yesterday.toDateString()) {
+                return 'Yesterday';
+            } else {
+                return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+            }
+        };
+
+        // Global State for WhatsApp-Style Replies
+        window.activeChatsByTicket = {};
+        window.activeReplies = {}; 
+
+        // ----------------------------------------------------
+        // ARCHITECTURAL DATA PIPELINE INITIALIZATION
+        // ----------------------------------------------------
+        let previousTotalAlerts = 0;
+        let isFirstLoad = true;
+        let isSOSPlaying = false;
+        let lastSOSPlayTime = 0;
+
+        (async function initSecurityModule() {
+            try {
+                const [adminRes, secRes] = await Promise.all([
+                    fetch('https://n8n.automania.cloud/webhook/reziflow-admin-data').catch(()=>null),
+                    fetch('https://n8n.automania.cloud/webhook/reziflow-get-security').catch(()=>null)
+                ]);
+
+                if (adminRes && adminRes.ok) { window.globalStudentData = window.parseN8n(await adminRes.json()); }
+                if (secRes && secRes.ok) { window.globalSecurityData = window.parseN8n(await secRes.json()); }
+                
+            } catch (e) { console.error("Initialization Sync Error", e); }
+            
+            window.renderSecurityData();
+            
+            // Start background polling every 10 seconds
+            setInterval(window.fetchSecurityData, 10000); 
+            window.initPatrolSystem();
+        })();
+
+        // ----------------------------------------------------
+        // LOCAL CONFIGURATION VARS & UI HELPERS
+        // ----------------------------------------------------
+        var currentSecurityFilter = 'all'; 
+        var currentSecTab = 'live';
+
+        window.toggleSecSidebar = function() {
+            const sidebar = document.getElementById('sec-right-sidebar');
+            if(sidebar) {
+                sidebar.classList.toggle('collapsed');
+                const icon = document.getElementById('sec-sidebar-toggle-icon');
+                if(icon) {
+                    if(sidebar.classList.contains('collapsed')) { icon.classList.remove('fa-chevron-right'); icon.classList.add('fa-chevron-left'); } 
+                    else { icon.classList.remove('fa-chevron-left'); icon.classList.add('fa-chevron-right'); }
+                }
+            }
+        };
+        
+        if (window.innerWidth < 1024) { window.toggleSecSidebar(); }
+
+        window.showToast = function(m, t = 'success') { 
+            const tc = document.getElementById('toast-container'); 
+            document.getElementById('toast-text').textContent = m; 
+            document.getElementById('toast-icon').className = t === 'success' ? 'fa-solid fa-circle-check text-emerald-400' : 'fa-solid fa-triangle-exclamation text-rose-400'; 
+            tc.classList.add('translate-y-0'); tc.classList.remove('-translate-y-[150%]');
+            setTimeout(() => { tc.classList.remove('translate-y-0'); tc.classList.add('-translate-y-[150%]'); }, 3000); 
+        };
+
+        window.filterTable = function(inputId, tbodyId) {
+            const input = document.getElementById(inputId); const filter = input.value.toLowerCase(); const tbody = document.getElementById(tbodyId); if(!tbody) return;
+            const tr = tbody.getElementsByTagName('tr');
+            for (let i = 0; i < tr.length; i++) {
+                if (tr[i].classList.contains('no-results') || tr[i].classList.contains('detail-row')) continue;
+                tr[i].style.display = tr[i].textContent.toLowerCase().includes(filter) ? '' : 'none';
+                
+                const detailRow = document.getElementById(`detail-${tr[i].dataset.ticketId}`);
+                if (detailRow && tr[i].style.display === 'none') { detailRow.classList.add('hidden'); }
+            }
+        };
+
+        function safeUpdateSegmented(pfx, val, opts) {
+            opts.forEach(o => { const el = document.getElementById(`${pfx}-${o}`); if(el) { el.classList.remove('active', 'bg-white', 'shadow-sm', 'text-blue-600', 'text-amber-600', 'text-rose-600'); } }); 
+            const aEl = document.getElementById(`${pfx}-${val}`); 
+            if(aEl) { 
+                aEl.classList.add('active', 'bg-white', 'shadow-sm'); 
+                if(val === 'all') aEl.classList.add('text-blue-600');
+                else if(val === 'routine') aEl.classList.add('text-amber-600');
+                else if(val === 'critical') aEl.classList.add('text-rose-600');
+            }
+        }
+
+        window.switchSecurityTab = function(tabId, btnElement, showKpis) {
+            window.currentSecTab = tabId;
+            
+            document.querySelectorAll('.sec-dashboard-tab').forEach(tab => {
+                tab.classList.remove('flex'); tab.classList.add('hidden');
+                tab.style.animation = 'none'; tab.offsetHeight; tab.style.animation = null; 
+            });
+            const pane = document.getElementById('sec-pane-' + tabId);
+            if(pane) { pane.classList.remove('hidden'); pane.classList.add('flex'); }
+
+            const kpiGrid = document.getElementById('sec-kpi-grid');
+            if(kpiGrid) kpiGrid.style.display = showKpis ? 'flex' : 'none';
+
+            document.querySelectorAll('.block-btn-active').forEach(btn => {
+                btn.classList.remove('block-btn-active'); btn.classList.add('block-btn-inactive');
+                const i = btn.querySelector('i'); if(i) { i.classList.remove('text-rose-500'); i.classList.add('text-slate-500'); }
+            });
+
+            if(btnElement) {
+                btnElement.classList.remove('block-btn-inactive'); btnElement.classList.add('block-btn-active');
+                const i = btnElement.querySelector('i'); if(i) { i.classList.remove('text-slate-500'); i.classList.add('text-rose-500'); }
+            }
+
+            const title = document.getElementById('matrixTitle');
+            const sub = document.getElementById('matrixSub');
+            if(tabId === 'history') { title.textContent = "Alert History"; sub.textContent = "Cleared Security Events"; window.renderSecurityHistory(); }
+            else if (tabId === 'live') { title.textContent = "Live Overwatch"; sub.textContent = "Active Threats & Facility Status"; window.setSecurityFilter('all'); }
+            else if (tabId === 'gateway') { title.textContent = "Visitor Gateway"; sub.textContent = "Identity Authentication Terminal"; document.getElementById('terminal-pin').focus(); }
+            else if (tabId === 'patrols') { title.textContent = "Tactical Patrols"; sub.textContent = "Live Guard Routing & Checkpoints"; }
+        };
+
+        // ----------------------------------------------------
+        // AUDIO ALARM LOGIC
+        // ----------------------------------------------------
+        window.playStandardAlert = function() {
+            const audio = document.getElementById('standard-alert');
+            if (audio) { audio.currentTime = 0; audio.play().catch(e => console.log('Autoplay blocked.')); }
+        };
+
+        window.triggerAudioAlarm = function() {
+            const now = Date.now();
+            if (isSOSPlaying || (now - lastSOSPlayTime < 40000)) return;
+
+            const audio = document.getElementById('sos-alarm');
+            if (audio) {
+                isSOSPlaying = true; lastSOSPlayTime = Date.now();
+                audio.currentTime = 0; audio.play().catch(e => console.log('Autoplay blocked.'));
+                setTimeout(() => { audio.pause(); audio.currentTime = 0; isSOSPlaying = false; }, 10000);
+            }
+            
+            const flashOverlay = document.createElement('div');
+            flashOverlay.className = 'screen-flash';
+            document.body.appendChild(flashOverlay);
+            setTimeout(() => { if(flashOverlay.parentNode) { flashOverlay.parentNode.removeChild(flashOverlay); } }, 10000);
+        };
+
+        // ----------------------------------------------------
+        // ROW EXPANSION & ON-DEMAND CHAT LOGIC
+        // ----------------------------------------------------
+        window.toggleRowDetails = function(ticketId, studentId, studentName) {
+            const detailRow = document.getElementById(`detail-${ticketId}`);
+            if (detailRow) {
+                if(detailRow.classList.contains('hidden')) {
+                    detailRow.classList.remove('hidden');
+                    const innerDiv = detailRow.querySelector('.detail-row-content');
+                    if(innerDiv) { innerDiv.style.animation = 'none'; void innerDiv.offsetWidth; innerDiv.style.animation = null; }
+                } else {
+                    detailRow.classList.add('hidden');
+                }
+            }
+        };
+
+        // ON-DEMAND FETCH TRIGGER
+        window.toggleInlineChat = async function(ticketId, room, studentId, studentName) {
+            const container = document.getElementById(`chat-container-${ticketId}`);
+            const body = document.getElementById(`chat-body-${ticketId}`);
+            const chevron = document.getElementById(`chat-chevron-${ticketId}`);
+            const historyEl = document.getElementById(`chat-history-${ticketId}`);
+            
+            if (container.classList.contains('h-[52px]')) {
+                // Expand Chat Window
+                container.classList.remove('h-[52px]');
+                container.classList.add('h-[400px]');
+                body.classList.remove('hidden');
+                setTimeout(() => body.classList.remove('opacity-0'), 50);
+                chevron.classList.add('rotate-180');
+                
+                // Show loading state if no cache
+                if (!window.activeChatsByTicket[ticketId]) {
+                    historyEl.innerHTML = `<div class="flex-1 flex items-center justify-center h-full"><i class="fa-solid fa-circle-notch fa-spin text-blue-500 text-xl"></i></div>`;
+                    
+                    try {
+                        const params = new URLSearchParams({
+                            Ticket_ID: ticketId,
+                            ticket_id: ticketId,
+                            Student_Number: studentId || 'Unknown',
+                            studentn: studentId || 'Unknown'
+                        });
+                        
+                        const url = `https://n8n.automania.cloud/webhook/reziflow-get-snag-chat0?${params.toString()}`;
+                        const res = await fetch(url, { method: 'GET', mode: 'cors' });
+
+                        if (res.ok) {
+                            const data = await res.json();
+                            const chats = window.parseN8n(data);
+                            chats.sort((a,b) => new Date(a.createdAt || a.Timestamp) - new Date(b.createdAt || b.Timestamp));
+                            window.activeChatsByTicket[ticketId] = chats;
+                        } else {
+                            window.activeChatsByTicket[ticketId] = [];
+                        }
+                    } catch(e) {
+                        console.error("Fetch chat error", e);
+                        window.activeChatsByTicket[ticketId] = [];
+                    }
+                }
+                
+                window.renderChatUI(ticketId, studentId, studentName);
+            } else {
+                // Collapse Chat Window
+                body.classList.add('opacity-0');
+                chevron.classList.remove('rotate-180');
+                setTimeout(() => {
+                    body.classList.add('hidden');
+                    container.classList.remove('h-[400px]');
+                    container.classList.add('h-[52px]');
+                }, 200); 
+            }
+        };
+
+        // RENDER CHAT UI WITH DATABASE KEYS MAP & WHATSAPP STYLING
+        window.renderChatUI = function(ticketId, studentId, studentName) {
+            const historyEl = document.getElementById(`chat-history-${ticketId}`);
+            if(!historyEl) return;
+            
+            const chats = window.activeChatsByTicket[ticketId] || [];
+            
+            if(chats.length === 0) {
+                historyEl.innerHTML = `
+                    <div class="flex justify-center mt-4">
+                        <span class="text-[9px] font-bold text-slate-400 bg-white/60 px-3 py-1 rounded-full shadow-sm">Start of conversation</span>
+                    </div>`;
+                return;
+            }
+            
+            let html = '';
+            let lastDateHeader = '';
+
+            chats.forEach(c => {
+                const role = String(c.sender_role || c.Role || c.Sender || '').toLowerCase();
+                const isOutgoing = (role.includes('maintain') || role.includes('maintenance') || role.includes('officer') || role.includes('crew') || role.includes('security') || role.includes('guard') || role.includes('reziops'));
+                const rawDate = c.createdAt || c.Timestamp || c.updatedAt;
+                const time = window.formatSafeDate(rawDate).time || '--:--';
+                let rawMsg = c.message_text || c.Message || c.message || '';
+                
+                let displayMsg = rawMsg;
+                let replyBox = '';
+                
+                // Parse embedded WhatsApp-style reply
+                const replyMatch = rawMsg.match(/^\[REPLY\|\|(.*?)\|\|(.*?)\]([\s\S]*)$/);
+                if (replyMatch) {
+                    const rName = replyMatch[1];
+                    const rText = replyMatch[2];
+                    displayMsg = replyMatch[3];
+                    
+                    replyBox = `
+                        <div class="bg-black/5 border-l-[3px] ${isOutgoing ? 'border-blue-300' : 'border-blue-500'} rounded p-1.5 mb-1.5 text-[8.5px] leading-tight opacity-90 cursor-default">
+                            <span class="font-bold ${isOutgoing ? 'text-blue-100' : 'text-blue-600'}">${rName}</span><br>
+                            <span class="truncate block max-w-[150px] opacity-90">${rText}</span>
+                        </div>
+                    `;
+                }
+
+                const currentDateHeader = window.getChatDateHeader(rawDate);
+                
+                // Date Divider
+                if (currentDateHeader !== lastDateHeader && currentDateHeader !== '') {
+                    html += `
+                    <div class="flex justify-center my-3 animate-paneFade">
+                        <span class="text-[8.5px] font-bold text-slate-500 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm border border-slate-100">${currentDateHeader}</span>
+                    </div>`;
+                    lastDateHeader = currentDateHeader;
+                }
+
+                const senderNameForReply = isOutgoing ? 'ReziOps' : studentName.split(' ')[0]; 
+                const safeTextForReply = displayMsg.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                
+                // WhatsApp-Style Hover Reply Button
+                const replyBtn = `<button type="button" onclick="window.setReply('${ticketId}', '${senderNameForReply}', '${safeTextForReply}')" class="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-blue-500 transition-opacity p-1.5 mr-1 shrink-0 flex items-center justify-center"><i class="fa-solid fa-reply text-[10px]"></i></button>`;
+
+                if(isOutgoing) {
+                    // Right Side (ReziOps/Security)
+                    html += `
+                    <div class="flex gap-1 items-center flex-row-reverse mt-2 animate-paneFade group">
+                        <div class="bg-blue-600 rounded-2xl rounded-br-sm p-2.5 text-[10.5px] text-white max-w-[85%] shadow-md relative min-w-0">
+                            ${replyBox}
+                            <p class="leading-relaxed font-medium break-words whitespace-pre-wrap">${displayMsg}</p>
+                            <span class="text-[7.5px] text-blue-200 block mt-1 text-right font-bold tracking-wider">${time} <i class="fa-solid fa-check-double text-blue-300 ml-0.5"></i></span>
+                        </div>
+                        ${replyBtn}
+                    </div>`;
+                } else {
+                    // Left Side (Student)
+                    html += `
+                    <div class="flex gap-1.5 items-center mt-2 animate-paneFade group">
+                        <div class="w-6 h-6 rounded-full bg-slate-200 border border-slate-300 flex items-center justify-center flex-shrink-0 shadow-inner self-end mb-1">
+                            <i class="fa-solid fa-user text-[9px] text-slate-500"></i>
+                        </div>
+                        <div class="bg-white/95 backdrop-blur-md border border-slate-100 rounded-2xl rounded-bl-sm p-2.5 text-[10.5px] text-slate-800 max-w-[85%] shadow-md relative leading-relaxed min-w-0">
+                            ${replyBox}
+                            <p class="font-medium break-words whitespace-pre-wrap">${displayMsg}</p>
+                            <span class="text-[7.5px] text-slate-400 block mt-1 text-right font-bold tracking-wider">${time}</span>
+                        </div>
+                        ${replyBtn}
+                    </div>`;
+                }
+            });
+            historyEl.innerHTML = html;
+            
+            // Auto scroll to bottom
+            setTimeout(() => {
+                historyEl.scrollTop = historyEl.scrollHeight;
+            }, 50);
+        };
+
+        // Handle Setting the Reply Banner
+        window.setReply = function(ticketId, name, text) {
+            window.activeReplies[ticketId] = { name, text };
+            const banner = document.getElementById(`reply-banner-${ticketId}`);
+            const nameEl = document.getElementById(`reply-name-${ticketId}`);
+            const textEl = document.getElementById(`reply-text-${ticketId}`);
+            const inputEl = document.getElementById(`chat-input-${ticketId}`);
+            
+            if (banner && nameEl && textEl) {
+                nameEl.textContent = name;
+                textEl.textContent = text;
+                banner.classList.remove('hidden');
+                banner.classList.add('flex');
+            }
+            if(inputEl) inputEl.focus();
+        };
+
+        // Handle Canceling the Reply
+        window.cancelReply = function(ticketId) {
+            delete window.activeReplies[ticketId];
+            const banner = document.getElementById(`reply-banner-${ticketId}`);
+            if (banner) {
+                banner.classList.add('hidden');
+                banner.classList.remove('flex');
+            }
+        };
+
+        window.handleChatEnter = function(event, ticketId, room, studentId, studentName) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                window.sendChatMsg(ticketId, room, studentId, studentName);
+            }
+        };
+
+        window.sendChatMsg = async function(ticketId, room, studentId, studentName) {
+            const inputEl = document.getElementById(`chat-input-${ticketId}`);
+            const msg = inputEl.value.trim();
+            if(!msg) return;
+            
+            let finalMsg = msg;
+            if (window.activeReplies[ticketId]) {
+                const r = window.activeReplies[ticketId];
+                finalMsg = `[REPLY||${r.name}||${r.text}]${msg}`;
+                window.cancelReply(ticketId); // clear after attaching
+            }
+            
+            // Failsafe Student ID resolution
+            let finalStudentId = studentId;
+            if (!finalStudentId || finalStudentId === 'undefined' || finalStudentId === 'null' || finalStudentId === 'Unknown') {
+                const res = window.getResidentForRoom(room);
+                if (res && res.id) finalStudentId = res.id;
+            }
+            
+            const now = new Date();
+            const newMsg = {
+                ticket_id: ticketId,
+                studentn: finalStudentId,
+                sender_name: "ReziOps",
+                sender_role: "Security",
+                message_text: finalMsg,
+                createdAt: now.toISOString()
+            };
+            
+            if(!window.activeChatsByTicket[ticketId]) window.activeChatsByTicket[ticketId] = [];
+            window.activeChatsByTicket[ticketId].push(newMsg);
+
+            window.renderChatUI(ticketId, finalStudentId, studentName);
+            inputEl.value = '';
+            
+            // Dispatch outgoing message via GET webhook
+            const params = new URLSearchParams({
+                Ticket_ID: ticketId,
+                ticket_id: ticketId,
+                Student_Number: finalStudentId || '',
+                studentn: finalStudentId || '',
+                Room: room || 'Unassigned',
+                Role: "Security",
+                sender_role: "Security",
+                sender_name: "ReziOps",
+                Message: finalMsg,
+                message_text: finalMsg,
+                Timestamp: now.toISOString()
+            });
+            
+            const url = `https://n8n.automania.cloud/webhook/reziflow-security-chat-send?${params.toString()}`;
+            try {
+                await fetch(url, { method: 'GET', mode: 'no-cors' });
+            } catch(e) {
+                console.error("Chat dispatch error", e);
+            }
+        };
+
+        // ----------------------------------------------------
+        // LIVE TICKETS & ALERTS LOGIC
+        // ----------------------------------------------------
+        window.fetchSecurityData = async function(forcedRefresh = false) {
+            const bodyLive = document.getElementById('security-live-body');
+            const bodyHist = document.getElementById('security-hist-body');
+            
+            if (forcedRefresh) {
+                if(bodyLive) bodyLive.innerHTML = '<tr><td colspan="5" class="p-8 text-center"><i class="fa-solid fa-circle-notch fa-spin text-rose-500 text-2xl"></i></td></tr>'; 
+                if(bodyHist) bodyHist.innerHTML = '<tr><td colspan="5" class="p-8 text-center"><i class="fa-solid fa-circle-notch fa-spin text-emerald-500 text-2xl"></i></td></tr>'; 
+            }
+            
+            try { 
+                const response = await fetch('https://n8n.automania.cloud/webhook/reziflow-get-security'); 
+                if (response.ok) { window.globalSecurityData = window.parseN8n(await response.json()); }
+            } catch (e) { } 
+            finally { 
+                if(window.currentSecTab === 'live') window.renderSecurityData();
+                else if(window.currentSecTab === 'history') window.renderSecurityHistory();
+            }
+        };
+
+        window.getResidentForRoom = function(roomStr) {
+            if(!roomStr || roomStr === '--') return { name: 'Unknown', id: '' };
+            if(window.globalStudentData) {
+                const cleanRoom = String(roomStr).toLowerCase().replace(/\s/g, '');
+                const student = window.globalStudentData.find(s => {
+                    const sRoom = String(s.Room_Allocation || s.Room || '').toLowerCase().replace(/\s/g, '');
+                    return sRoom === cleanRoom;
+                });
+                if(student) return { name: `${student.First_Name || ''} ${student.Surname || ''}`, id: student.Student_Number || student.student_number || '' };
+            }
+            return { name: 'Unassigned/Unknown', id: '' };
+        };
+
+        window.setSecurityFilter = function(filter) {
+            currentSecurityFilter = filter;
+            safeUpdateSegmented('sec-stat', filter, ['all', 'routine', 'critical']);
+            window.renderSecurityData();
+        };
+
+        window.renderSecurityData = function() {
+            const body = document.getElementById('security-live-body'); if(!body) return;
+            
+            let baseData = window.globalSecurityData || [];
+            if(baseData.length === 0) { 
+                body.innerHTML = `<tr class="no-results"><td colspan="5" class="p-6 text-center text-slate-400 font-medium text-[8px] sm:text-[9px]">No live security feeds.</td></tr>`; 
+                if(document.getElementById('kpi-sec-all')) document.getElementById('kpi-sec-all').textContent = '0';
+                if(document.getElementById('kpi-sec-routine')) document.getElementById('kpi-sec-routine').textContent = '0';
+                if(document.getElementById('kpi-sec-critical')) document.getElementById('kpi-sec-critical').textContent = '0';
+                return; 
+            }
+
+            let liveAlerts = baseData.filter(d => {
+                const stat = String(d.Dispatch_Status || d.Status || d.state || '').toLowerCase().trim();
+                return !(stat.includes('clear') || stat.includes('resolve') || stat.includes('close'));
+            });
+
+            let allCount = liveAlerts.length; 
+            let criticalCount = liveAlerts.filter(l => String(l.Alert_Level).toLowerCase().includes('critical') || String(l.Alert_Level).toLowerCase().includes('high') || String(l.Alert_Level).toLowerCase().includes('sos')).length;
+            let routineCount = allCount - criticalCount;
+
+            if(document.getElementById('kpi-sec-all')) document.getElementById('kpi-sec-all').textContent = allCount;
+            if(document.getElementById('kpi-sec-routine')) document.getElementById('kpi-sec-routine').textContent = routineCount;
+            if(document.getElementById('kpi-sec-critical')) document.getElementById('kpi-sec-critical').textContent = criticalCount;
+
+            let filtered = liveAlerts;
+            if(currentSecurityFilter === 'routine') {
+                filtered = filtered.filter(l => !(String(l.Alert_Level).toLowerCase().includes('critical') || String(l.Alert_Level).toLowerCase().includes('high') || String(l.Alert_Level).toLowerCase().includes('sos')));
+            } else if (currentSecurityFilter === 'critical') {
+                filtered = filtered.filter(l => String(l.Alert_Level).toLowerCase().includes('critical') || String(l.Alert_Level).toLowerCase().includes('high') || String(l.Alert_Level).toLowerCase().includes('sos'));
+            }
+            
+            if(filtered.length === 0) { 
+                body.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400 font-medium text-[8px] sm:text-[9px]">No alerts match filter.</td></tr>`; return; 
+            }
+
+            filtered.sort((a, b) => {
+                const timeA = new Date(a.Timestamp).getTime(); const timeB = new Date(b.Timestamp).getTime();
+                return (isNaN(timeB) ? 0 : timeB) - (isNaN(timeA) ? 0 : timeA);
+            });
+
+            let htmlStr = '';
+            filtered.forEach(log => {
+                const res = window.getResidentForRoom(log.Room);
+                let rawStudentNum = log.Student_Number || log.student_number || log.studentn || res.id;
+                if (rawStudentNum === 'undefined' || rawStudentNum === 'null') rawStudentNum = '';
+                const studentId = String(rawStudentNum || '').trim();
+                
+                const isCritical = String(log.Alert_Level).toLowerCase().includes('critical') || String(log.Alert_Level).toLowerCase().includes('high') || String(log.Alert_Level).toLowerCase().includes('sos');
+                const t = window.formatSafeDate(log.Timestamp);
+                const safeId = String(log.Ticket_ID || (log.Room + log.Timestamp).replace(/\W/g, ''));
+                
+                const levelBadge = isCritical 
+                    ? `<span class="bg-white border border-rose-200 text-rose-600 px-2 py-1 rounded-md text-[7px] font-bold shadow-sm inline-block uppercase tracking-widest animate-pulse"><i class="fa-solid fa-triangle-exclamation"></i> ${log.Alert_Level || 'Critical'}</span>`
+                    : `<span class="bg-white border border-amber-200 text-amber-600 px-2 py-1 rounded-md text-[7px] font-bold shadow-sm inline-block uppercase tracking-widest">${log.Alert_Level || 'Routine'}</span>`;
+
+                const safeRoom = String(log.Room || '--').replace(/'/g, "\\'");
+                const safeName = String(res.name || 'Unknown').replace(/'/g, "\\'");
+
+                htmlStr += `
+                    <tr class="${isCritical ? 'bg-rose-50/30' : 'bg-transparent'} hover:bg-slate-50 transition-colors border-b border-slate-100/50 cursor-pointer group" onclick="window.toggleRowDetails('${safeId}', '${studentId}', '${safeName}')" data-ticket-id="${safeId}">
+                        <td class="align-middle">
+                            <div class="text-[9px] font-medium text-slate-500 whitespace-nowrap">${t.date}</div>
+                            <div class="text-[8px] text-slate-400 mt-0.5">${t.time}</div>
+                        </td>
+                        <td class="align-middle">
+                            <div class="font-black text-slate-800 text-[11px] leading-tight">Rm: ${log.Room || '--'}</div>
+                            <div class="text-[8px] text-slate-500 mt-0.5 truncate w-24 sm:w-32 font-medium" title="${res.name}"><i class="fa-solid fa-user mr-1 text-slate-300"></i>${res.name}</div>
+                        </td>
+                        <td class="align-middle">${levelBadge}</td>
+                        <td class="align-middle">
+                            <p class="text-[9px] sm:text-[10px] text-slate-700 font-medium leading-tight max-w-[120px] sm:max-w-[200px] truncate" title="${log.Notes || log.Description || '--'}"><span class="font-bold text-slate-800 mr-1">${log.Alert_Type || 'Issue'}:</span>${log.Notes || log.Description || '--'}</p>
+                        </td>
+                        <td class="text-right align-middle">
+                            <div class="flex items-center justify-end gap-3">
+                                <div class="relative inline-block" title="Chat">
+                                    <i class="fa-solid fa-comment-dots text-[14px] text-blue-500"></i>
+                                </div>
+                                <button class="bg-white border border-slate-200 text-slate-500 group-hover:bg-rose-50 group-hover:border-rose-200 group-hover:text-rose-600 text-[8px] font-bold px-3 py-1.5 rounded-lg shadow-sm whitespace-nowrap transition-colors"><i class="fa-solid fa-expand mr-1"></i> View</button>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- EXPANDED DETAIL ROW (HIDDEN BY DEFAULT) -->
+                    <tr id="detail-${safeId}" class="hidden bg-[#f0f4f8]/50 shadow-[inset_0_4px_6px_-4px_rgba(0,0,0,0.05)] detail-row border-b-2 border-rose-100">
+                        <td colspan="5" class="p-0">
+                            <div class="detail-row-content p-4 sm:p-5 grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-5 items-start">
+                                
+                                <!-- Left Col: Fault Info & Resolution Engine -->
+                                <div class="flex flex-col gap-4 w-full">
+                                    
+                                    <div class="glass-panel p-3.5 flex flex-col shadow-sm border border-white/80 rounded-[20px]">
+                                        <div class="flex items-start justify-between border-b border-slate-200/50 pb-2 mb-2">
+                                            <div>
+                                                <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Reporter Contact</p>
+                                                <p class="text-[10px] font-bold text-slate-700">${res.name} <span class="font-medium text-slate-500">(${studentId || '--'})</span></p>
+                                            </div>
+                                            <div class="text-right">
+                                                <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Time Logged</p>
+                                                <p class="text-[10px] font-bold text-slate-700">${t.time}</p>
+                                            </div>
+                                        </div>
+                                        <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-1">Alert Specifics</p>
+                                        <div class="${isCritical ? 'bg-rose-50/80 border border-rose-100 p-2.5 rounded-xl text-rose-700 font-bold' : 'bg-slate-50 border border-slate-200 p-2.5 rounded-xl text-slate-700 font-medium'} text-[10px] leading-relaxed shadow-sm">
+                                            ${log.Notes || log.Description || 'No details provided.'}
+                                        </div>
+                                    </div>
+
+                                    <div class="glass-panel p-3.5 flex flex-col shadow-sm border border-white/80 rounded-[20px]">
+                                        <label class="block text-[8px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 pl-1"><i class="fa-solid fa-clipboard-check mr-1"></i> Resolve Security Alert</label>
+                                        <textarea id="resolve-note-${safeId}" rows="2" class="w-full bg-white border border-slate-200 rounded-xl py-2 px-3 text-[10px] font-medium text-slate-700 outline-none focus:border-rose-400 shadow-sm resize-none mb-3" placeholder="Enter resolution log / officer remarks..."></textarea>
+                                        <div class="flex gap-2">
+                                            <button type="button" onclick="window.resolveSecurity('${log.Timestamp}', '${safeRoom}', '${safeId}', this)" class="w-full bg-slate-900 hover:bg-rose-600 text-white font-bold rounded-xl py-2 shadow-md flex items-center justify-center gap-1.5 text-[10px] transition-all tap-effect"><i class="fa-solid fa-shield-check"></i> Clear Area & Resolve</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <!-- Right Col: Collapsible Compact Chat Container -->
+                                <div id="chat-container-${safeId}" class="w-full shrink-0 glass-panel border border-white/80 shadow-lg rounded-[20px] flex flex-col bg-white/40 overflow-hidden transition-all duration-300 h-[52px]">
+                                    
+                                    <div class="bg-white/60 backdrop-blur-md px-3 py-2 border-b border-white shadow-sm flex items-center justify-between cursor-pointer tap-effect shrink-0 z-10" onclick="window.toggleInlineChat('${safeId}', '${safeRoom}', '${studentId}', '${safeName}')">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shadow-inner text-xs relative border border-blue-100">
+                                                <i class="fa-solid fa-comment-dots"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="text-[11px] font-black tracking-tight text-slate-800 leading-none">Chat with ${res.name.split(' ')[0]}</h4>
+                                                <p class="text-[8px] text-blue-500 font-bold uppercase tracking-widest mt-0.5">Tap to Expand</p>
+                                            </div>
+                                        </div>
+                                        <i id="chat-chevron-${safeId}" class="fa-solid fa-chevron-down text-slate-400 text-xs pr-2 transition-transform duration-300"></i>
+                                    </div>
+                                    
+                                    <div id="chat-body-${safeId}" class="flex-1 flex flex-col hidden opacity-0 transition-opacity duration-300 min-h-0 relative">
+                                        
+                                        <!-- History Layer -->
+                                        <div id="chat-history-${safeId}" class="flex-1 overflow-y-auto custom-scroll p-3 flex flex-col bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-slate-50/30 min-h-0 pb-4">
+                                            <!-- Messages injected via JS -->
+                                        </div>
+                                        
+                                        <!-- Input Layer -->
+                                        <div class="border-t border-white/60 bg-white/60 backdrop-blur-md shrink-0 flex flex-col rounded-b-[20px]">
+                                            
+                                            <!-- WhatsApp-style Reply Banner -->
+                                            <div id="reply-banner-${safeId}" class="hidden mx-2 mt-2 bg-white/90 border-l-2 border-blue-500 p-1.5 rounded shadow-sm items-start justify-between text-[9px] backdrop-blur-sm z-20">
+                                                <div class="flex flex-col min-w-0 pr-2 flex-1">
+                                                    <span id="reply-name-${safeId}" class="font-bold text-blue-600 truncate"></span>
+                                                    <span id="reply-text-${safeId}" class="text-slate-500 truncate mt-0.5 max-w-[200px]"></span>
+                                                </div>
+                                                <button onclick="window.cancelReply('${safeId}')" class="text-slate-400 hover:text-slate-600 pl-2 shrink-0 py-1"><i class="fa-solid fa-xmark"></i></button>
+                                            </div>
+                                            
+                                            <div class="p-2 pt-1.5 pb-2.5">
+                                                <div class="flex gap-1.5 items-center bg-white border border-slate-200 p-1.5 rounded-[16px] focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 transition-all shadow-sm">
+                                                    <input type="text" id="chat-input-${safeId}" placeholder="Message resident..." class="flex-1 bg-transparent border-none px-2 py-1 text-[10.5px] font-semibold text-slate-800 focus:outline-none placeholder-slate-400 w-full min-w-0" onkeypress="window.handleChatEnter(event, '${safeId}', '${safeRoom}', '${studentId}', '${safeName}')">
+                                                    <button onclick="window.sendChatMsg('${safeId}', '${safeRoom}', '${studentId}', '${safeName}')" class="bg-blue-600 text-white w-8 h-8 rounded-[12px] flex items-center justify-center tap-effect hover:bg-blue-700 transition-all flex-shrink-0 shadow-md shadow-blue-600/30">
+                                                        <i class="fa-solid fa-paper-plane text-[10px]"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            body.innerHTML = htmlStr;
+
+            // Alarms
+            if (!isFirstLoad) {
+                if (criticalCount > 0) window.triggerAudioAlarm();
+                else if (allCount > previousTotalAlerts) window.playStandardAlert();
+            }
+            previousTotalAlerts = allCount;
+            isFirstLoad = false;
+        };
+
+        window.renderSecurityHistory = function() {
+            const body = document.getElementById('security-hist-body'); if(!body) return;
+            let baseData = window.globalSecurityData || [];
+            
+            if(baseData.length === 0) { body.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400 text-[8px] sm:text-[9px]">No archive logs found.</td></tr>`; return; }
+            
+            let filtered = baseData.filter(d => {
+                const stat = String(d.Dispatch_Status || d.Status || d.state || '').toLowerCase().trim();
+                return stat.includes('clear') || stat.includes('resolve') || stat.includes('close');
+            });
+            
+            if(filtered.length === 0) { body.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400 text-[8px] sm:text-[9px]">No cleared incidents.</td></tr>`; return; }
+
+            filtered.sort((a, b) => {
+                const timeA = new Date(a.Timestamp).getTime(); const timeB = new Date(b.Timestamp).getTime();
+                return (isNaN(timeB) ? 0 : timeB) - (isNaN(timeA) ? 0 : timeA);
+            });
+
+            let htmlStr = '';
+            filtered.forEach(log => {
+                const res = window.getResidentForRoom(log.Room);
+                let rawStudentNum = log.Student_Number || log.student_number || log.studentn || res.id;
+                if (rawStudentNum === 'undefined' || rawStudentNum === 'null') rawStudentNum = '';
+                const studentId = String(rawStudentNum || '').trim();
+                
+                const t = window.formatSafeDate(log.Timestamp);
+                const safeId = String(log.Ticket_ID || (log.Room + log.Timestamp).replace(/\W/g, ''));
+                
+                const safeRoom = String(log.Room || '--').replace(/'/g, "\\'");
+                const safeName = String(res.name || 'Unknown').replace(/'/g, "\\'");
+
+                htmlStr += `
+                    <tr class="hover:bg-slate-50/50 transition-colors border-b border-slate-100/50 opacity-80 hover:opacity-100 cursor-pointer" onclick="window.toggleRowDetails('${safeId}', '${studentId}', '${safeName}')" data-ticket-id="${safeId}">
+                        <td class="align-top">
+                            <div class="text-[9px] font-medium text-slate-500 whitespace-nowrap">${t.date}</div>
+                            <div class="text-[8px] text-slate-400 mt-0.5">${t.time}</div>
+                        </td>
+                        <td class="align-top">
+                            <div class="font-black text-slate-800 text-[11px]">Rm: ${log.Room || '--'}</div>
+                            <div class="text-[8px] text-slate-500 mt-0.5 truncate w-24 sm:w-32 font-medium" title="${res.name}"><i class="fa-solid fa-user mr-1 text-slate-300"></i>${res.name}</div>
+                        </td>
+                        <td class="align-top"><span class="bg-white border border-slate-200 text-slate-500 px-1.5 py-0.5 rounded-md text-[7px] font-bold shadow-sm inline-block uppercase tracking-widest" title="${log.Alert_Level}">${log.Alert_Level || '--'}</span></td>
+                        <td class="align-top">
+                            <p class="text-[9px] sm:text-[10px] text-slate-600 font-medium leading-tight max-w-[120px] sm:max-w-[180px] truncate"><span class="font-bold text-slate-800 mr-1">${log.Alert_Type || 'Issue'}:</span>${log.Notes || log.Description || '--'}</p>
+                            <p class="text-[8px] text-slate-500 italic mt-1">${log.Comment || 'Resolved. No comment.'}</p>
+                        </td>
+                        <td class="text-right align-top">
+                            <span class="bg-emerald-50 border border-emerald-200 text-emerald-600 px-2 py-0.5 rounded-md text-[7px] font-bold uppercase tracking-widest shadow-sm inline-flex items-center gap-1"><i class="fa-solid fa-shield-check"></i> Cleared</span>
+                        </td>
+                    </tr>
+                    
+                    <!-- EXPANDED DETAIL ROW (HISTORY) -->
+                    <tr id="detail-${safeId}" class="hidden bg-slate-50/60 shadow-[inset_0_4px_6px_-4px_rgba(0,0,0,0.05)] detail-row border-b-2 border-emerald-100">
+                        <td colspan="5" class="p-0">
+                            <div class="detail-row-content p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-6 items-start">
+                                
+                                <div class="flex flex-col gap-4 w-full">
+                                    <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
+                                        <div class="flex justify-between mb-2">
+                                            <span class="block text-[7px] font-bold text-slate-400 uppercase tracking-widest">Reporter: ${res.name}</span>
+                                            <span class="block text-[7px] font-bold text-slate-400 uppercase tracking-widest">Time: ${t.time}</span>
+                                        </div>
+                                        <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-1">Original Description</p>
+                                        <p class="text-[10px] font-medium text-slate-700 leading-relaxed">${log.Notes || log.Description || 'No details.'}</p>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <label class="block text-[8px] font-bold text-emerald-600 uppercase tracking-widest mb-1.5 pl-1"><i class="fa-solid fa-clipboard-check mr-1"></i> Official Resolution Log</label>
+                                        <div class="bg-white border border-emerald-100 rounded-xl p-3 text-[10px] font-medium text-slate-700 shadow-sm flex-1 mb-2 italic">
+                                            ${log.Comment || 'Issue addressed and resolved by security team.'}
+                                        </div>
+                                        <div class="text-right"><span class="bg-emerald-50 text-emerald-600 border border-emerald-200 px-2 py-1 rounded shadow-sm text-[8px] font-bold uppercase tracking-widest">Status: Finalized</span></div>
+                                    </div>
+                                </div>
+
+                                <!-- Right Col: Collapsible Compact Chat Container -->
+                                <div id="chat-container-${safeId}" class="w-full shrink-0 glass-panel border border-white/80 shadow-lg rounded-[20px] flex flex-col bg-white/40 overflow-hidden transition-all duration-300 h-[52px]">
+                                    
+                                    <div class="bg-white/60 backdrop-blur-md px-3 py-2 border-b border-white shadow-sm flex items-center justify-between cursor-pointer tap-effect shrink-0 z-10" onclick="window.toggleInlineChat('${safeId}', '${safeRoom}', '${studentId}', '${safeName}')">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shadow-inner text-xs relative border border-blue-100">
+                                                <i class="fa-solid fa-comment-dots"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="text-[11px] font-black tracking-tight text-slate-800 leading-none">Chat with ${res.name.split(' ')[0]}</h4>
+                                                <p class="text-[8px] text-blue-500 font-bold uppercase tracking-widest mt-0.5">Tap to Expand</p>
+                                            </div>
+                                        </div>
+                                        <i id="chat-chevron-${safeId}" class="fa-solid fa-chevron-down text-slate-400 text-xs pr-2 transition-transform duration-300"></i>
+                                    </div>
+                                    
+                                    <div id="chat-body-${safeId}" class="flex-1 flex flex-col hidden opacity-0 transition-opacity duration-300 min-h-0 relative">
+                                        
+                                        <!-- History Layer -->
+                                        <div id="chat-history-${safeId}" class="flex-1 overflow-y-auto custom-scroll p-3 flex flex-col bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-slate-50/30 min-h-0 pb-4">
+                                            <!-- Messages injected via JS -->
+                                        </div>
+                                        
+                                        <!-- Input Layer -->
+                                        <div class="border-t border-white/60 bg-white/60 backdrop-blur-md shrink-0 flex flex-col rounded-b-[20px]">
+                                            
+                                            <!-- WhatsApp-style Reply Banner -->
+                                            <div id="reply-banner-${safeId}" class="hidden mx-2 mt-2 bg-white/90 border-l-2 border-blue-500 p-1.5 rounded shadow-sm items-start justify-between text-[9px] backdrop-blur-sm z-20">
+                                                <div class="flex flex-col min-w-0 pr-2 flex-1">
+                                                    <span id="reply-name-${safeId}" class="font-bold text-blue-600 truncate"></span>
+                                                    <span id="reply-text-${safeId}" class="text-slate-500 truncate mt-0.5 max-w-[200px]"></span>
+                                                </div>
+                                                <button onclick="window.cancelReply('${safeId}')" class="text-slate-400 hover:text-slate-600 pl-2 shrink-0 py-1"><i class="fa-solid fa-xmark"></i></button>
+                                            </div>
+                                            
+                                            <div class="p-2 pt-1.5 pb-2.5">
+                                                <div class="flex gap-1.5 items-center bg-white border border-slate-200 p-1.5 rounded-[16px] focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 transition-all shadow-sm">
+                                                    <input type="text" id="chat-input-${safeId}" placeholder="Message resident..." class="flex-1 bg-transparent border-none px-2 py-1 text-[10.5px] font-semibold text-slate-800 focus:outline-none placeholder-slate-400 w-full min-w-0" onkeypress="window.handleChatEnter(event, '${safeId}', '${safeRoom}', '${studentId}', '${safeName}')">
+                                                    <button onclick="window.sendChatMsg('${safeId}', '${safeRoom}', '${studentId}', '${safeName}')" class="bg-blue-600 text-white w-8 h-8 rounded-[12px] flex items-center justify-center tap-effect hover:bg-blue-700 transition-all flex-shrink-0 shadow-md shadow-blue-600/30">
+                                                        <i class="fa-solid fa-paper-plane text-[10px]"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            body.innerHTML = htmlStr;
+        };
+
+        window.resolveSecurity = async function(timestamp, room, ticketId, btnElement) {
+            const ogHtml = btnElement.innerHTML;
+            btnElement.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>'; btnElement.disabled = true;
+            
+            const inputEl = document.getElementById('resolve-note-' + ticketId);
+            const commentText = inputEl ? inputEl.value : '';
+
+            try {
+                await fetch('https://n8n.automania.cloud/webhook/reziflow-resolve-security', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ Timestamp: timestamp, Room: room, Dispatch_Status: "Area Cleared", Comment: commentText })
+                });
+                const idx = (window.globalSecurityData || []).findIndex(a => String(a.Timestamp) === String(timestamp) && String(a.Room) === String(room));
+                if(idx > -1) { 
+                    window.globalSecurityData[idx].Dispatch_Status = "Area Cleared";
+                    window.globalSecurityData[idx].Comment = commentText;
+                }
+                window.renderSecurityData();
+                window.showToast("Alert cleared successfully.");
+            } catch(e) { 
+                btnElement.innerHTML = ogHtml; btnElement.disabled = false; 
+                window.showToast("Failed to clear alert.", "error");
+            }
+        };
+
+        // ----------------------------------------------------
+        // TACTICAL PATROLS LOGIC (CAMERA ENGINE)
+        // ----------------------------------------------------
+        const patrolCheckpoints = [
+            { id: 1, name: "Main Access Gate", status: "pending", icon: "fa-door-open" },
+            { id: 2, name: "Perimeter Alpha", status: "pending", icon: "fa-road-barrier" },
+            { id: 3, name: "Block A Lobby", status: "pending", icon: "fa-building" },
+            { id: 4, name: "Basement Parking", status: "pending", icon: "fa-car" },
+            { id: 5, name: "Block B Rooftop", status: "pending", icon: "fa-arrow-up-right-dots" },
+            { id: 6, name: "Admin Office", status: "pending", icon: "fa-briefcase" }
+        ];
+
+        let patrolTimeRemaining = 40 * 60; 
+        let patrolTimerInterval = null;
+        let cameraStream = null;
+
+        window.initPatrolSystem = function() {
+            window.renderCheckpoints();
+            if(patrolTimerInterval) clearInterval(patrolTimerInterval);
+            patrolTimerInterval = setInterval(window.updatePatrolTimer, 1000);
+        };
+
+        window.updatePatrolTimer = function() {
+            if(patrolTimeRemaining <= 0) {
+                patrolTimeRemaining = 40 * 60; 
+                patrolCheckpoints.forEach(c => c.status = 'pending');
+                window.renderCheckpoints();
+                window.triggerAudioAlarm();
+                window.showToast("Patrol Time Expired. Route Reset.", "error");
+            }
+            
+            const m = Math.floor(patrolTimeRemaining / 60);
+            const s = patrolTimeRemaining % 60;
+            const display = document.getElementById('patrol-timer');
+            if(display) display.textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+            patrolTimeRemaining--;
+        };
+
+        window.renderCheckpoints = function() {
+            const grid = document.getElementById('checkpoints-grid'); if(!grid) return;
+            let htmlStr = '';
+            let verifiedCount = 0;
+
+            patrolCheckpoints.forEach(cp => {
+                if(cp.status === 'verified') verifiedCount++;
+                
+                const isVerified = cp.status === 'verified';
+                const bgClass = isVerified ? 'bg-emerald-50/50 border-emerald-200' : 'bg-white border-slate-200 hover:border-blue-300';
+                const iconBg = isVerified ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-400';
+                const badge = isVerified 
+                    ? `<span class="bg-emerald-100 text-emerald-700 text-[8px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider"><i class="fa-solid fa-check"></i> Scanned</span>`
+                    : `<span class="bg-slate-100 text-slate-500 text-[8px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">Pending</span>`;
+                
+                const actionClick = isVerified ? '' : `onclick="window.openScannerModal(${cp.id}, '${cp.name}')"`;
+                const cursorClass = isVerified ? 'cursor-default opacity-80' : 'cursor-pointer hover:shadow-md';
+
+                htmlStr += `
+                    <div class="glass-panel p-4 flex items-center gap-3 border ${bgClass} transition-all shadow-sm ${cursorClass}" ${actionClick}>
+                        <div class="w-10 h-10 rounded-xl ${iconBg} flex items-center justify-center text-lg shadow-sm shrink-0 transition-colors"><i class="fa-solid ${cp.icon}"></i></div>
+                        <div class="flex-1 overflow-hidden">
+                            <h4 class="font-black text-slate-800 text-[11px] truncate">${cp.name}</h4>
+                            <div class="mt-1">${badge}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            grid.innerHTML = htmlStr;
+            
+            const progress = document.getElementById('patrol-progress');
+            if(progress) { progress.style.width = `${(verifiedCount / patrolCheckpoints.length) * 100}%`; }
+
+            // Show submit button when complete
+            const submitContainer = document.getElementById('patrol-submit-container');
+            if (submitContainer) {
+                if(verifiedCount === patrolCheckpoints.length) {
+                    submitContainer.classList.remove('hidden');
+                } else {
+                    submitContainer.classList.add('hidden');
+                }
+            }
+        };
+
+        // --- CAMERA INTEGRATION --- //
+        window.openScannerModal = async function(id, name) {
+            document.getElementById('camera-checkpoint-id').value = id;
+            document.getElementById('camera-sector-name').textContent = name;
+            
+            // Reset UI states
+            document.getElementById('camera-feed').classList.remove('hidden');
+            document.getElementById('camera-preview').classList.add('hidden');
+            document.getElementById('scanner-line').classList.remove('hidden');
+            
+            const btnCap = document.getElementById('btn-capture-scan');
+            const btnVer = document.getElementById('btn-verify-scan');
+            
+            btnCap.classList.remove('hidden'); btnCap.classList.add('flex');
+            btnVer.classList.add('hidden'); btnVer.classList.remove('flex');
+            
+            document.getElementById('cameraModal').classList.add('active');
+
+            // Request Camera Access
+            try {
+                cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                document.getElementById('camera-feed').srcObject = cameraStream;
+            } catch (err) {
+                console.error("Camera access denied or unavailable", err);
+                window.showToast("Camera access denied. Please allow permissions.", "error");
+            }
+        };
+
+        window.closeScannerModal = function() {
+            document.getElementById('cameraModal').classList.remove('active');
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
+            }
+        };
+
+        window.capturePatrolScan = function(btn) {
+            const video = document.getElementById('camera-feed');
+            const canvas = document.getElementById('camera-canvas');
+            const preview = document.getElementById('camera-preview');
+            
+            // Draw current video frame to canvas
+            if(video.readyState === video.HAVE_ENOUGH_DATA) {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                canvas.getContext('2d').drawImage(video, 0, 0);
+                
+                // Show preview
+                preview.src = canvas.toDataURL('image/png');
+                video.classList.add('hidden');
+                preview.classList.remove('hidden');
+            } else {
+                // Fallback if camera stream failed but we still want to proceed
+                preview.style.backgroundColor = '#333';
+                video.classList.add('hidden');
+                preview.classList.remove('hidden');
+            }
+
+            document.getElementById('scanner-line').classList.add('hidden');
+            
+            // Switch Buttons
+            const btnCap = document.getElementById('btn-capture-scan');
+            const btnVer = document.getElementById('btn-verify-scan');
+            btnCap.classList.add('hidden'); btnCap.classList.remove('flex');
+            btnVer.classList.remove('hidden'); btnVer.classList.add('flex');
+        };
+
+        window.verifyPatrolScan = function(btn) {
+            const ogHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Verifying...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                const id = parseInt(document.getElementById('camera-checkpoint-id').value);
+                const cp = patrolCheckpoints.find(c => c.id === id);
+                if(cp) cp.status = 'verified';
+                
+                window.closeScannerModal();
+                btn.innerHTML = ogHtml;
+                btn.disabled = false;
+                
+                window.renderCheckpoints();
+            }, 800); 
+        };
+
+        window.submitPatrolRoute = async function(btn) {
+            const ogHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Submitting to Server...';
+            btn.disabled = true;
+            
+            try {
+                // Submit official log
+                await fetch('https://n8n.automania.cloud/webhook/reziflow-log-security', { 
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ 
+                        Alert_Type: "Patrol Log Completed", 
+                        Alert_Level: "Routine", 
+                        Room: "Facility Wide", 
+                        Notes: "All 6 checkpoints physically verified with photographic evidence.", 
+                        Timestamp: new Date().toISOString(), 
+                        Dispatch_Status: "Cleared" 
+                    }) 
+                });
+                
+                window.showToast("Patrol Route Logged & Approved.");
+                
+                // Reset State
+                patrolTimeRemaining = 40 * 60; 
+                patrolCheckpoints.forEach(c => c.status = 'pending'); 
+                window.renderCheckpoints();
+                
+            } catch(error) {
+                window.showToast("Network fault.", "error");
+            } finally {
+                btn.innerHTML = ogHtml;
+                btn.disabled = false;
+            }
+        };
+
+        // ----------------------------------------------------
+        // VISITOR GATEWAY LOGIC 
+        // ----------------------------------------------------
+        const dummyVisitors = [
+            { Generated_PIN: "884-291", Visitor_Name: "Thabo Mbeki", Room: "A-101" }
+        ];
+
+        window.verifyVisitorPIN = async function() {
+            const input = document.getElementById('terminal-pin').value;
+            const btn = document.getElementById('btn-verify-pin');
+            const responseBox = document.getElementById('pin-response');
+            const scanFeed = document.getElementById('visitor-scan-feed');
+            
+            if(input.length !== 6) { alert("Please enter a valid 6-digit PIN."); return; }
+
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating...'; btn.disabled = true;
+            responseBox.classList.add('hidden');
+
+            try {
+                await new Promise(r => setTimeout(r, 1000));
+                const matchedVisitor = dummyVisitors.find(v => String(v.Generated_PIN) === input);
+
+                document.getElementById('terminal-pin').value = ''; 
+                responseBox.classList.remove('hidden', 'bg-rose-50', 'border-rose-200', 'bg-emerald-50', 'border-emerald-200');
+                if (scanFeed.innerHTML.includes('Awaiting Terminal')) scanFeed.innerHTML = '';
+                const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                if (matchedVisitor) {
+                    responseBox.classList.add('bg-emerald-50', 'border-emerald-200');
+                    responseBox.innerHTML = `
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-emerald-500 text-white rounded-full flex items-center justify-center text-xl shadow-lg shadow-emerald-500/40 flex-shrink-0"><i class="fa-solid fa-check"></i></div>
+                            <div>
+                                <p class="text-emerald-700 font-black text-lg mb-1 uppercase tracking-widest">Access Granted</p>
+                                <div class="text-sm font-bold text-slate-800 bg-white px-4 py-3 rounded-xl border border-emerald-100 shadow-sm inline-block w-full">
+                                    <div class="flex justify-between border-b border-slate-100 pb-1 mb-1"><span class="text-slate-500 text-xs">Host Room</span><span>${matchedVisitor.Room}</span></div>
+                                    <div class="flex justify-between"><span class="text-slate-500 text-xs">Visitor</span><span>${matchedVisitor.Visitor_Name}</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    scanFeed.insertAdjacentHTML('afterbegin', `
+                        <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm flex items-start gap-3 animate-logSlide">
+                            <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-arrow-right-to-bracket"></i></div>
+                            <div>
+                                <p class="font-bold text-slate-800 text-[10px]">Granted: ${matchedVisitor.Visitor_Name}</p>
+                                <p class="text-[8px] font-bold text-slate-400 uppercase">Host: Room ${matchedVisitor.Room}</p>
+                            </div>
+                        </div>
+                    `);
+                } else {
+                    responseBox.classList.add('bg-rose-50', 'border-rose-200');
+                    responseBox.innerHTML = `
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-rose-500 text-white rounded-full flex items-center justify-center text-xl shadow-lg shadow-rose-500/40 flex-shrink-0"><i class="fa-solid fa-xmark"></i></div>
+                            <div><p class="text-rose-700 font-black text-lg mb-1 uppercase tracking-widest">Access Denied</p><p class="text-xs font-medium text-rose-600 bg-white px-3 py-1.5 rounded-lg border border-rose-100 shadow-sm inline-block">Invalid or expired PIN.</p></div>
+                        </div>
+                    `;
+                    scanFeed.insertAdjacentHTML('afterbegin', `
+                        <div class="bg-white p-3 rounded-xl border border-rose-100 shadow-sm flex items-start gap-3 animate-logSlide">
+                            <div class="w-8 h-8 rounded-lg bg-rose-50 text-rose-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-ban"></i></div>
+                            <div>
+                                <p class="font-bold text-rose-600 text-[10px]">Denied: Invalid PIN</p>
+                                <p class="text-[8px] font-bold text-slate-400 uppercase">Input: ${input}</p>
+                            </div>
+                        </div>
+                    `);
+                }
+            } catch (error) { alert("Failed to connect to ledger."); } 
+            finally { btn.innerHTML = '<i class="fa-solid fa-fingerprint"></i> Validate Access'; btn.disabled = false; }
+        };
+
+        // ----------------------------------------------------
+        // MODALS (Incidents & Dispatch)
+        // ----------------------------------------------------
+        window.submitIncident = async function(e) {
+            e.preventDefault(); const btn = document.getElementById('btn-submit-inc'); const ogText = btn.innerHTML;
+            const payload = { Room: document.getElementById('inc-room').value, Alert_Level: document.getElementById('inc-level').value, Alert_Type: "Guard Patrol Log", Notes: document.getElementById('inc-desc').value, Timestamp: new Date().toISOString(), Dispatch_Status: "Active" };
+            
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Logging...'; btn.disabled = true;
+            try {
+                await fetch('https://n8n.automania.cloud/webhook/reziflow-log-security', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if(!window.globalSecurityData) window.globalSecurityData = []; window.globalSecurityData.unshift(payload); window.renderSecurityData();
+                document.getElementById('logIncidentModal').classList.remove('active'); e.target.reset(); window.showToast("Incident logged to network.");
+            } catch(error) { window.showToast("Failed to log incident.", "error"); } finally { btn.innerHTML = ogText; btn.disabled = false; }
+        };
+
+        window.openDispatchModal = function(targetName, iconClass, color) {
+            document.getElementById('dispatch-target-name').textContent = targetName;
+            document.getElementById('dispatch-target-val').value = targetName;
+            const iconContainer = document.getElementById('dispatch-icon-bg'); const icon = document.getElementById('dispatch-icon');
+            iconContainer.className = `w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-sm border bg-${color}-50 text-${color}-600 border-${color}-100`;
+            icon.className = `fa-solid ${iconClass}`;
+            document.getElementById('dispatchModal').classList.add('active');
+        };
+
+        window.submitDispatch = async function(e) {
+            e.preventDefault(); const btn = document.getElementById('btn-submit-dispatch'); const ogText = btn.innerHTML;
+            const target = document.getElementById('dispatch-target-val').value; const location = document.getElementById('dispatch-location').value;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Transmitting...'; btn.disabled = true;
+            try {
+                await fetch('https://n8n.automania.cloud/webhook/reziflow-send-communication', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ Target: target, Message: `EMERGENCY DISPATCH REQUIRED at ${location}` }) });
+                document.getElementById('dispatchModal').classList.remove('active'); e.target.reset(); window.showToast(`${target} dispatch signal sent.`);
+            } catch(error) { window.showToast("Failed to transmit dispatch.", "error"); } finally { btn.innerHTML = ogText; btn.disabled = false; }
+        };
+
+        // ----------------------------------------------------
+        // EXPORT
+        // ----------------------------------------------------
+        window.downloadSecurityReport = function(tabType) {
+            let csvContent = "data:text/csv;charset=utf-8,"; let filename = ""; let dataToExport = []; let baseData = window.globalSecurityData || [];
+
+            if (tabType === 'live') {
+                const searchVal = document.getElementById('search-security-live')?.value.toLowerCase() || ''; filename = "Filtered_Live_Alerts";
+                csvContent += "Timestamp,Room,Resident,Alert Level,Alert Type,Notes\n";
+                let filtered = baseData.filter(d => { const stat = String(d.Dispatch_Status || d.Status || d.state || '').toLowerCase().trim(); return !(stat.includes('clear') || stat.includes('resolve') || stat.includes('close')); });
+                if(currentSecurityFilter === 'routine') filtered = filtered.filter(l => !(String(l.Alert_Level).toLowerCase().includes('critical') || String(l.Alert_Level).toLowerCase().includes('high')));
+                else if (currentSecurityFilter === 'critical') filtered = filtered.filter(l => String(l.Alert_Level).toLowerCase().includes('critical') || String(l.Alert_Level).toLowerCase().includes('high'));
+                dataToExport = filtered.filter(s => JSON.stringify(s).toLowerCase().includes(searchVal));
+                dataToExport.forEach(log => { const res = window.getResidentForRoom(log.Room); const cleanNotes = String(log.Notes || log.Description || '').replace(/"/g, '""'); csvContent += `"${log.Timestamp || ''}","${log.Room || ''}","${res.name}","${log.Alert_Level || ''}","${log.Alert_Type || ''}","${cleanNotes}"\n`; });
+            } else if (tabType === 'history') {
+                const searchVal = document.getElementById('search-security-hist')?.value.toLowerCase() || ''; filename = "Filtered_Alert_History";
+                csvContent += "Timestamp,Room,Alert Level,Alert Type,Notes,Status\n";
+                let filtered = baseData.filter(d => { const stat = String(d.Dispatch_Status || d.Status || d.state || '').toLowerCase().trim(); return stat.includes('clear') || stat.includes('resolve') || stat.includes('close'); });
+                dataToExport = filtered.filter(s => JSON.stringify(s).toLowerCase().includes(searchVal));
+                dataToExport.forEach(log => { const cleanNotes = String(log.Notes || log.Description || '').replace(/"/g, '""'); csvContent += `"${log.Timestamp || ''}","${log.Room || ''}","${log.Alert_Level || ''}","${log.Alert_Type || ''}","${cleanNotes}","Cleared"\n`; });
+            }
+
+            if(dataToExport.length === 0) return window.showToast("No data to export.", "error");
+            const encodedUri = encodeURI(csvContent); const link = document.createElement("a"); link.setAttribute("href", encodedUri); link.setAttribute("download", `${filename}_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link); link.click(); document.body.removeChild(link);
+        };
+    </script>
+</body>
+</html>
