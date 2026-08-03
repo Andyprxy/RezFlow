@@ -1,3 +1,4 @@
+<!-- index (55).html -->
 <!-- Chart.js Injection for High-End Analytics -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -49,7 +50,7 @@
     .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
 
     /* Chart Layouting */
-    .chart-container { position: relative; height: 140px; width: 100%; display: flex; justify-content: center; align-items: center; }
+    .chart-container { position: relative; height: 160px; width: 100%; display: flex; justify-content: center; align-items: center; }
 </style>
 
 <!-- Main Component Structure -->
@@ -73,26 +74,30 @@
             </div>
         </div>
 
-        <!-- High-End Analytics Dashboard (Moved Above the List Box) -->
-        <div id="analytics-dashboard" class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3 w-full shrink-0 z-10 relative">
-            <!-- Chart 1: Capacity -->
-            <div class="glass-panel p-4 flex flex-col h-full w-full">
+        <!-- High-End Analytics Dashboard (Dynamically rendered based on active tab) -->
+        <div id="analytics-dashboard" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-3 w-full shrink-0 z-10 relative">
+            
+            <!-- Chart 1: Capacity (Students Tab Only) -->
+            <div id="card-capacity" class="glass-panel p-4 flex flex-col h-full w-full">
                 <h4 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-2"><i class="fa-solid fa-chart-pie mr-1 text-emerald-500"></i> Overall Capacity</h4>
                 <div class="chart-container"><canvas id="chartCapacity"></canvas></div>
             </div>
-            <!-- Chart 2: Gender Demographics -->
-            <div class="glass-panel p-4 flex flex-col h-full w-full">
+
+            <!-- Chart 2: Gender Demographics (Rooms Tab Only) -->
+            <div id="card-gender" class="glass-panel p-4 flex flex-col h-full w-full hidden">
                 <h4 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-2"><i class="fa-solid fa-venus-mars mr-1 text-blue-500"></i> Gender Ratio</h4>
                 <div class="chart-container"><canvas id="chartGender"></canvas></div>
             </div>
-            <!-- Chart 3: Funding Types -->
-            <div class="glass-panel p-4 flex flex-col h-full w-full">
+
+            <!-- Chart 3: Funding Types (Rooms Tab Only) -->
+            <div id="card-funding" class="glass-panel p-4 flex flex-col h-full w-full hidden">
                 <h4 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-2"><i class="fa-solid fa-landmark mr-1 text-amber-500"></i> Funding Distribution</h4>
                 <div class="chart-container"><canvas id="chartFunding"></canvas></div>
             </div>
+
         </div>
 
-        <!-- Data Grid & Analytics Area -->
+        <!-- Data Grid Area -->
         <div class="glass-panel rounded-[20px] lg:rounded-[24px] overflow-hidden mt-1 shrink-0 flex flex-col flex-1">
             
             <div class="px-3 py-3 border-b border-white/60 flex flex-col xl:flex-row gap-3 justify-between xl:items-center bg-white/50 backdrop-blur-md z-20 relative">
@@ -279,16 +284,22 @@
 
 <script>
     // ----------------------------------------------------
+    // INITIALIZE EMPTY DATA SO CHARTS RENDER INSTANTLY
+    // ----------------------------------------------------
+    window.globalRoomData = window.globalRoomData || [];
+    window.globalStudentData = window.globalStudentData || [];
+
+    // ----------------------------------------------------
     // ARCHITECTURAL DATA PIPELINE FALLBACK
     // ----------------------------------------------------
     (async function initPipelineCheck() {
-        if (typeof window.globalRoomData === 'undefined' || window.globalRoomData.length === 0) {
+        if (window.globalRoomData.length === 0) {
             try {
                 const response = await fetch('https://n8n.automania.cloud/webhook/reziflow-get-rooms');
                 if (response.ok) { window.globalRoomData = window.parseN8n(await response.json()); }
             } catch (e) { console.error("Room sync fallback interrupted"); }
         }
-        if (typeof window.globalStudentData === 'undefined' || window.globalStudentData.length === 0) {
+        if (window.globalStudentData.length === 0) {
             try {
                 const response = await fetch('https://n8n.automania.cloud/webhook/reziflow-admin-data');
                 if (response.ok) { window.globalStudentData = window.parseN8n(await response.json()); }
@@ -344,6 +355,11 @@
         const filters = document.getElementById('occupancy-room-filters');
         const icon = document.getElementById('occ-icon');
         const searchInput = document.getElementById('search-occupancy');
+
+        const cardCap = document.getElementById('card-capacity');
+        const cardGen = document.getElementById('card-gender');
+        const cardFund = document.getElementById('card-funding');
+        const dashGrid = document.getElementById('analytics-dashboard');
         
         if(searchInput) searchInput.value = '';
         
@@ -352,14 +368,27 @@
             if(filters) { filters.classList.remove('hidden'); filters.classList.add('flex'); }
             if(icon) { icon.className = "fa-solid fa-bed text-xs"; icon.parentElement.className = "w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shadow-sm"; }
             
-            setTimeout(() => { window.processStatsData(); }, 150);
+            // Manage UI Layout for Rooms (Hide Capacity, Show Gender & Funding)
+            cardCap.classList.add('hidden'); cardCap.classList.remove('flex');
+            cardGen.classList.remove('hidden'); cardGen.classList.add('flex');
+            cardFund.classList.remove('hidden'); cardFund.classList.add('flex');
+            dashGrid.className = "grid grid-cols-1 md:grid-cols-2 gap-3 mb-3 w-full shrink-0 z-10 relative";
+
         } else { 
             if(title) title.textContent = 'Allocated Students'; 
             if(filters) { filters.classList.remove('flex'); filters.classList.add('hidden'); } 
             if(icon) { icon.className = "fa-solid fa-users text-xs"; icon.parentElement.className = "w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm"; }
             
-            window.processStatsData();
+            // Manage UI Layout for Students (Show Capacity, Hide Gender & Funding)
+            cardCap.classList.remove('hidden'); cardCap.classList.add('flex');
+            cardGen.classList.add('hidden'); cardGen.classList.remove('flex');
+            cardFund.classList.add('hidden'); cardFund.classList.remove('flex');
+            dashGrid.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-3 w-full shrink-0 z-10 relative";
         }
+
+        // Extremely crucial: Wait for the DOM layout engine to un-hide the containers before rendering Chart.js
+        // Otherwise, Chart.js tries to draw on a 0x0 canvas and renders a blank box.
+        setTimeout(() => { window.processStatsData(); }, 150);
     };
 
     window.setOccupancyBlock = function(block) {
@@ -392,7 +421,7 @@
 
         if (!ctxCap || !ctxGen || !ctxFund) return;
 
-        // 1. Process Capacity Data
+        // 1. Process Capacity Data (Rendered only on Students Tab visually, but updated here)
         let total = 0, occ = 0;
         if (filteredRooms && filteredRooms.length > 0) {
             filteredRooms.forEach(r => { total += parseInt(r.Total_Beds||r.Capacity||0); occ += parseInt(r.Occupied_Beds||r.Occupied||0); });
@@ -400,7 +429,7 @@
         
         let avail = Math.max(0, total - occ);
         
-        // Fallback for 0 values
+        // Solid empty gray fallback so charts visually appear even if n8n takes time to fetch
         let capData = (occ === 0 && avail === 0) ? [0, 1] : [occ, avail];
         let capColors = (occ === 0 && avail === 0) ? ['#e2e8f0', '#e2e8f0'] : ['#10b981', '#e2e8f0'];
 
@@ -414,7 +443,7 @@
             options: chartOptions
         });
 
-        // 2. Process Gender Data
+        // 2. Process Gender Data (Rendered only on Rooms Tab)
         let males = 0, females = 0;
         if (filteredStudents && filteredStudents.length > 0) {
             filteredStudents.forEach(s => {
@@ -424,10 +453,9 @@
             });
         }
 
-        // Fallback for 0 values
         let genData = (males === 0 && females === 0) ? [1] : [males, females];
         let genColors = (males === 0 && females === 0) ? ['#e2e8f0'] : ['#3b82f6', '#ec4899'];
-        let genLabels = (males === 0 && females === 0) ? ['No Data'] : ['Male', 'Female'];
+        let genLabels = (males === 0 && females === 0) ? ['Awaiting Data'] : ['Male', 'Female'];
 
         if(genderChartInstance) genderChartInstance.destroy();
         genderChartInstance = new Chart(ctxGen.getContext('2d'), {
@@ -439,7 +467,7 @@
             options: chartOptions
         });
 
-        // 3. Process Funding Data
+        // 3. Process Funding Data (Rendered only on Rooms Tab)
         let fundingObj = {};
         if (filteredStudents && filteredStudents.length > 0) {
             filteredStudents.forEach(s => {
@@ -449,16 +477,16 @@
             });
         }
         
-        if(Object.keys(fundingObj).length === 0) { fundingObj = { 'No Data': 1 }; }
+        if(Object.keys(fundingObj).length === 0) { fundingObj = { 'Awaiting Data': 1 }; }
 
         if(fundingChartInstance) fundingChartInstance.destroy();
         fundingChartInstance = new Chart(ctxFund.getContext('2d'), {
-            type: 'doughnut', // Updated to doughnut to match the overarching aesthetic
+            type: 'doughnut',
             data: {
                 labels: Object.keys(fundingObj),
                 datasets: [{
                     data: Object.values(fundingObj),
-                    backgroundColor: ['#f59e0b', '#3b82f6', '#10b981', '#ef4444', '#8b5cf6', '#64748b'], 
+                    backgroundColor: Object.keys(fundingObj)[0] === 'Awaiting Data' ? ['#e2e8f0'] : ['#f59e0b', '#3b82f6', '#10b981', '#ef4444', '#8b5cf6', '#64748b'], 
                     borderWidth: 0, 
                     hoverOffset: 4
                 }]
@@ -466,7 +494,7 @@
             options: chartOptions
         });
         
-        // Force charts to size correctly
+        // Prompt browser layout engine to immediately snap charts into their correct responsive bounds
         window.dispatchEvent(new Event('resize'));
     };
 
@@ -517,7 +545,7 @@
         if (currentOccupancyView === 'rooms') {
             thead.innerHTML = `<tr class="bg-white/40 text-slate-400 uppercase tracking-widest font-bold text-[9px] border-b border-slate-200/50"><th class="w-1/4">Room Details</th><th class="w-1/4">Zone / Block</th><th class="w-1/4">Bed Capacity</th><th class="text-right">Live Status</th></tr>`;
             
-            if(filteredRooms.length === 0) { tbody.innerHTML = '<tr><td colspan="4" class="p-8 text-center text-slate-400 font-bold text-[10px]">No rooms match filters.</td></tr>'; return; }
+            if(filteredRooms.length === 0) { tbody.innerHTML = '<tr><td colspan="4" class="p-8 text-center text-slate-400 font-bold text-[10px]">No rooms match filters (or waiting for N8N sync).</td></tr>'; return; }
 
             filteredRooms.forEach(room => {
                 const total = parseInt(room.Total_Beds || room.Capacity || 0); const occ = parseInt(room.Occupied_Beds || room.Occupied || 0); const avail = total - occ;
@@ -538,7 +566,7 @@
             thead.innerHTML = `<tr class="bg-white/40 text-slate-400 uppercase tracking-widest font-bold text-[9px] border-b border-slate-200/50"><th class="w-1/3">Resident Details</th><th class="w-1/4">Room Assignment</th><th class="w-1/4">Gender / Block</th><th class="text-right">Files</th></tr>`;
             
             const allocated = allAllocated.filter(s => s.First_Name);
-            if(allocated.length === 0) { tbody.innerHTML = '<tr><td colspan="4" class="p-8 text-center text-slate-400 font-bold text-[10px]">No resident data active.</td></tr>'; return; }
+            if(allocated.length === 0) { tbody.innerHTML = '<tr><td colspan="4" class="p-8 text-center text-slate-400 font-bold text-[10px]">No resident data active (or waiting for N8N sync).</td></tr>'; return; }
 
             allocated.forEach(s => {
                 const blockChar = String(s.Room_Allocation).charAt(0).toUpperCase(); 
@@ -730,6 +758,7 @@
         link.click();
         document.body.removeChild(link);
     };
-
-    if (typeof globalStudentData !== 'undefined' && globalStudentData.length > 0) { window.processStatsData(); }
+    
+    // Initial Render Call
+    window.processStatsData();
 </script>
