@@ -87,19 +87,25 @@
             <!-- Chart 1: Capacity (Students Tab Only - Centered) -->
             <div id="card-capacity" class="glass-panel p-4 flex flex-col items-center justify-center w-full sm:w-[350px] max-w-sm mx-auto">
                 <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 text-center w-full"><i class="fa-solid fa-chart-pie mr-1 text-emerald-500"></i> Overall Capacity</h4>
-                <div class="chart-container"><canvas id="chartCapacity"></canvas></div>
+                <div class="chart-container" id="chart-container-capacity">
+                    <canvas id="chartCapacity"></canvas>
+                </div>
             </div>
 
             <!-- Chart 2: Gender Demographics (Rooms Tab Only) -->
             <div id="card-gender" class="glass-panel p-4 flex-col items-center justify-center w-full sm:w-[320px] max-w-sm hidden" style="display: none;">
                 <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 text-center w-full"><i class="fa-solid fa-venus-mars mr-1 text-blue-500"></i> Gender Ratio</h4>
-                <div class="chart-container"><canvas id="chartGender"></canvas></div>
+                <div class="chart-container" id="chart-container-gender">
+                    <canvas id="chartGender"></canvas>
+                </div>
             </div>
 
             <!-- Chart 3: Funding Types (Rooms Tab Only) -->
             <div id="card-funding" class="glass-panel p-4 flex-col items-center justify-center w-full sm:w-[320px] max-w-sm hidden" style="display: none;">
                 <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 text-center w-full"><i class="fa-solid fa-landmark mr-1 text-amber-500"></i> Funding Distribution</h4>
-                <div class="chart-container"><canvas id="chartFunding"></canvas></div>
+                <div class="chart-container" id="chart-container-funding">
+                    <canvas id="chartFunding"></canvas>
+                </div>
             </div>
 
         </div>
@@ -299,28 +305,26 @@
     (async function initPipelineCheck() {
         let needsRender = false;
         
-        if (window.globalRoomData.length === 0) {
-            try {
-                const response = await fetch('https://n8n.automania.cloud/webhook/reziflow-get-rooms');
-                if (response.ok) { 
-                    window.globalRoomData = window.parseN8n(await response.json()); 
-                    needsRender = true; 
-                }
-            } catch (e) { console.error("Room sync fallback interrupted"); }
-        }
+        try {
+            const responseRooms = await fetch('https://n8n.automania.cloud/webhook/reziflow-get-rooms');
+            if (responseRooms.ok) { 
+                window.globalRoomData = window.parseN8n(await responseRooms.json()); 
+                needsRender = true; 
+            }
+        } catch (e) { console.error("Room sync fallback interrupted"); }
         
-        if (window.globalStudentData.length === 0) {
-            try {
-                const response = await fetch('https://n8n.automania.cloud/webhook/reziflow-admin-data');
-                if (response.ok) { 
-                    window.globalStudentData = window.parseN8n(await response.json()); 
-                    needsRender = true; 
-                }
-            } catch (e) { console.error("Student sync fallback interrupted"); }
-        }
+        try {
+            const responseStudents = await fetch('https://n8n.automania.cloud/webhook/reziflow-admin-data');
+            if (responseStudents.ok) { 
+                window.globalStudentData = window.parseN8n(await responseStudents.json()); 
+                needsRender = true; 
+            }
+        } catch (e) { console.error("Student sync fallback interrupted"); }
         
         // Force a UI update if fresh data arrived successfully
-        if(needsRender) window.processStatsData();
+        if(needsRender) {
+            window.processStatsData();
+        }
     })();
 
     // ----------------------------------------------------
@@ -429,7 +433,7 @@
     };
 
     // ----------------------------------------------------
-    // STRICT ISOLATED CHART ENGINE
+    // STRICT ISOLATED CHART ENGINE (DYNAMIC INJECTION)
     // ----------------------------------------------------
     window.renderAnalyticsCharts = function(filteredRooms, filteredStudents) {
         if (typeof Chart === 'undefined') {
@@ -441,48 +445,58 @@
         const isStudentsTab = (currentOccupancyView === 'students');
         const isRoomsTab = (currentOccupancyView === 'rooms');
 
+        // Completely destroy instances and wipe containers to prevent Chart.js bugs
+        if(capacityChartInstance) { capacityChartInstance.destroy(); capacityChartInstance = null; }
+        if(genderChartInstance) { genderChartInstance.destroy(); genderChartInstance = null; }
+        if(fundingChartInstance) { fundingChartInstance.destroy(); fundingChartInstance = null; }
+
         // ==========================================
-        // 1. CAPACITY (STUDENTS TAB ONLY)
+        // 1. CAPACITY (STUDENTS TAB ONLY) - Allocated vs Available
         // ==========================================
         if (isStudentsTab) {
-            const ctxCap = document.getElementById('chartCapacity');
-            if (ctxCap) {
-                let total = 0, occ = 0;
+            const capContainer = document.getElementById('chart-container-capacity');
+            if (capContainer) {
+                // Force Canvas reset
+                capContainer.innerHTML = '<canvas id="chartCapacity"></canvas>';
+                const ctxCap = document.getElementById('chartCapacity');
                 
-                // Bulletproof math to prevent NaN crashes
-                if (filteredRooms && filteredRooms.length > 0) {
-                    filteredRooms.forEach(r => { 
-                        let t = parseInt(r.Total_Beds || r.Capacity) || 0;
-                        let o = parseInt(r.Occupied_Beds || r.Occupied) || 0;
-                        total += t; occ += o; 
-                    });
+                let totalBeds = 0;
+                if (window.globalRoomData && window.globalRoomData.length > 0) {
+                    window.globalRoomData.forEach(r => { totalBeds += parseInt(r.Total_Beds || r.Capacity) || 0; });
                 }
-                let avail = Math.max(0, total - occ);
                 
-                let capData = (occ === 0 && avail === 0) ? [0, 1] : [occ, avail];
-                let capColors = (occ === 0 && avail === 0) ? ['#e2e8f0', '#e2e8f0'] : ['#10b981', '#e2e8f0'];
+                let allocatedStudents = 0;
+                if (window.globalStudentData && window.globalStudentData.length > 0) {
+                    allocatedStudents = window.globalStudentData.filter(s => s && s.Room_Allocation && s.Room_Allocation !== 'Unassigned' && s.Room_Allocation !== '--').length;
+                }
+                
+                let availableBeds = Math.max(0, totalBeds - allocatedStudents);
+                
+                let capData = (allocatedStudents === 0 && availableBeds === 0) ? [0, 1] : [allocatedStudents, availableBeds];
+                let capColors = (allocatedStudents === 0 && availableBeds === 0) ? ['#e2e8f0', '#e2e8f0'] : ['#3b82f6', '#10b981'];
+                let capLabels = (allocatedStudents === 0 && availableBeds === 0) ? ['Allocated', 'Available'] : ['Allocated Beds', 'Available Beds'];
 
-                if(capacityChartInstance) capacityChartInstance.destroy();
                 capacityChartInstance = new Chart(ctxCap.getContext('2d'), {
                     type: 'doughnut',
                     data: {
-                        labels: ['Allocated', 'Unallocated'],
+                        labels: capLabels,
                         datasets: [{ data: capData, backgroundColor: capColors, borderWidth: 0, hoverOffset: 4 }]
                     },
                     options: chartOptions
                 });
             }
-        } else {
-            // Destroy hidden chart to prevent canvas caching anomalies
-            if(capacityChartInstance) { capacityChartInstance.destroy(); capacityChartInstance = null; }
         }
 
         // ==========================================
         // 2 & 3. GENDER & FUNDING (ROOMS TAB ONLY)
         // ==========================================
         if (isRoomsTab) {
-            const ctxGen = document.getElementById('chartGender');
-            if (ctxGen) {
+            const genContainer = document.getElementById('chart-container-gender');
+            if (genContainer) {
+                // Force Canvas reset
+                genContainer.innerHTML = '<canvas id="chartGender"></canvas>';
+                const ctxGen = document.getElementById('chartGender');
+                
                 let males = 0, females = 0;
                 if (filteredStudents && filteredStudents.length > 0) {
                     filteredStudents.forEach(s => {
@@ -496,7 +510,6 @@
                 let genColors = (males === 0 && females === 0) ? ['#e2e8f0'] : ['#3b82f6', '#ec4899'];
                 let genLabels = (males === 0 && females === 0) ? ['Awaiting Data'] : ['Male', 'Female'];
 
-                if(genderChartInstance) genderChartInstance.destroy();
                 genderChartInstance = new Chart(ctxGen.getContext('2d'), {
                     type: 'doughnut',
                     data: {
@@ -507,8 +520,12 @@
                 });
             }
 
-            const ctxFund = document.getElementById('chartFunding');
-            if (ctxFund) {
+            const fundContainer = document.getElementById('chart-container-funding');
+            if (fundContainer) {
+                // Force Canvas reset
+                fundContainer.innerHTML = '<canvas id="chartFunding"></canvas>';
+                const ctxFund = document.getElementById('chartFunding');
+                
                 let fundingObj = {};
                 if (filteredStudents && filteredStudents.length > 0) {
                     filteredStudents.forEach(s => {
@@ -523,7 +540,6 @@
                 let fData = Object.values(fundingObj);
                 let fColors = fKeys[0] === 'Awaiting Data' ? ['#e2e8f0'] : ['#f59e0b', '#3b82f6', '#10b981', '#ef4444', '#8b5cf6', '#64748b'];
 
-                if(fundingChartInstance) fundingChartInstance.destroy();
                 fundingChartInstance = new Chart(ctxFund.getContext('2d'), {
                     type: 'doughnut',
                     data: {
@@ -533,10 +549,6 @@
                     options: chartOptions
                 });
             }
-        } else {
-            // Destroy hidden charts
-            if(genderChartInstance) { genderChartInstance.destroy(); genderChartInstance = null; }
-            if(fundingChartInstance) { fundingChartInstance.destroy(); fundingChartInstance = null; }
         }
     };
 
@@ -633,6 +645,6 @@
         }
     };
 
-    // Initialize Default View
+    // Initialize Default View explicitly after all functions define
     window.processStatsData();
 </script>
