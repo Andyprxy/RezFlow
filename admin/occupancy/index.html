@@ -569,6 +569,179 @@
         }
     };
 
+    // ----------------------------------------------------
+    // LIVE FILES CONTROLLER (Webhook Integration)
+    // ----------------------------------------------------
+    window.viewResidentFile = async function(studentId, btnElement) {
+        const originalHtml = btnElement.innerHTML;
+        btnElement.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> <span>Syncing...</span>';
+        btnElement.disabled = true;
+
+        try {
+            const response = await fetch(`https://n8n.automania.cloud/webhook/reziflow-occupancy?student_number=${studentId}`, {
+                method: 'GET',
+                headers: { 'Accept': 'application/json' }
+            });
+            
+            if (!response.ok) throw new Error("Network response failed");
+            let data = await response.json();
+            
+            let student = Array.isArray(data) ? data[0] : data;
+            if (student && student.data && Array.isArray(student.data)) student = student.data[0];
+            if (student && student.json) student = student.json;
+            if (student && Array.isArray(student) && student[0]) student = student[0];
+            
+            if (!student || Object.keys(student).length === 0) {
+                student = window.globalStudentData.find(s => String(s.Student_Number) === String(studentId));
+                if (!student) throw new Error("Student data not found.");
+            }
+
+            document.getElementById('dos-name').textContent = `${student.First_Name || ''} ${student.Surname || ''}`; 
+            document.getElementById('dos-id').textContent = student.Student_Number || '--'; 
+            document.getElementById('dos-status').innerHTML = `<i class="fa-solid fa-shield-halved mr-1 text-slate-400"></i> ${student.Vetting_Status || 'Pending'}`;
+            document.getElementById('dos-room').textContent = `Room: ${student.Room_Allocation || 'Unassigned'}`;
+            document.getElementById('dos-funding').textContent = `Fund: ${student.Funding_Type || '--'}`;
+            
+            const accBadge = document.getElementById('dos-account');
+            accBadge.classList.remove('hidden');
+            if (student.Account_Status === 'Active') {
+                accBadge.className = "text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded shadow-sm bg-blue-50 text-blue-600 border border-blue-100 inline-block";
+                accBadge.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Active`;
+            } else {
+                accBadge.className = "text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded shadow-sm bg-slate-100 text-slate-500 border border-slate-200 inline-block";
+                accBadge.innerHTML = `Inactive`;
+            }
+
+            if (String(student.AD_ALERT).toLowerCase() === 'alerted') {
+                accBadge.className = "text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded shadow-sm bg-rose-50 text-rose-600 border border-rose-200 inline-block";
+                accBadge.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> System Alert`;
+            }
+            
+            document.getElementById('dos-nat-id').textContent = student.ID_Number || student.Passport_Number || '--';
+            document.getElementById('dos-gender').textContent = student.Gender || '--';
+            document.getElementById('dos-campus').textContent = student.Campus_Hub || '--';
+            document.getElementById('dos-course').textContent = student.Course || '--';
+            document.getElementById('dos-year').textContent = student.Year_Level || '--';
+            
+            let phoneStr = String(student.Mobile_Number || '--');
+            if (phoneStr !== '--' && !phoneStr.startsWith('0') && phoneStr.length >= 9) phoneStr = '0' + phoneStr;
+            
+            document.getElementById('dos-phone').textContent = phoneStr; 
+            document.getElementById('dos-email').textContent = student.Email_Address || '--';
+            const fullAddr = [student.Street_Address, student.City, student.Postal_Code].filter(Boolean).join(', ');
+            document.getElementById('dos-address').textContent = fullAddr !== '' ? fullAddr : 'Address not specified.';
+            
+            document.getElementById('dos-em-name').textContent = student.Guardian_Name || '--'; 
+            document.getElementById('dos-em-rel').textContent = student.Guardian_Relationship || '--'; 
+            
+            let guardPhone = String(student.Guardian_Number || '--');
+            if (guardPhone !== '--' && !guardPhone.startsWith('0') && guardPhone.length >= 9) guardPhone = '0' + guardPhone;
+            document.getElementById('dos-em-phone').textContent = guardPhone; 
+            
+            const medInfo = student.Medical;
+            const medPanel = document.getElementById('medical-panel');
+            const medHeader = document.getElementById('medical-header');
+            const medText = document.getElementById('dos-medical');
+            
+            if (medInfo && String(medInfo).trim() !== '' && String(medInfo).toLowerCase() !== 'none') {
+                medPanel.className = "p-4 rounded-xl border transition-colors bg-rose-50/50 border-rose-200";
+                medHeader.className = "text-[9px] font-bold uppercase tracking-widest mb-3 border-b pb-1 text-rose-600 border-rose-200";
+                medText.className = "text-[10px] font-bold bg-white p-2 rounded-lg border leading-relaxed min-h-[40px] shadow-sm text-rose-700 border-rose-100";
+                medText.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1 text-rose-500"></i> ${medInfo}`;
+            } else {
+                medPanel.className = "p-4 rounded-xl border transition-colors bg-slate-50 border-slate-100";
+                medHeader.className = "text-[9px] font-bold uppercase tracking-widest mb-3 border-b pb-1 text-slate-400 border-slate-200";
+                medText.className = "text-[10px] font-bold bg-white p-2 rounded-lg border leading-relaxed min-h-[40px] shadow-sm text-slate-500 border-slate-100";
+                medText.textContent = "No conditions declared.";
+            }
+
+            const docContainer = document.getElementById('dos-docs-container');
+            let docsHtml = '';
+            if (student.Doc_1_URL_ID) docsHtml += `<a href="${student.Doc_1_URL_ID}" target="_blank" class="flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1.5 rounded-lg text-[9px] font-bold text-slate-600 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm"><i class="fa-solid fa-id-card text-blue-500"></i> Identity File</a>`;
+            if (student.Doc_2_URL_Reg) docsHtml += `<a href="${student.Doc_2_URL_Reg}" target="_blank" class="flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1.5 rounded-lg text-[9px] font-bold text-slate-600 hover:text-indigo-600 hover:border-indigo-200 transition-all shadow-sm"><i class="fa-solid fa-graduation-cap text-indigo-500"></i> Registration</a>`;
+            if (student.Doc_3_URL_Funding) docsHtml += `<a href="${student.Doc_3_URL_Funding}" target="_blank" class="flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1.5 rounded-lg text-[9px] font-bold text-slate-600 hover:text-emerald-600 hover:border-emerald-200 transition-all shadow-sm"><i class="fa-solid fa-landmark text-emerald-500"></i> Funding Proof</a>`;
+            if (student.Doc_4_URL_Payslip) docsHtml += `<a href="${student.Doc_4_URL_Payslip}" target="_blank" class="flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1.5 rounded-lg text-[9px] font-bold text-slate-600 hover:text-amber-600 hover:border-amber-200 transition-all shadow-sm"><i class="fa-solid fa-file-invoice text-amber-500"></i> Payslip</a>`;
+            if (student.Signed_Lease) docsHtml += `<a href="${student.Signed_Lease}" target="_blank" class="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-lg text-[9px] font-bold text-emerald-700 hover:bg-emerald-100 transition-all shadow-sm"><i class="fa-solid fa-signature text-emerald-500"></i> Lease Agreement</a>`;
+            
+            docContainer.innerHTML = docsHtml || '<span class="text-[9px] font-medium text-slate-400 italic">No files synchronized for this resident.</span>';
+            document.getElementById('dos-timestamp').textContent = `Last System Sync: ${student.Timestamp || '--'}`;
+            
+            document.getElementById('residentFileModal').classList.add('active');
+
+        } catch (error) {
+            console.error("Live Fetch Error:", error);
+            if(typeof window.showToast === 'function') window.showToast("Failed to retrieve live data.", "error");
+            else alert("Failed to retrieve live data.");
+        } finally {
+            btnElement.innerHTML = originalHtml;
+            btnElement.disabled = false;
+        }
+    };
+
+    window.processRoomSwap = async function(e) {
+        e.preventDefault(); const btn = document.getElementById('btn-submit-swap'); const ogText = btn.innerHTML;
+        const studentId = document.getElementById('swap-student-id').value; const newRoom = document.getElementById('swap-new-room').value;
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...'; btn.disabled = true;
+        try {
+            await fetch('https://n8n.automania.cloud/webhook/reziflow-allocate', { 
+                method: 'POST', headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify({ Student_Number: studentId, Room_ID: newRoom, Swap_Trigger: true }) 
+            });
+            document.getElementById('roomSwapModal').classList.remove('active'); e.target.reset();
+            if(typeof window.fetchDatabaseData === 'function') window.fetchDatabaseData(true); 
+            if(typeof window.fetchStatsData === 'function') window.fetchStatsData(true);
+            window.showToast("Ledger updated successfully.");
+        } catch(error) { window.showToast("Network fault.", "error"); } finally { btn.innerHTML = ogText; btn.disabled = false; }
+    };
+
+    window.downloadOccupancyReport = function() {
+        const searchVal = document.getElementById('search-occupancy')?.value.toLowerCase() || '';
+        let csvContent = "data:text/csv;charset=utf-8,";
+        let filename = "";
+
+        if (currentOccupancyView === 'rooms') {
+            filename = "Filtered_Room_Inventory";
+            csvContent += "Room ID,Block,Type,Capacity,Occupied,Available Status\n";
+            
+            let filteredRooms = window.globalRoomData.filter(room => {
+                let matchBlock = true; let matchGender = true;
+                if (currentOccupancyBlock !== 'all') matchBlock = String(room.Block || '').toUpperCase() === currentOccupancyBlock.toUpperCase();
+                if (currentOccupancyGender !== 'all') {
+                    const blk = String(room.Block || '').toUpperCase();
+                    if (currentOccupancyGender === 'male') matchGender = (blk === 'A');
+                    else if (currentOccupancyGender === 'female') matchGender = (blk === 'B' || blk === 'C');
+                }
+                let matchSearch = JSON.stringify(room).toLowerCase().includes(searchVal);
+                return matchBlock && matchGender && matchSearch;
+            });
+
+            filteredRooms.forEach(r => {
+                const total = parseInt(r.Total_Beds || r.Capacity) || 0;
+                const occ = parseInt(r.Occupied_Beds || r.Occupied) || 0;
+                const status = (total - occ) <= 0 ? "Full" : (total - occ) + " Open";
+                csvContent += `"${r.Room_ID || ''}","Block ${r.Block || ''}","${r.Room_Type || ''}","${total}","${occ}","${status}"\n`;
+            });
+        } else {
+            filename = "Filtered_Allocated_Residents";
+            csvContent += "Student Number,First Name,Surname,Gender,Room Allocation,Funding Type,Course\n";
+            
+            let allocated = window.globalStudentData.filter(s => s && s.Room_Allocation && s.Room_Allocation !== 'Unassigned' && s.Room_Allocation !== '--' && s.First_Name);
+            let filteredStudents = allocated.filter(s => JSON.stringify(s).toLowerCase().includes(searchVal));
+
+            filteredStudents.forEach(s => {
+                csvContent += `"${s.Student_Number || ''}","${s.First_Name || ''}","${s.Surname || ''}","${s.Gender || ''}","${s.Room_Allocation || ''}","${s.Funding_Type || ''}","${s.Course || ''}"\n`;
+            });
+        }
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `${filename}_${new Date().toISOString().split('T')[0]}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     // Initialize Default View explicitly after all functions define
     window.processStatsData();
 </script>
