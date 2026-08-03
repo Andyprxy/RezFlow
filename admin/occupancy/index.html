@@ -49,7 +49,7 @@
     .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
 
     /* Chart Layouting */
-    .chart-container { position: relative; height: 160px; width: 100%; display: flex; justify-content: center; align-items: center; }
+    .chart-container { position: relative; height: 140px; width: 100%; display: flex; justify-content: center; align-items: center; }
 </style>
 
 <!-- Main Component Structure -->
@@ -73,12 +73,31 @@
             </div>
         </div>
 
+        <!-- High-End Analytics Dashboard (Moved Above the List Box) -->
+        <div id="analytics-dashboard" class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3 w-full shrink-0 z-10 relative">
+            <!-- Chart 1: Capacity -->
+            <div class="glass-panel p-4 flex flex-col h-full w-full">
+                <h4 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-2"><i class="fa-solid fa-chart-pie mr-1 text-emerald-500"></i> Overall Capacity</h4>
+                <div class="chart-container"><canvas id="chartCapacity"></canvas></div>
+            </div>
+            <!-- Chart 2: Gender Demographics -->
+            <div class="glass-panel p-4 flex flex-col h-full w-full">
+                <h4 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-2"><i class="fa-solid fa-venus-mars mr-1 text-blue-500"></i> Gender Ratio</h4>
+                <div class="chart-container"><canvas id="chartGender"></canvas></div>
+            </div>
+            <!-- Chart 3: Funding Types -->
+            <div class="glass-panel p-4 flex flex-col h-full w-full">
+                <h4 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-2"><i class="fa-solid fa-landmark mr-1 text-amber-500"></i> Funding Distribution</h4>
+                <div class="chart-container"><canvas id="chartFunding"></canvas></div>
+            </div>
+        </div>
+
         <!-- Data Grid & Analytics Area -->
-        <div class="glass-panel rounded-[20px] lg:rounded-[24px] overflow-hidden mt-1 shrink-0 flex flex-col">
+        <div class="glass-panel rounded-[20px] lg:rounded-[24px] overflow-hidden mt-1 shrink-0 flex flex-col flex-1">
             
             <div class="px-3 py-3 border-b border-white/60 flex flex-col xl:flex-row gap-3 justify-between xl:items-center bg-white/50 backdrop-blur-md z-20 relative">
                 <div class="flex items-center gap-2 shrink-0">
-                    <div class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm"><i id="occ-icon" class="fa-solid fa-chart-pie text-xs"></i></div>
+                    <div class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm"><i id="occ-icon" class="fa-solid fa-users text-xs"></i></div>
                     <h3 id="occupancy-title" class="font-black text-slate-800 text-xs sm:text-sm whitespace-nowrap">Allocated Students</h3>
                 </div>
                 
@@ -111,27 +130,7 @@
                 </div>
             </div>
             
-            <div class="overflow-y-auto custom-scroll max-h-[70vh] bg-white/40 backdrop-blur-sm relative">
-                
-                <!-- High-End Analytics Dashboard (Visible only on Rooms tab) -->
-                <div id="analytics-dashboard" class="hidden grid-cols-1 md:grid-cols-3 gap-4 p-4 border-b border-slate-200/60 bg-slate-50/50 w-full">
-                    <!-- Chart 1: Capacity -->
-                    <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/70 flex flex-col h-full w-full">
-                        <h4 class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-2"><i class="fa-solid fa-chart-pie mr-1 text-emerald-500"></i> Overall Capacity</h4>
-                        <div class="chart-container"><canvas id="chartCapacity"></canvas></div>
-                    </div>
-                    <!-- Chart 2: Gender Demographics -->
-                    <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/70 flex flex-col h-full w-full">
-                        <h4 class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-2"><i class="fa-solid fa-venus-mars mr-1 text-blue-500"></i> Gender Ratio</h4>
-                        <div class="chart-container"><canvas id="chartGender"></canvas></div>
-                    </div>
-                    <!-- Chart 3: Funding Types -->
-                    <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/70 flex flex-col h-full w-full">
-                        <h4 class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-2"><i class="fa-solid fa-landmark mr-1 text-amber-500"></i> Funding Distribution</h4>
-                        <div class="chart-container"><canvas id="chartFunding"></canvas></div>
-                    </div>
-                </div>
-
+            <div class="overflow-y-auto custom-scroll flex-1 bg-white/40 backdrop-blur-sm relative">
                 <div class="overflow-x-auto w-full">
                     <table class="w-full text-left border-collapse compact-table min-w-[650px]">
                         <thead id="occupancy-thead" class="bg-white/70 sticky top-0 backdrop-blur-md z-10 shadow-sm border-b border-slate-200/40"></thead>
@@ -203,7 +202,6 @@
         <!-- Body -->
         <div class="p-5 flex-1 overflow-y-auto custom-scroll space-y-4 max-h-[65vh]">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                
                 <!-- Academic & Demographics -->
                 <div class="bg-slate-50/50 p-4 rounded-xl border border-slate-100">
                     <h4 class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-200 pb-1"><i class="fa-solid fa-id-badge mr-1"></i> Academic Profile</h4>
@@ -344,7 +342,6 @@
 
         const title = document.getElementById('occupancy-title'); 
         const filters = document.getElementById('occupancy-room-filters');
-        const analyticsPanel = document.getElementById('analytics-dashboard');
         const icon = document.getElementById('occ-icon');
         const searchInput = document.getElementById('search-occupancy');
         
@@ -353,15 +350,12 @@
         if(view === 'rooms') { 
             if(title) title.textContent = 'Live Room Inventory'; 
             if(filters) { filters.classList.remove('hidden'); filters.classList.add('flex'); }
-            if(analyticsPanel) { analyticsPanel.classList.remove('hidden'); analyticsPanel.classList.add('grid'); }
             if(icon) { icon.className = "fa-solid fa-bed text-xs"; icon.parentElement.className = "w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shadow-sm"; }
             
-            // STRICT TIMEOUT: Forces browser to finish painting 'display: grid' before Chart.js attempts to calculate dimensions.
             setTimeout(() => { window.processStatsData(); }, 150);
         } else { 
             if(title) title.textContent = 'Allocated Students'; 
             if(filters) { filters.classList.remove('flex'); filters.classList.add('hidden'); } 
-            if(analyticsPanel) { analyticsPanel.classList.remove('grid'); analyticsPanel.classList.add('hidden'); }
             if(icon) { icon.className = "fa-solid fa-users text-xs"; icon.parentElement.className = "w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm"; }
             
             window.processStatsData();
@@ -386,8 +380,6 @@
     // CHART RENDERING ENGINE
     // ----------------------------------------------------
     window.renderAnalyticsCharts = function(filteredRooms, filteredStudents) {
-        if(currentOccupancyView !== 'rooms') return;
-        
         if (typeof Chart === 'undefined') {
             console.warn("Chart.js library still initializing... retrying in 250ms.");
             setTimeout(() => window.renderAnalyticsCharts(filteredRooms, filteredStudents), 250);
@@ -408,7 +400,7 @@
         
         let avail = Math.max(0, total - occ);
         
-        // Fallback for 0 values to prevent Chart.js from rendering an invisible/crashing circle
+        // Fallback for 0 values
         let capData = (occ === 0 && avail === 0) ? [0, 1] : [occ, avail];
         let capColors = (occ === 0 && avail === 0) ? ['#e2e8f0', '#e2e8f0'] : ['#10b981', '#e2e8f0'];
 
@@ -457,30 +449,24 @@
             });
         }
         
-        // Fallback for 0 values
         if(Object.keys(fundingObj).length === 0) { fundingObj = { 'No Data': 1 }; }
 
         if(fundingChartInstance) fundingChartInstance.destroy();
         fundingChartInstance = new Chart(ctxFund.getContext('2d'), {
-            type: 'bar',
+            type: 'doughnut', // Updated to doughnut to match the overarching aesthetic
             data: {
                 labels: Object.keys(fundingObj),
                 datasets: [{
-                    label: 'Students', data: Object.values(fundingObj),
-                    backgroundColor: '#f59e0b', borderRadius: 4, barThickness: 15
+                    data: Object.values(fundingObj),
+                    backgroundColor: ['#f59e0b', '#3b82f6', '#10b981', '#ef4444', '#8b5cf6', '#64748b'], 
+                    borderWidth: 0, 
+                    hoverOffset: 4
                 }]
             },
-            options: {
-                responsive: true, maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: { 
-                    x: { ticks: { font: { size: 9 }, maxRotation: 45, minRotation: 45 }, grid: { display: false } },
-                    y: { ticks: { font: { size: 9 }, stepSize: 1 }, grid: { borderDash: [2, 4], color: '#f1f5f9' } }
-                }
-            }
+            options: chartOptions
         });
         
-        // Force charts to size correctly into their newly visible parents
+        // Force charts to size correctly
         window.dispatchEvent(new Event('resize'));
     };
 
@@ -499,34 +485,37 @@
 
         const thead = document.getElementById('occupancy-thead'); const tbody = document.getElementById('stats-inventory-body');
         if(!tbody || !thead) return;
+
+        // Unified filtering for charts so they always represent correct dashboard metrics
+        let filteredRooms = globalRoomData.filter(room => {
+            let matchBlock = true; let matchGender = true;
+            if (currentOccupancyBlock !== 'all') matchBlock = String(room.Block || '').toUpperCase() === currentOccupancyBlock.toUpperCase();
+            if (currentOccupancyGender !== 'all') { 
+                const blk = String(room.Block || '').toUpperCase(); 
+                if (currentOccupancyGender === 'male') matchGender = (blk === 'A'); 
+                else if (currentOccupancyGender === 'female') matchGender = (blk === 'B' || blk === 'C'); 
+            }
+            return matchBlock && matchGender;
+        });
+
+        let chartStudents = allAllocated.filter(s => {
+            let matchBlock = true; let matchGender = true;
+            let roomAlloc = String(s.Room_Allocation || '').toUpperCase();
+            if (currentOccupancyBlock !== 'all') matchBlock = roomAlloc.startsWith(currentOccupancyBlock);
+            if (currentOccupancyGender !== 'all') {
+                if (currentOccupancyGender === 'male') matchGender = roomAlloc.startsWith('A');
+                else if (currentOccupancyGender === 'female') matchGender = (roomAlloc.startsWith('B') || roomAlloc.startsWith('C'));
+            }
+            return matchBlock && matchGender;
+        });
+
+        // Always render charts independently of the current list view
+        window.renderAnalyticsCharts(filteredRooms, chartStudents);
+
         let htmlStr = '';
 
         if (currentOccupancyView === 'rooms') {
             thead.innerHTML = `<tr class="bg-white/40 text-slate-400 uppercase tracking-widest font-bold text-[9px] border-b border-slate-200/50"><th class="w-1/4">Room Details</th><th class="w-1/4">Zone / Block</th><th class="w-1/4">Bed Capacity</th><th class="text-right">Live Status</th></tr>`;
-            
-            let filteredRooms = globalRoomData.filter(room => {
-                let matchBlock = true; let matchGender = true;
-                if (currentOccupancyBlock !== 'all') matchBlock = String(room.Block || '').toUpperCase() === currentOccupancyBlock.toUpperCase();
-                if (currentOccupancyGender !== 'all') { 
-                    const blk = String(room.Block || '').toUpperCase(); 
-                    if (currentOccupancyGender === 'male') matchGender = (blk === 'A'); 
-                    else if (currentOccupancyGender === 'female') matchGender = (blk === 'B' || blk === 'C'); 
-                }
-                return matchBlock && matchGender;
-            });
-
-            let chartStudents = allAllocated.filter(s => {
-                let matchBlock = true; let matchGender = true;
-                let roomAlloc = String(s.Room_Allocation || '').toUpperCase();
-                if (currentOccupancyBlock !== 'all') matchBlock = roomAlloc.startsWith(currentOccupancyBlock);
-                if (currentOccupancyGender !== 'all') {
-                    if (currentOccupancyGender === 'male') matchGender = roomAlloc.startsWith('A');
-                    else if (currentOccupancyGender === 'female') matchGender = (roomAlloc.startsWith('B') || roomAlloc.startsWith('C'));
-                }
-                return matchBlock && matchGender;
-            });
-            
-            window.renderAnalyticsCharts(filteredRooms, chartStudents);
             
             if(filteredRooms.length === 0) { tbody.innerHTML = '<tr><td colspan="4" class="p-8 text-center text-slate-400 font-bold text-[10px]">No rooms match filters.</td></tr>'; return; }
 
