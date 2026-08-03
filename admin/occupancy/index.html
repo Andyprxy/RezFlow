@@ -48,12 +48,14 @@
     .modal-content { transform: scale(0.95) translateY(20px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1); background: #ffffff; border-radius: 24px; padding: 1.25rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); max-height: 90vh; overflow-y: auto; }
     .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
 
-    /* Chart Layouting (Fixed for 100% visibility) */
+    /* Chart Layouting */
     .chart-container { 
         position: relative; 
         height: 170px; 
         width: 100%; 
-        display: block; /* Removed flex to stop canvas collapsing */
+        display: flex;
+        justify-content: center; 
+        align-items: center; 
         margin: 0 auto;
     }
 </style>
@@ -79,24 +81,24 @@
             </div>
         </div>
 
-        <!-- High-End Analytics Dashboard (Centered Layout) -->
+        <!-- High-End Analytics Dashboard -->
         <div id="analytics-dashboard" class="flex flex-wrap justify-center items-stretch gap-4 mb-3 w-full shrink-0 z-10 relative">
             
             <!-- Chart 1: Capacity (Students Tab Only - Centered) -->
-            <div id="card-capacity" class="glass-panel p-4 flex-col w-full sm:w-[350px] max-w-sm">
-                <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 text-center"><i class="fa-solid fa-chart-pie mr-1 text-emerald-500"></i> Overall Capacity</h4>
+            <div id="card-capacity" class="glass-panel p-4 flex flex-col items-center justify-center w-full sm:w-[350px] max-w-sm mx-auto">
+                <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 text-center w-full"><i class="fa-solid fa-chart-pie mr-1 text-emerald-500"></i> Overall Capacity</h4>
                 <div class="chart-container"><canvas id="chartCapacity"></canvas></div>
             </div>
 
             <!-- Chart 2: Gender Demographics (Rooms Tab Only) -->
-            <div id="card-gender" class="glass-panel p-4 flex-col w-full sm:w-[320px] max-w-sm hidden" style="display: none;">
-                <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 text-center"><i class="fa-solid fa-venus-mars mr-1 text-blue-500"></i> Gender Ratio</h4>
+            <div id="card-gender" class="glass-panel p-4 flex-col items-center justify-center w-full sm:w-[320px] max-w-sm hidden" style="display: none;">
+                <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 text-center w-full"><i class="fa-solid fa-venus-mars mr-1 text-blue-500"></i> Gender Ratio</h4>
                 <div class="chart-container"><canvas id="chartGender"></canvas></div>
             </div>
 
             <!-- Chart 3: Funding Types (Rooms Tab Only) -->
-            <div id="card-funding" class="glass-panel p-4 flex-col w-full sm:w-[320px] max-w-sm hidden" style="display: none;">
-                <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 text-center"><i class="fa-solid fa-landmark mr-1 text-amber-500"></i> Funding Distribution</h4>
+            <div id="card-funding" class="glass-panel p-4 flex-col items-center justify-center w-full sm:w-[320px] max-w-sm hidden" style="display: none;">
+                <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 text-center w-full"><i class="fa-solid fa-landmark mr-1 text-amber-500"></i> Funding Distribution</h4>
                 <div class="chart-container"><canvas id="chartFunding"></canvas></div>
             </div>
 
@@ -185,7 +187,6 @@
 
 <!-- MODALS -->
 <div id="residentFileModal" class="modal-overlay">
-    <!-- Modal content intact -->
     <div class="modal-content w-full max-w-2xl flex flex-col p-0 overflow-hidden bg-white">
         <!-- Header -->
         <div class="p-5 border-b border-slate-200 bg-slate-50 flex justify-between items-start relative overflow-hidden">
@@ -255,7 +256,6 @@
 </div>
 
 <div id="roomSwapModal" class="modal-overlay">
-    <!-- Swap Modal Intact -->
     <div class="modal-content magic-border-container w-full max-w-sm">
         <div class="magic-border-inner flex flex-col relative">
             <button onclick="document.getElementById('roomSwapModal').classList.remove('active')" class="absolute top-0 right-0 w-6 h-6 bg-slate-50 border border-slate-200 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100"><i class="fa-solid fa-xmark text-[10px]"></i></button>
@@ -294,24 +294,32 @@
     window.globalStudentData = window.globalStudentData || [];
 
     // ----------------------------------------------------
-    // N8N API PIPELINE
+    // N8N API PIPELINE (Explicit Rendering Trigger)
     // ----------------------------------------------------
     (async function initPipelineCheck() {
         let needsRender = false;
+        
         if (window.globalRoomData.length === 0) {
             try {
                 const response = await fetch('https://n8n.automania.cloud/webhook/reziflow-get-rooms');
-                if (response.ok) { window.globalRoomData = window.parseN8n(await response.json()); needsRender = true; }
+                if (response.ok) { 
+                    window.globalRoomData = window.parseN8n(await response.json()); 
+                    needsRender = true; 
+                }
             } catch (e) { console.error("Room sync fallback interrupted"); }
         }
+        
         if (window.globalStudentData.length === 0) {
             try {
                 const response = await fetch('https://n8n.automania.cloud/webhook/reziflow-admin-data');
-                if (response.ok) { window.globalStudentData = window.parseN8n(await response.json()); needsRender = true; }
+                if (response.ok) { 
+                    window.globalStudentData = window.parseN8n(await response.json()); 
+                    needsRender = true; 
+                }
             } catch (e) { console.error("Student sync fallback interrupted"); }
         }
         
-        // Force a re-render if data arrived asynchronously
+        // Force a UI update if fresh data arrived successfully
         if(needsRender) window.processStatsData();
     })();
 
@@ -326,7 +334,6 @@
     var genderChartInstance = null;
     var fundingChartInstance = null;
 
-    // Centered legends for the bottom of the boxes
     const chartOptions = {
         responsive: true, 
         maintainAspectRatio: false,
@@ -379,16 +386,26 @@
             if(icon) { icon.className = "fa-solid fa-bed text-xs"; icon.parentElement.className = "w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shadow-sm"; }
             
             cardCap.style.display = 'none';
+            cardCap.classList.remove('flex');
+            
             cardGen.style.display = 'flex';
+            cardGen.classList.add('flex');
+            
             cardFund.style.display = 'flex';
+            cardFund.classList.add('flex');
         } else { 
             if(title) title.textContent = 'Allocated Students'; 
             if(filters) { filters.classList.remove('flex'); filters.classList.add('hidden'); } 
             if(icon) { icon.className = "fa-solid fa-users text-xs"; icon.parentElement.className = "w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm"; }
             
             cardCap.style.display = 'flex';
+            cardCap.classList.add('flex');
+            
             cardGen.style.display = 'none';
+            cardGen.classList.remove('flex');
+            
             cardFund.style.display = 'none';
+            cardFund.classList.remove('flex');
         }
 
         // Wait for browser layout to commit before rendering charts to avoid 0x0 canvas collapse
