@@ -584,12 +584,9 @@
             }
         };
 
-        // 1-SECOND REALTIME POLLING ENGINE FOR MESSAGES & TICKETS
+        // 3-SECOND REALTIME POLLING ENGINE FOR MESSAGES
         setInterval(async function pollRealtimeData() {
-            // 1. Silent Ticket Refresher has been disabled as requested to prevent auto-firing.
-            // Data will now only refresh on initial load or via manual refresh button.
-
-            // 2. Realtime Chat Feed Poller
+            // Realtime Chat Feed Poller
             for (const ticketId in window.activeChatsByTicket) {
                 const container = document.getElementById(`chat-container-${ticketId}`);
                 if (container && !container.classList.contains('h-[52px]')) {
@@ -613,7 +610,7 @@
                     } catch(e) {}
                 }
             }
-        }, 1000);
+        }, 3000);
 
         var currentMaintenanceStatus = 'all';
         var currentMaintTab = 'snags';
@@ -695,6 +692,31 @@
                 } else {
                     detailRow.classList.add('hidden');
                 }
+            }
+        };
+        
+        window.forceRefreshChat = async function(ticketId, studentId, studentName) {
+            const historyEl = document.getElementById(`chat-history-${ticketId}`);
+            if(historyEl) {
+                historyEl.innerHTML = `<div class="flex-1 flex items-center justify-center h-full"><i class="fa-solid fa-circle-notch fa-spin text-blue-500 text-xl"></i></div>`;
+            }
+            try {
+                const params = new URLSearchParams({ Ticket_ID: ticketId, ticket_id: ticketId, Student_Number: studentId });
+                const res = await fetch(`https://n8n.automania.cloud/webhook/reziflow-get-snag-chat?${params.toString()}`, { method: 'GET' });
+                if (res.ok) {
+                    const chats = window.parseN8n(await res.json());
+                    chats.sort((a,b) => new Date(a.createdAt || a.Timestamp) - new Date(b.createdAt || b.Timestamp));
+                    window.activeChatsByTicket[ticketId] = chats;
+                    window.renderChatUI(ticketId, studentId, studentName);
+                    window.showToast("Chat force refreshed successfully.");
+                } else {
+                    window.activeChatsByTicket[ticketId] = [];
+                    window.renderChatUI(ticketId, studentId, studentName);
+                }
+            } catch(e) {
+                window.showToast("Failed to manually refresh chat.", "error");
+                window.activeChatsByTicket[ticketId] = [];
+                window.renderChatUI(ticketId, studentId, studentName);
             }
         };
 
@@ -882,7 +904,7 @@
             window.renderChatUI(ticketId, studentId, studentName);
             inputEl.value = '';
             
-            const params = newSearchParams({
+            const params = new URLSearchParams({
                 Ticket_ID: ticketId, ticket_id: ticketId, Student_Number: studentId || 'Unknown', studentn: studentId || 'Unknown',
                 Room: room || 'Unassigned', Role: "Officer", sender_role: "Maintainance", sender_name: "Officer",
                 Message: finalMsg, message_text: finalMsg, Timestamp: now.toISOString()
@@ -890,7 +912,9 @@
             
             try {
                 await fetch(`https://n8n.automania.cloud/webhook/reziflow-snag-chat-send?${params.toString()}`, { method: 'GET', mode: 'no-cors' });
-            } catch(e) {}
+            } catch(e) {
+                console.error("Chat dispatch error", e);
+            }
         };
 
         window.updateTicketStatus = async function(ticketId, status, btnElement) {
@@ -1089,7 +1113,12 @@
                                                 <p class="text-[8px] text-emerald-500 font-bold uppercase tracking-widest mt-0.5">Tap to Expand</p>
                                             </div>
                                         </div>
-                                        <i id="chat-chevron-${safeId}" class="fa-solid fa-chevron-down text-slate-400 text-xs pr-2 transition-transform duration-300"></i>
+                                        <div class="flex items-center gap-1">
+                                            <button onclick="event.stopPropagation(); window.forceRefreshChat('${safeId}', '${studentId}', '${res.name.replace(/'/g, "\\'")}')" class="w-6 h-6 rounded-full bg-white/50 border border-slate-200 text-slate-400 hover:text-indigo-600 hover:bg-white flex items-center justify-center transition-all shadow-sm" title="Refresh Chat">
+                                                <i class="fa-solid fa-rotate-right text-[10px]"></i>
+                                            </button>
+                                            <i id="chat-chevron-${safeId}" class="fa-solid fa-chevron-down text-slate-400 text-xs pr-1 pl-1 transition-transform duration-300"></i>
+                                        </div>
                                     </div>
                                     
                                     <div id="chat-body-${safeId}" class="flex-1 flex flex-col hidden opacity-0 transition-opacity duration-300 min-h-0 relative">
