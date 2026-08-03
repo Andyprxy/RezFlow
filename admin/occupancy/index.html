@@ -1,6 +1,3 @@
-<!-- Chart.js Injection for High-End Analytics -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <style>
     /* ---------------------------------------------------
        FLUID COMPACT LAYOUT & SIDEBAR CONFIG
@@ -48,15 +45,13 @@
     .modal-content { transform: scale(0.95) translateY(20px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1); background: #ffffff; border-radius: 24px; padding: 1.25rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); max-height: 90vh; overflow-y: auto; }
     .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
 
-    /* Bare Chart Layouting */
-    .chart-slot { 
-        position: relative; 
-        width: 220px; 
-        height: 220px; 
-        display: flex;
-        justify-content: center; 
-        align-items: center; 
-    }
+    /* Custom CSS Pie Chart Animation */
+    .pie-chart-anim { transition: background 1s ease-out; }
+    
+    /* Scrollbar */
+    .custom-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
+    .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 </style>
 
 <!-- Main Component Structure -->
@@ -80,20 +75,8 @@
             </div>
         </div>
 
-        <!-- Floating Analytics Charts (No Boxes) -->
-        <div class="flex flex-wrap justify-center items-center gap-12 sm:gap-24 mb-4 w-full shrink-0 z-10 relative">
-            
-            <!-- Chart Slot 1 (Used for Capacity on Students, Gender on Rooms) -->
-            <div id="chart-slot-1" class="chart-slot">
-                <canvas id="canvasSlot1"></canvas>
-            </div>
-
-            <!-- Chart Slot 2 (Used only for Funding on Rooms Tab) -->
-            <div id="chart-slot-2" class="chart-slot" style="display: none;">
-                <canvas id="canvasSlot2"></canvas>
-            </div>
-
-        </div>
+        <!-- Dynamic CSS Analytics Dashboard -->
+        <div id="analytics-dashboard" class="mb-3 w-full shrink-0 z-10 relative transition-all"></div>
 
         <!-- Data Grid Area -->
         <div class="glass-panel rounded-[20px] lg:rounded-[24px] overflow-hidden mt-1 shrink-0 flex flex-col flex-1">
@@ -317,23 +300,6 @@
     var currentOccupancyView = 'students'; 
     var currentOccupancyBlock = 'all'; 
     var currentOccupancyGender = 'all';
-    
-    var chartInstance1 = null;
-    var chartInstance2 = null;
-
-    const commonChartOptions = {
-        responsive: true, 
-        maintainAspectRatio: false,
-        plugins: { 
-            legend: { 
-                position: 'bottom', 
-                labels: { font: { size: 10, family: 'Inter', weight: 'bold' }, usePointStyle: true, boxWidth: 6, padding: 15 } 
-            }
-        },
-        cutout: '75%', // Modern thin ring
-        borderWidth: 0,
-        layout: { padding: 5 }
-    };
 
     window.toggleOccSidebar = function() {
         const sidebar = document.getElementById('occ-right-sidebar');
@@ -359,36 +325,20 @@
         const filters = document.getElementById('occupancy-room-filters');
         const icon = document.getElementById('occ-icon');
         const searchInput = document.getElementById('search-occupancy');
-
-        const slot1 = document.getElementById('chart-slot-1');
-        const slot2 = document.getElementById('chart-slot-2');
         
         if(searchInput) searchInput.value = '';
-
-        // Destroy charts before hiding containers to prevent Chart.js bugs
-        if(chartInstance1) { chartInstance1.destroy(); chartInstance1 = null; }
-        if(chartInstance2) { chartInstance2.destroy(); chartInstance2 = null; }
         
         if(view === 'rooms') { 
             if(title) title.textContent = 'Live Room Inventory'; 
             if(filters) { filters.classList.remove('hidden'); filters.classList.add('flex'); }
             if(icon) { icon.className = "fa-solid fa-bed text-xs"; icon.parentElement.className = "w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shadow-sm"; }
-            
-            slot1.style.display = 'flex';
-            slot2.style.display = 'flex';
         } else { 
             if(title) title.textContent = 'Allocated Students'; 
             if(filters) { filters.classList.remove('flex'); filters.classList.add('hidden'); } 
             if(icon) { icon.className = "fa-solid fa-users text-xs"; icon.parentElement.className = "w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm"; }
-            
-            slot1.style.display = 'flex';
-            slot2.style.display = 'none';
         }
 
-        // Wait a frame for display:none/flex to register in the DOM before rendering
-        requestAnimationFrame(() => {
-            setTimeout(() => { window.processStatsData(); }, 10);
-        });
+        window.processStatsData();
     };
 
     window.setOccupancyBlock = function(block) {
@@ -406,85 +356,61 @@
     };
 
     // ----------------------------------------------------
-    // BARE CHART ENGINE
+    // NATIVE CSS PIE CHART ENGINE (No Chart.js)
     // ----------------------------------------------------
     window.renderAnalyticsCharts = function(filteredRooms, filteredStudents) {
-        if (typeof Chart === 'undefined') {
-            setTimeout(() => window.renderAnalyticsCharts(filteredRooms, filteredStudents), 250);
-            return;
-        }
-
-        if(chartInstance1) { chartInstance1.destroy(); chartInstance1 = null; }
-        if(chartInstance2) { chartInstance2.destroy(); chartInstance2 = null; }
-
-        const ctx1 = document.getElementById('canvasSlot1');
-        const ctx2 = document.getElementById('canvasSlot2');
+        const dash = document.getElementById('analytics-dashboard');
+        if (!dash) return;
 
         if (currentOccupancyView === 'students') {
-            // CHART: Allocated vs Available (using slot 1)
+            // 1. CAPACITY (Allocated vs Available)
             let totalBeds = 0;
             if (window.globalRoomData) {
                 window.globalRoomData.forEach(r => { totalBeds += parseInt(r.Total_Beds || r.Capacity) || 0; });
             }
             
-            let allocatedStudents = 0;
+            let allocated = 0;
             if (window.globalStudentData) {
-                allocatedStudents = window.globalStudentData.filter(s => s && s.Room_Allocation && s.Room_Allocation !== 'Unassigned' && s.Room_Allocation !== '--').length;
+                allocated = window.globalStudentData.filter(s => s && s.Room_Allocation && s.Room_Allocation !== 'Unassigned' && s.Room_Allocation !== '--').length;
             }
             
-            let availableBeds = Math.max(0, totalBeds - allocatedStudents);
-            
-            chartInstance1 = new Chart(ctx1.getContext('2d'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['Allocated', 'Available'],
-                    datasets: [{ 
-                        data: [allocatedStudents, availableBeds], 
-                        backgroundColor: ['#3b82f6', '#10b981'], 
-                        borderWidth: 0 
-                    }]
-                },
-                options: {
-                    ...commonChartOptions,
-                    plugins: {
-                        ...commonChartOptions.plugins,
-                        title: { display: true, text: 'CAPACITY', font: {size: 11, weight: 'bold'}, color: '#64748b' }
-                    }
-                }
-            });
+            let available = Math.max(0, totalBeds - allocated);
+            let totalChart = allocated + available;
+            let allocDeg = totalChart ? (allocated / totalChart) * 360 : 0;
+
+            dash.innerHTML = `
+                <div class="flex items-center justify-center gap-6 bg-white/70 p-6 rounded-2xl border border-white shadow-sm w-full max-w-md mx-auto">
+                    <div class="relative w-24 h-24 shrink-0 rounded-full pie-chart-anim" style="background: conic-gradient(#3b82f6 0deg, #3b82f6 ${allocDeg}deg, #10b981 ${allocDeg}deg, #10b981 360deg); box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                        <div class="absolute inset-2 bg-white rounded-full flex items-center justify-center flex-col shadow-inner">
+                            <span class="text-base font-black text-slate-800 leading-none">${allocated}</span>
+                            <span class="text-[6px] text-slate-400 uppercase font-bold tracking-widest mt-0.5">Allocated</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-2 w-full max-w-[150px]">
+                        <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1 mb-1">Capacity Ratio</p>
+                        <div class="flex items-center justify-between"><div class="flex items-center gap-2"><div class="w-2.5 h-2.5 rounded-full bg-blue-500"></div><span class="text-[10px] font-bold text-slate-600 uppercase">Allocated</span></div><span class="text-xs font-black text-slate-800 bg-blue-50 text-blue-600 px-1.5 rounded">${allocated}</span></div>
+                        <div class="flex items-center justify-between"><div class="flex items-center gap-2"><div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div><span class="text-[10px] font-bold text-slate-600 uppercase">Available</span></div><span class="text-xs font-black text-slate-800 bg-emerald-50 text-emerald-600 px-1.5 rounded">${available}</span></div>
+                    </div>
+                </div>
+            `;
         } else {
-            // CHART 1: Gender Ratio
+            // ROOMS TAB (Gender & Funding)
+            
+            // Generate Gender Data
             let males = 0, females = 0;
-            if (filteredStudents && filteredStudents.length > 0) {
+            if (filteredStudents) {
                 filteredStudents.forEach(s => {
                     let g = String(s.Gender || '').toLowerCase();
                     if (g.includes('female')) females++;
                     else if (g.includes('male')) males++;
                 });
             }
-            
-            chartInstance1 = new Chart(ctx1.getContext('2d'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['Male', 'Female'],
-                    datasets: [{ 
-                        data: [males, females], 
-                        backgroundColor: ['#3b82f6', '#ec4899'], 
-                        borderWidth: 0 
-                    }]
-                },
-                options: {
-                    ...commonChartOptions,
-                    plugins: {
-                        ...commonChartOptions.plugins,
-                        title: { display: true, text: 'GENDER RATIO', font: {size: 11, weight: 'bold'}, color: '#64748b' }
-                    }
-                }
-            });
+            let totalGender = males + females;
+            let maleDeg = totalGender ? (males / totalGender) * 360 : 0;
 
-            // CHART 2: Funding Distribution
+            // Generate Funding Data
             let fundingObj = {};
-            if (filteredStudents && filteredStudents.length > 0) {
+            if (filteredStudents) {
                 filteredStudents.forEach(s => {
                     let type = String(s.Funding_Type || 'Unknown').trim();
                     if(type === '') type = 'Unknown';
@@ -493,26 +419,60 @@
             }
             
             let fKeys = Object.keys(fundingObj);
-            if(fKeys.length === 0) { fundingObj = {'No Data': 1}; fKeys = ['No Data']; }
+            let fTotal = fKeys.reduce((sum, key) => sum + fundingObj[key], 0);
+            let fColors = ['#f59e0b', '#8b5cf6', '#10b981', '#ef4444', '#3b82f6', '#64748b'];
+            let fGradArr = [];
+            let currentDeg = 0;
+            let fLegendHtml = '';
+            
+            if (fTotal === 0) {
+                fGradArr.push('#e2e8f0 0deg, #e2e8f0 360deg');
+                fLegendHtml = `<div class="text-[10px] text-slate-400 italic">No Data</div>`;
+            } else {
+                fKeys.forEach((key, i) => {
+                    let color = fColors[i % fColors.length];
+                    let val = fundingObj[key];
+                    let sliceDeg = (val / fTotal) * 360;
+                    fGradArr.push(`${color} ${currentDeg}deg, ${color} ${currentDeg + sliceDeg}deg`);
+                    currentDeg += sliceDeg;
+                    
+                    fLegendHtml += `<div class="flex items-center justify-between mt-1"><div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full" style="background-color: ${color};"></div><span class="text-[9px] font-bold text-slate-600 truncate max-w-[80px]">${key}</span></div><span class="text-[10px] font-black text-slate-800">${val}</span></div>`;
+                });
+            }
+            let fGradientStr = `conic-gradient(${fGradArr.join(', ')})`;
 
-            chartInstance2 = new Chart(ctx2.getContext('2d'), {
-                type: 'doughnut',
-                data: {
-                    labels: fKeys,
-                    datasets: [{ 
-                        data: Object.values(fundingObj), 
-                        backgroundColor: ['#f59e0b', '#10b981', '#8b5cf6', '#ef4444', '#64748b'], 
-                        borderWidth: 0 
-                    }]
-                },
-                options: {
-                    ...commonChartOptions,
-                    plugins: {
-                        ...commonChartOptions.plugins,
-                        title: { display: true, text: 'FUNDING', font: {size: 11, weight: 'bold'}, color: '#64748b' }
-                    }
-                }
-            });
+            dash.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                    <!-- Gender Chart -->
+                    <div class="flex items-center justify-center gap-6 bg-white/70 p-5 rounded-2xl border border-white shadow-sm">
+                        <div class="relative w-20 h-20 shrink-0 rounded-full pie-chart-anim" style="background: conic-gradient(#3b82f6 0deg, #3b82f6 ${maleDeg}deg, #ec4899 ${maleDeg}deg, #ec4899 360deg); box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                            <div class="absolute inset-1.5 bg-white rounded-full flex items-center justify-center flex-col shadow-inner">
+                                <i class="fa-solid fa-venus-mars text-slate-300 text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-1 w-full max-w-[120px]">
+                            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1 mb-1">Gender Ratio</p>
+                            <div class="flex items-center justify-between"><div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-blue-500"></div><span class="text-[9px] font-bold text-slate-600">Male</span></div><span class="text-[10px] font-black text-slate-800">${males}</span></div>
+                            <div class="flex items-center justify-between mt-1"><div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-pink-500"></div><span class="text-[9px] font-bold text-slate-600">Female</span></div><span class="text-[10px] font-black text-slate-800">${females}</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Funding Chart -->
+                    <div class="flex items-center justify-center gap-6 bg-white/70 p-5 rounded-2xl border border-white shadow-sm">
+                        <div class="relative w-20 h-20 shrink-0 rounded-full pie-chart-anim" style="background: ${fGradientStr}; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                            <div class="absolute inset-1.5 bg-white rounded-full flex items-center justify-center flex-col shadow-inner">
+                                <i class="fa-solid fa-landmark text-slate-300 text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-0.5 w-full max-w-[140px]">
+                            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1 mb-1">Funding Dist.</p>
+                            <div class="max-h-[60px] overflow-y-auto custom-scroll pr-1">
+                                ${fLegendHtml}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
     };
 
@@ -557,7 +517,7 @@
             return matchBlock && matchGender;
         });
 
-        // Trigger safe chart render
+        // Trigger safe native CSS chart render
         window.renderAnalyticsCharts(filteredRooms, chartStudents);
 
         let htmlStr = '';
