@@ -48,15 +48,14 @@
     .modal-content { transform: scale(0.95) translateY(20px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1); background: #ffffff; border-radius: 24px; padding: 1.25rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); max-height: 90vh; overflow-y: auto; }
     .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
 
-    /* Chart Layouting */
-    .chart-container { 
+    /* Bare Chart Layouting */
+    .chart-slot { 
         position: relative; 
-        height: 170px; 
-        width: 100%; 
+        width: 220px; 
+        height: 220px; 
         display: flex;
         justify-content: center; 
         align-items: center; 
-        margin: 0 auto;
     }
 </style>
 
@@ -81,31 +80,17 @@
             </div>
         </div>
 
-        <!-- High-End Analytics Dashboard -->
-        <div id="analytics-dashboard" class="flex flex-wrap justify-center items-stretch gap-4 mb-3 w-full shrink-0 z-10 relative">
+        <!-- Floating Analytics Charts (No Boxes) -->
+        <div class="flex flex-wrap justify-center items-center gap-12 sm:gap-24 mb-4 w-full shrink-0 z-10 relative">
             
-            <!-- Chart 1: Capacity (Students Tab Only - Centered) -->
-            <div id="card-capacity" class="glass-panel p-4 flex flex-col items-center justify-center w-full sm:w-[350px] max-w-sm mx-auto">
-                <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 text-center w-full"><i class="fa-solid fa-chart-pie mr-1 text-emerald-500"></i> Overall Capacity</h4>
-                <div class="chart-container" id="chart-container-capacity">
-                    <canvas id="chartCapacity"></canvas>
-                </div>
+            <!-- Chart Slot 1 (Used for Capacity on Students, Gender on Rooms) -->
+            <div id="chart-slot-1" class="chart-slot">
+                <canvas id="canvasSlot1"></canvas>
             </div>
 
-            <!-- Chart 2: Gender Demographics (Rooms Tab Only) -->
-            <div id="card-gender" class="glass-panel p-4 flex-col items-center justify-center w-full sm:w-[320px] max-w-sm hidden" style="display: none;">
-                <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 text-center w-full"><i class="fa-solid fa-venus-mars mr-1 text-blue-500"></i> Gender Ratio</h4>
-                <div class="chart-container" id="chart-container-gender">
-                    <canvas id="chartGender"></canvas>
-                </div>
-            </div>
-
-            <!-- Chart 3: Funding Types (Rooms Tab Only) -->
-            <div id="card-funding" class="glass-panel p-4 flex-col items-center justify-center w-full sm:w-[320px] max-w-sm hidden" style="display: none;">
-                <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 text-center w-full"><i class="fa-solid fa-landmark mr-1 text-amber-500"></i> Funding Distribution</h4>
-                <div class="chart-container" id="chart-container-funding">
-                    <canvas id="chartFunding"></canvas>
-                </div>
+            <!-- Chart Slot 2 (Used only for Funding on Rooms Tab) -->
+            <div id="chart-slot-2" class="chart-slot" style="display: none;">
+                <canvas id="canvasSlot2"></canvas>
             </div>
 
         </div>
@@ -300,7 +285,7 @@
     window.globalStudentData = window.globalStudentData || [];
 
     // ----------------------------------------------------
-    // N8N API PIPELINE (Explicit Rendering Trigger)
+    // N8N API PIPELINE
     // ----------------------------------------------------
     (async function initPipelineCheck() {
         let needsRender = false;
@@ -321,35 +306,33 @@
             }
         } catch (e) { console.error("Student sync fallback interrupted"); }
         
-        // Force a UI update if fresh data arrived successfully
         if(needsRender) {
             window.processStatsData();
         }
     })();
 
     // ----------------------------------------------------
-    // CONFIGURATION
+    // CONFIGURATION & STATE
     // ----------------------------------------------------
     var currentOccupancyView = 'students'; 
     var currentOccupancyBlock = 'all'; 
     var currentOccupancyGender = 'all';
     
-    var capacityChartInstance = null;
-    var genderChartInstance = null;
-    var fundingChartInstance = null;
+    var chartInstance1 = null;
+    var chartInstance2 = null;
 
-    const chartOptions = {
+    const commonChartOptions = {
         responsive: true, 
         maintainAspectRatio: false,
         plugins: { 
             legend: { 
                 position: 'bottom', 
-                labels: { font: { size: 9, family: 'Inter' }, usePointStyle: true, boxWidth: 6, padding: 10 } 
-            } 
+                labels: { font: { size: 10, family: 'Inter', weight: 'bold' }, usePointStyle: true, boxWidth: 6, padding: 15 } 
+            }
         },
-        cutout: '70%', 
-        borderDashOffset: 0,
-        layout: { padding: 10 }
+        cutout: '75%', // Modern thin ring
+        borderWidth: 0,
+        layout: { padding: 5 }
     };
 
     window.toggleOccSidebar = function() {
@@ -377,44 +360,34 @@
         const icon = document.getElementById('occ-icon');
         const searchInput = document.getElementById('search-occupancy');
 
-        const cardCap = document.getElementById('card-capacity');
-        const cardGen = document.getElementById('card-gender');
-        const cardFund = document.getElementById('card-funding');
+        const slot1 = document.getElementById('chart-slot-1');
+        const slot2 = document.getElementById('chart-slot-2');
         
         if(searchInput) searchInput.value = '';
+
+        // Destroy charts before hiding containers to prevent Chart.js bugs
+        if(chartInstance1) { chartInstance1.destroy(); chartInstance1 = null; }
+        if(chartInstance2) { chartInstance2.destroy(); chartInstance2 = null; }
         
-        // Strict explicit display toggling guarantees DOM paints properly
         if(view === 'rooms') { 
             if(title) title.textContent = 'Live Room Inventory'; 
             if(filters) { filters.classList.remove('hidden'); filters.classList.add('flex'); }
             if(icon) { icon.className = "fa-solid fa-bed text-xs"; icon.parentElement.className = "w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shadow-sm"; }
             
-            cardCap.style.display = 'none';
-            cardCap.classList.remove('flex');
-            
-            cardGen.style.display = 'flex';
-            cardGen.classList.add('flex');
-            
-            cardFund.style.display = 'flex';
-            cardFund.classList.add('flex');
+            slot1.style.display = 'flex';
+            slot2.style.display = 'flex';
         } else { 
             if(title) title.textContent = 'Allocated Students'; 
             if(filters) { filters.classList.remove('flex'); filters.classList.add('hidden'); } 
             if(icon) { icon.className = "fa-solid fa-users text-xs"; icon.parentElement.className = "w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm"; }
             
-            cardCap.style.display = 'flex';
-            cardCap.classList.add('flex');
-            
-            cardGen.style.display = 'none';
-            cardGen.classList.remove('flex');
-            
-            cardFund.style.display = 'none';
-            cardFund.classList.remove('flex');
+            slot1.style.display = 'flex';
+            slot2.style.display = 'none';
         }
 
-        // Wait for browser layout to commit before rendering charts to avoid 0x0 canvas collapse
+        // Wait a frame for display:none/flex to register in the DOM before rendering
         requestAnimationFrame(() => {
-            setTimeout(() => { window.processStatsData(); }, 50);
+            setTimeout(() => { window.processStatsData(); }, 10);
         });
     };
 
@@ -433,122 +406,113 @@
     };
 
     // ----------------------------------------------------
-    // STRICT ISOLATED CHART ENGINE (DYNAMIC INJECTION)
+    // BARE CHART ENGINE
     // ----------------------------------------------------
     window.renderAnalyticsCharts = function(filteredRooms, filteredStudents) {
         if (typeof Chart === 'undefined') {
-            console.warn("Chart.js loading... retrying.");
             setTimeout(() => window.renderAnalyticsCharts(filteredRooms, filteredStudents), 250);
             return;
         }
 
-        const isStudentsTab = (currentOccupancyView === 'students');
-        const isRoomsTab = (currentOccupancyView === 'rooms');
+        if(chartInstance1) { chartInstance1.destroy(); chartInstance1 = null; }
+        if(chartInstance2) { chartInstance2.destroy(); chartInstance2 = null; }
 
-        // Completely destroy instances and wipe containers to prevent Chart.js bugs
-        if(capacityChartInstance) { capacityChartInstance.destroy(); capacityChartInstance = null; }
-        if(genderChartInstance) { genderChartInstance.destroy(); genderChartInstance = null; }
-        if(fundingChartInstance) { fundingChartInstance.destroy(); fundingChartInstance = null; }
+        const ctx1 = document.getElementById('canvasSlot1');
+        const ctx2 = document.getElementById('canvasSlot2');
 
-        // ==========================================
-        // 1. CAPACITY (STUDENTS TAB ONLY) - Allocated vs Available
-        // ==========================================
-        if (isStudentsTab) {
-            const capContainer = document.getElementById('chart-container-capacity');
-            if (capContainer) {
-                // Force Canvas reset
-                capContainer.innerHTML = '<canvas id="chartCapacity"></canvas>';
-                const ctxCap = document.getElementById('chartCapacity');
-                
-                let totalBeds = 0;
-                if (window.globalRoomData && window.globalRoomData.length > 0) {
-                    window.globalRoomData.forEach(r => { totalBeds += parseInt(r.Total_Beds || r.Capacity) || 0; });
+        if (currentOccupancyView === 'students') {
+            // CHART: Allocated vs Available (using slot 1)
+            let totalBeds = 0;
+            if (window.globalRoomData) {
+                window.globalRoomData.forEach(r => { totalBeds += parseInt(r.Total_Beds || r.Capacity) || 0; });
+            }
+            
+            let allocatedStudents = 0;
+            if (window.globalStudentData) {
+                allocatedStudents = window.globalStudentData.filter(s => s && s.Room_Allocation && s.Room_Allocation !== 'Unassigned' && s.Room_Allocation !== '--').length;
+            }
+            
+            let availableBeds = Math.max(0, totalBeds - allocatedStudents);
+            
+            chartInstance1 = new Chart(ctx1.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Allocated', 'Available'],
+                    datasets: [{ 
+                        data: [allocatedStudents, availableBeds], 
+                        backgroundColor: ['#3b82f6', '#10b981'], 
+                        borderWidth: 0 
+                    }]
+                },
+                options: {
+                    ...commonChartOptions,
+                    plugins: {
+                        ...commonChartOptions.plugins,
+                        title: { display: true, text: 'CAPACITY', font: {size: 11, weight: 'bold'}, color: '#64748b' }
+                    }
                 }
-                
-                let allocatedStudents = 0;
-                if (window.globalStudentData && window.globalStudentData.length > 0) {
-                    allocatedStudents = window.globalStudentData.filter(s => s && s.Room_Allocation && s.Room_Allocation !== 'Unassigned' && s.Room_Allocation !== '--').length;
-                }
-                
-                let availableBeds = Math.max(0, totalBeds - allocatedStudents);
-                
-                let capData = (allocatedStudents === 0 && availableBeds === 0) ? [0, 1] : [allocatedStudents, availableBeds];
-                let capColors = (allocatedStudents === 0 && availableBeds === 0) ? ['#e2e8f0', '#e2e8f0'] : ['#3b82f6', '#10b981'];
-                let capLabels = (allocatedStudents === 0 && availableBeds === 0) ? ['Allocated', 'Available'] : ['Allocated Beds', 'Available Beds'];
-
-                capacityChartInstance = new Chart(ctxCap.getContext('2d'), {
-                    type: 'doughnut',
-                    data: {
-                        labels: capLabels,
-                        datasets: [{ data: capData, backgroundColor: capColors, borderWidth: 0, hoverOffset: 4 }]
-                    },
-                    options: chartOptions
+            });
+        } else {
+            // CHART 1: Gender Ratio
+            let males = 0, females = 0;
+            if (filteredStudents && filteredStudents.length > 0) {
+                filteredStudents.forEach(s => {
+                    let g = String(s.Gender || '').toLowerCase();
+                    if (g.includes('female')) females++;
+                    else if (g.includes('male')) males++;
                 });
             }
-        }
-
-        // ==========================================
-        // 2 & 3. GENDER & FUNDING (ROOMS TAB ONLY)
-        // ==========================================
-        if (isRoomsTab) {
-            const genContainer = document.getElementById('chart-container-gender');
-            if (genContainer) {
-                // Force Canvas reset
-                genContainer.innerHTML = '<canvas id="chartGender"></canvas>';
-                const ctxGen = document.getElementById('chartGender');
-                
-                let males = 0, females = 0;
-                if (filteredStudents && filteredStudents.length > 0) {
-                    filteredStudents.forEach(s => {
-                        let g = String(s.Gender || '').toLowerCase();
-                        if (g.includes('female')) females++;
-                        else if (g.includes('male')) males++;
-                    });
+            
+            chartInstance1 = new Chart(ctx1.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Male', 'Female'],
+                    datasets: [{ 
+                        data: [males, females], 
+                        backgroundColor: ['#3b82f6', '#ec4899'], 
+                        borderWidth: 0 
+                    }]
+                },
+                options: {
+                    ...commonChartOptions,
+                    plugins: {
+                        ...commonChartOptions.plugins,
+                        title: { display: true, text: 'GENDER RATIO', font: {size: 11, weight: 'bold'}, color: '#64748b' }
+                    }
                 }
-                
-                let genData = (males === 0 && females === 0) ? [1] : [males, females];
-                let genColors = (males === 0 && females === 0) ? ['#e2e8f0'] : ['#3b82f6', '#ec4899'];
-                let genLabels = (males === 0 && females === 0) ? ['Awaiting Data'] : ['Male', 'Female'];
+            });
 
-                genderChartInstance = new Chart(ctxGen.getContext('2d'), {
-                    type: 'doughnut',
-                    data: {
-                        labels: genLabels,
-                        datasets: [{ data: genData, backgroundColor: genColors, borderWidth: 0, hoverOffset: 4 }]
-                    },
-                    options: chartOptions
+            // CHART 2: Funding Distribution
+            let fundingObj = {};
+            if (filteredStudents && filteredStudents.length > 0) {
+                filteredStudents.forEach(s => {
+                    let type = String(s.Funding_Type || 'Unknown').trim();
+                    if(type === '') type = 'Unknown';
+                    fundingObj[type] = (fundingObj[type] || 0) + 1;
                 });
             }
+            
+            let fKeys = Object.keys(fundingObj);
+            if(fKeys.length === 0) { fundingObj = {'No Data': 1}; fKeys = ['No Data']; }
 
-            const fundContainer = document.getElementById('chart-container-funding');
-            if (fundContainer) {
-                // Force Canvas reset
-                fundContainer.innerHTML = '<canvas id="chartFunding"></canvas>';
-                const ctxFund = document.getElementById('chartFunding');
-                
-                let fundingObj = {};
-                if (filteredStudents && filteredStudents.length > 0) {
-                    filteredStudents.forEach(s => {
-                        let type = String(s.Funding_Type || 'Unknown').trim();
-                        if(type === '') type = 'Unknown';
-                        fundingObj[type] = (fundingObj[type] || 0) + 1;
-                    });
+            chartInstance2 = new Chart(ctx2.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: fKeys,
+                    datasets: [{ 
+                        data: Object.values(fundingObj), 
+                        backgroundColor: ['#f59e0b', '#10b981', '#8b5cf6', '#ef4444', '#64748b'], 
+                        borderWidth: 0 
+                    }]
+                },
+                options: {
+                    ...commonChartOptions,
+                    plugins: {
+                        ...commonChartOptions.plugins,
+                        title: { display: true, text: 'FUNDING', font: {size: 11, weight: 'bold'}, color: '#64748b' }
+                    }
                 }
-                if(Object.keys(fundingObj).length === 0) { fundingObj = { 'Awaiting Data': 1 }; }
-
-                let fKeys = Object.keys(fundingObj);
-                let fData = Object.values(fundingObj);
-                let fColors = fKeys[0] === 'Awaiting Data' ? ['#e2e8f0'] : ['#f59e0b', '#3b82f6', '#10b981', '#ef4444', '#8b5cf6', '#64748b'];
-
-                fundingChartInstance = new Chart(ctxFund.getContext('2d'), {
-                    type: 'doughnut',
-                    data: {
-                        labels: fKeys,
-                        datasets: [{ data: fData, backgroundColor: fColors, borderWidth: 0, hoverOffset: 4 }]
-                    },
-                    options: chartOptions
-                });
-            }
+            });
         }
     };
 
