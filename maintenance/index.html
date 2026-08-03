@@ -594,7 +594,8 @@
                 const container = document.getElementById(`chat-container-${ticketId}`);
                 if (container && !container.classList.contains('h-[52px]')) {
                     try {
-                        const params = new URLSearchParams({ Ticket_ID: ticketId, ticket_id: ticketId });
+                        const studentId = container.dataset.studentId || '';
+                        const params = new URLSearchParams({ Ticket_ID: ticketId, ticket_id: ticketId, Student_Number: studentId });
                         const res = await fetch(`https://n8n.automania.cloud/webhook/reziflow-get-snag-chat?${params.toString()}`, {
                             method: 'GET'
                         });
@@ -606,7 +607,6 @@
                             if (chats.length !== oldLength) {
                                 window.activeChatsByTicket[ticketId] = chats;
                                 const studentName = container.dataset.studentName || 'Resident';
-                                const studentId = container.dataset.studentId || '';
                                 window.renderChatUI(ticketId, studentId, studentName);
                             }
                         }
@@ -718,7 +718,7 @@
                     historyEl.innerHTML = `<div class="flex-1 flex items-center justify-center h-full"><i class="fa-solid fa-circle-notch fa-spin text-blue-500 text-xl"></i></div>`;
                     
                     try {
-                        const params = new URLSearchParams({ Ticket_ID: ticketId, ticket_id: ticketId });
+                        const params = new URLSearchParams({ Ticket_ID: ticketId, ticket_id: ticketId, Student_Number: studentId });
                         const res = await fetch(`https://n8n.automania.cloud/webhook/reziflow-get-snag-chat?${params.toString()}`, {
                             method: 'GET'
                         });
@@ -882,7 +882,7 @@
             window.renderChatUI(ticketId, studentId, studentName);
             inputEl.value = '';
             
-            const params = new URLSearchParams({
+            const params = newSearchParams({
                 Ticket_ID: ticketId, ticket_id: ticketId, Student_Number: studentId || 'Unknown', studentn: studentId || 'Unknown',
                 Room: room || 'Unassigned', Role: "Officer", sender_role: "Maintainance", sender_name: "Officer",
                 Message: finalMsg, message_text: finalMsg, Timestamp: now.toISOString()
@@ -894,7 +894,6 @@
         };
 
         window.updateTicketStatus = async function(ticketId, status, btnElement) {
-            const ogHtml = btnElement.innerHTML;
             btnElement.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>'; 
             btnElement.disabled = true;
 
@@ -908,16 +907,11 @@
                 });
                 
                 window.showToast(`Status updated to: ${status}`);
-                btnElement.innerHTML = `<i class="fa-solid fa-check"></i> Updated`;
-                btnElement.classList.add('bg-emerald-50', 'text-emerald-600', 'border-emerald-200');
-                
-                setTimeout(() => {
-                    btnElement.innerHTML = ogHtml;
-                    btnElement.disabled = false;
-                    btnElement.classList.remove('bg-emerald-50', 'text-emerald-600', 'border-emerald-200');
-                }, 2000);
+                btnElement.innerHTML = `<i class="fa-solid fa-check"></i> ${status}`;
+                btnElement.className = 'flex-1 bg-emerald-50 border border-emerald-200 text-emerald-600 font-bold rounded-xl py-2 shadow-sm text-[9px] flex items-center justify-center gap-1 opacity-80 cursor-not-allowed';
             } catch(e) {
-                btnElement.innerHTML = ogHtml; btnElement.disabled = false; 
+                btnElement.innerHTML = status === 'Assigned' ? `<i class="fa-solid fa-user-check"></i> Assign` : `<i class="fa-solid fa-screwdriver-wrench"></i> Fix`;
+                btnElement.disabled = false; 
                 window.showToast("Failed to update status.", "error");
             }
         };
@@ -1067,10 +1061,10 @@
                                         <label class="block text-[8px] font-bold text-slate-500 uppercase tracking-widest mb-2 pl-1"><i class="fa-solid fa-bars-progress mr-1"></i> Update Tracker Status</label>
                                         <div class="flex gap-2 mb-3">
                                             <button type="button" onclick="window.updateTicketStatus('${safeId}', 'Assigned', this)" class="flex-1 bg-white border border-slate-200 hover:border-blue-300 hover:bg-blue-50 text-slate-600 hover:text-blue-600 font-bold rounded-xl py-2 shadow-sm text-[9px] transition-colors flex items-center justify-center gap-1 tap-effect">
-                                                <i class="fa-solid fa-user-check"></i> Assigned
+                                                <i class="fa-solid fa-user-check"></i> Assign
                                             </button>
                                             <button type="button" onclick="window.updateTicketStatus('${safeId}', 'Fixing', this)" class="flex-1 bg-white border border-slate-200 hover:border-amber-300 hover:bg-amber-50 text-slate-600 hover:text-amber-600 font-bold rounded-xl py-2 shadow-sm text-[9px] transition-colors flex items-center justify-center gap-1 tap-effect">
-                                                <i class="fa-solid fa-screwdriver-wrench"></i> Fixing
+                                                <i class="fa-solid fa-screwdriver-wrench"></i> Fix
                                             </button>
                                         </div>
 
