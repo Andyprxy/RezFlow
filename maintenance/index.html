@@ -586,18 +586,8 @@
 
         // 1-SECOND REALTIME POLLING ENGINE FOR MESSAGES & TICKETS
         setInterval(async function pollRealtimeData() {
-            // 1. Silent Ticket Refresher
-            try {
-                const maintRes = await fetch('https://n8n.automania.cloud/webhook/reziflow-get-maintenance').catch(()=>null);
-                if (maintRes && maintRes.ok) { 
-                    const newData = window.parseN8n(await maintRes.json());
-                    if (JSON.stringify(newData) !== JSON.stringify(window.globalMaintenanceData)) {
-                        window.globalMaintenanceData = newData;
-                        if (window.currentMaintTab === 'snags') window.renderMaintenanceData();
-                        if (window.currentMaintTab === 'history') window.renderHistoryData();
-                    }
-                }
-            } catch(e) {}
+            // 1. Silent Ticket Refresher has been disabled as requested to prevent auto-firing.
+            // Data will now only refresh on initial load or via manual refresh button.
 
             // 2. Realtime Chat Feed Poller
             for (const ticketId in window.activeChatsByTicket) {
