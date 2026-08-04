@@ -1049,7 +1049,7 @@
         ];
 
         function getSessionData() {
-            let rawSession = localStorage.getItem('rezflow_session');
+            let rawSession = localStorage.getItem('reziflow_session');
             if (!rawSession) return {};
             try {
                 let parsed = JSON.parse(rawSession);
@@ -1084,7 +1084,7 @@
 
             try {
                 const queryParams = new URLSearchParams({ Email_Address: email, _t: new Date().getTime() });
-                const targetUrl = `https://n8n.automania.cloud/webhook/rezflow-get-vetting?${queryParams.toString()}`;
+                const targetUrl = `https://n8n.automania.cloud/webhook/reziflow-get-vetting?${queryParams.toString()}`;
                 const res = await fetch(targetUrl);
 
                 if (res.ok) {
@@ -1129,7 +1129,7 @@
                             mergedSession.Doc_Lease_URL = "vaulted_locally";
                         }
                         
-                        localStorage.setItem('rezflow_session', JSON.stringify(mergedSession));
+                        localStorage.setItem('reziflow_session', JSON.stringify(mergedSession));
                         hydrateGatewayEngine(true, mergedSession);
                         return mergedSession;
                     }
@@ -1217,7 +1217,7 @@
             const email = session.Email_Address || session.Email || 'unknown@student.com'; 
 
             try {
-                const res = await fetch('https://n8n.automania.cloud/webhook/rezflow-init-profile', {
+                const res = await fetch('https://n8n.automania.cloud/webhook/reziflow-init-profile', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ Email_Address: email, First_Name: fName, Surname: sName, Student_Number: studentNum })
@@ -1230,7 +1230,7 @@
                 session.Student_Number = studentNum;
                 session.Email_Address = email; 
 
-                localStorage.setItem('rezflow_session', JSON.stringify(session));
+                localStorage.setItem('reziflow_session', JSON.stringify(session));
 
                 const welcomeModal = document.getElementById('welcomeModal');
                 if (welcomeModal) {
@@ -1579,7 +1579,7 @@
             btnElement.disabled = true;
 
             try {
-                const res = await fetch('https://n8n.automania.cloud/webhook/rezflow-finalize', {
+                const res = await fetch('https://n8n.automania.cloud/webhook/reziflow-finalize', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -1594,7 +1594,7 @@
 
                 session.AD_ALERT = "Alerted";
                 session.Admin_Alerted = true; 
-                localStorage.setItem('rezflow_session', JSON.stringify(session));
+                localStorage.setItem('reziflow_session', JSON.stringify(session));
 
                 btnElement.innerHTML = '<i class="fa-solid fa-check"></i> Alert Sent';
                 setTimeout(() => {
@@ -1621,12 +1621,12 @@
                 const session = getSessionData();
                 if(session) {
                     session.Profile_Pic = base64Img;
-                    localStorage.setItem('rezflow_session', JSON.stringify(session));
+                    localStorage.setItem('reziflow_session', JSON.stringify(session));
                 }
                 applyProfilePic(base64Img);
                 showToast("Profile picture updated!", "success");
                 
-                fetch('https://n8n.automania.cloud/webhook/rezflow-profile-pic', {
+                fetch('https://n8n.automania.cloud/webhook/reziflow-profile-pic', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ Student_Number: session ? session.Student_Number : 'Unknown', Image: base64Img })
@@ -1690,13 +1690,13 @@
             const base64Signature = sigCanvas.toDataURL('image/png');
 
             try {
-                const res = await fetch('https://n8n.automania.cloud/webhook/rezflow-sign-lease', {
+                const res = await fetch('https://n8n.automania.cloud/webhook/reziflow-sign-lease', {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ Student_Number: session ? session.Student_Number : 'Unknown', Email_Address: session ? session.Email_Address : 'Unknown', Signature: base64Signature, Signed_Lease: "Signed" })
                 });
                 if (!res.ok) throw new Error("Server error");
 
-                session.Doc_Lease_URL = "vaulted_locally"; session.Signed_Lease = "Signed"; localStorage.setItem('rezflow_session', JSON.stringify(session));
+                session.Doc_Lease_URL = "vaulted_locally"; session.Signed_Lease = "Signed"; localStorage.setItem('reziflow_session', JSON.stringify(session));
                 closeModal('leaseModal');
                 const compModal = document.getElementById('completionModal'); compModal.classList.remove('hidden');
                 setTimeout(() => {
@@ -1722,7 +1722,7 @@
             btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...'; btn.disabled = true;
 
             try {
-                const res = await fetch('https://n8n.automania.cloud/webhook/rezflow-visitor-pin', {
+                const res = await fetch('https://n8n.automania.cloud/webhook/reziflow-visitor-pin', {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ Student_Number: session.Student_Number, Room: session.Room_Allocation || 'Unassigned', Visitor_Name: fname, Visitor_Surname: sname, Visitor_Email: email })
                 });
@@ -1756,7 +1756,7 @@
             btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Submitting...'; btn.disabled = true;
 
             try {
-                const res = await fetch('https://n8n.automania.cloud/webhook/rezflow-log-snag', {
+                const res = await fetch('https://n8n.automania.cloud/webhook/reziflow-log-snag', {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ Student_Number: session.Student_Number || 'Unknown', Room: session.Room_Allocation || 'Unassigned', Category: category, Description: desc })
                 });
@@ -1788,7 +1788,7 @@
             text.textContent = 'Sending...'; btn.disabled = true;
 
             try {
-                const res = await fetch('https://n8n.automania.cloud/webhook/rezflow-log-security', {
+                const res = await fetch('https://n8n.automania.cloud/webhook/reziflow-log-security', {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ Student_Number: session.Student_Number, Room: session.Room_Allocation || 'Unassigned', Alert_Type: "Panic Button", Alert_Level: "CRITICAL SOS", Notes: "Triggered via mobile app" })
                 });
@@ -1815,7 +1815,7 @@
             btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Transmitting...'; btn.disabled = true;
 
             try {
-                const res = await fetch('https://n8n.automania.cloud/webhook/rezflow-log-security', {
+                const res = await fetch('https://n8n.automania.cloud/webhook/reziflow-log-security', {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ Student_Number: session.Student_Number, Room: session.Room_Allocation || 'Unassigned', Alert_Type: pingType, Alert_Level: "Standard Ping", Notes: notes || "No additional details provided." })
                 });
@@ -1875,7 +1875,7 @@
 
         async function fetchLiveShuttleData() {
             try {
-                const response = await fetch('https://n8n.automania.cloud/webhook/rezflow-get-shuttle?t=' + Date.now(), { method: 'GET', cache: 'no-store' });
+                const response = await fetch('https://n8n.automania.cloud/webhook/reziflow-get-shuttle?t=' + Date.now(), { method: 'GET', cache: 'no-store' });
                 const rawData = await response.json(); const data = Array.isArray(rawData) ? rawData[0] : rawData;
                 if (data && data.Latitude && data.Longitude) {
                     const shuttleCoords = [parseFloat(data.Latitude), parseFloat(data.Longitude)];
@@ -1906,7 +1906,7 @@
             const session = getSessionData(); const ogHtml = btnElement.innerHTML;
             btnElement.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sending...'; btnElement.disabled = true;
             try {
-                await fetch('https://n8n.automania.cloud/webhook/rezflow-student-request', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ Student_Number: session.Student_Number || 'Unknown', Student_Name: session.First_Name || 'Resident', Room: session.Room_Allocation || 'Unassigned', Type: type, Message: msgText, Time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) })});
+                await fetch('https://n8n.automania.cloud/webhook/reziflow-student-request', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ Student_Number: session.Student_Number || 'Unknown', Student_Name: session.First_Name || 'Resident', Room: session.Room_Allocation || 'Unassigned', Type: type, Message: msgText, Time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) })});
                 showToast("Request dispatched to driver portal.", "success");
             } catch(e) { showToast("Transmission failed.", "error"); } finally { btnElement.innerHTML = ogHtml; btnElement.disabled = false; }
         }
@@ -1945,7 +1945,7 @@
             btn.disabled = true;
 
             try {
-                const res = await fetch('https://n8n.automania.cloud/webhook/adowa-request', {
+                const res = await fetch('https://n8n.automania.cloud/webhook/phumelela-request', {
                     method: 'POST', 
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -2013,7 +2013,7 @@
 
         function openModal(id) { document.getElementById(id).classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-        function handleLogout() { localStorage.removeItem('rezflow_session'); window.location.href = '/adowa/signin'; }
+        function handleLogout() { localStorage.removeItem('reziflow_session'); window.location.href = '/adowa/signin'; }
 
         function showToast(message, type) {
             const container = document.getElementById('toast-container'); const text = document.getElementById('toast-text'); const icon = document.getElementById('toast-icon');
@@ -2090,9 +2090,9 @@
             appendInputs('wizard-step-1'); appendInputs('wizard-step-2');
 
             try {
-                const response = await fetch('https://n8n.automania.cloud/webhook/rezflow-update-profile', { method: 'POST', body: formData });
+                const response = await fetch('https://n8n.automania.cloud/webhook/reziflow-update-profile', { method: 'POST', body: formData });
                 if (!response.ok) throw new Error("Webhook rejected");
-                localStorage.setItem('rezflow_session', JSON.stringify(session));
+                localStorage.setItem('reziflow_session', JSON.stringify(session));
                 btn.innerHTML = '<i class="fa-solid fa-check"></i> Saved'; btn.classList.replace('bg-slate-900', 'bg-emerald-500');
                 setTimeout(() => { closeWizardModal(); hydrateGatewayEngine(false, session); showToast("Profile Info updated securely.", "success"); btn.innerHTML = ogHtml; btn.disabled = false; btn.classList.replace('bg-emerald-500', 'bg-slate-900'); }, 800);
             } catch (error) { btn.innerHTML = ogHtml; btn.disabled = false; showToast("Transmission failed.", "error"); }
@@ -2115,9 +2115,9 @@
             });
 
             try {
-                const response = await fetch('https://n8n.automania.cloud/webhook/rezflow-vault-docs', { method: 'POST', body: formData });
+                const response = await fetch('https://n8n.automania.cloud/webhook/reziflow-vault-docs', { method: 'POST', body: formData });
                 if (!response.ok) throw new Error("Webhook rejected");
-                localStorage.setItem('rezflow_session', JSON.stringify(session));
+                localStorage.setItem('reziflow_session', JSON.stringify(session));
                 btn.innerHTML = '<i class="fa-solid fa-check"></i> Vaulted'; btn.classList.replace('bg-slate-900', 'bg-emerald-500');
                 setTimeout(() => { closeWizardModal(); hydrateGatewayEngine(false, session); showToast("Documents securely vaulted.", "success"); btn.innerHTML = ogHtml; btn.disabled = false; btn.classList.replace('bg-emerald-500', 'bg-slate-900'); }, 800);
             } catch (error) { btn.innerHTML = ogHtml; btn.disabled = false; showToast("Transmission failed.", "error"); }
@@ -2127,7 +2127,7 @@
         window.fetchChatHistory = async function(channel) {
             const session = getSessionData();
             const studentId = session.Student_Number || 'Unknown';
-            const endpoint = channel === 'snag' ? 'rezflow-get-snag-chat' : 'rezflow-get-snag-chat0';
+            const endpoint = channel === 'snag' ? 'reziflow-get-snag-chat' : 'reziflow-get-snag-chat0';
             const url = `https://n8n.automania.cloud/webhook/${endpoint}?Student_Number=${studentId}&studentn=${studentId}`;
             
             try {
@@ -2300,8 +2300,8 @@
             inputEl.value = '';
 
             const baseUrl = channel === 'snag' 
-                ? 'https://n8n.automania.cloud/webhook/rezflow-snag-chat-send0' 
-                : 'https://n8n.automania.cloud/webhook/rezflow-security-chat-send0';
+                ? 'https://n8n.automania.cloud/webhook/reziflow-snag-chat-send0' 
+                : 'https://n8n.automania.cloud/webhook/reziflow-security-chat-send0';
             
             const params = new URLSearchParams({
                 Student_Number: session.Student_Number || 'Unknown',
@@ -2361,7 +2361,7 @@
             }
 
             try {
-                const response = await fetch(`https://n8n.automania.cloud/webhook/rezflow-get-active-logs?Student_Number=${studentNum}`);
+                const response = await fetch(`https://n8n.automania.cloud/webhook/reziflow-get-active-logs?Student_Number=${studentNum}`);
                 if (!response.ok) throw new Error("Failed to fetch logs");
                 
                 let data = await response.json();
