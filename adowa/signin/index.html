@@ -114,10 +114,10 @@
             const cleanEmail = rawEmail.toLowerCase().trim();
 
             try {
-                localStorage.removeItem('rezflow_session');
-                localStorage.removeItem('rezflow_portal_init');
+                localStorage.removeItem('reziflow_session');
+                localStorage.removeItem('reziflow_portal_init');
 
-                const res = await fetch('https://n8n.automania.cloud/webhook/rezflow-sign', {
+                const res = await fetch('https://n8n.automania.cloud/webhook/reziflow-sign', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ Email_Address: cleanEmail, Password: document.getElementById('password').value })
@@ -165,7 +165,7 @@
                 // Lock the email in to prevent 'unknown@student.com'
                 userData.Email_Address = userData.Email_Address || cleanEmail;
 
-                localStorage.setItem('rezflow_session', JSON.stringify(userData));
+                localStorage.setItem('reziflow_session', JSON.stringify(userData));
 
                 // ---> THE SHIELD WRISTBAND HAS BEEN ADDED HERE <---
                 sessionStorage.setItem('reziAuthToken', 'true');
@@ -197,7 +197,7 @@
             const cleanEmail = rawEmail.toLowerCase().trim();
 
             try {
-                const res = await fetch('https://n8n.automania.cloud/webhook/rezflow-forgot-password', {
+                const res = await fetch('https://n8n.automania.cloud/webhook/reziflow-forgot-password', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ Email_Address: cleanEmail })
