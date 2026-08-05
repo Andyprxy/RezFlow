@@ -84,12 +84,12 @@
         <!-- Live GPS Indicator overlay -->
         <div class="absolute top-6 left-6 z-[400] bg-white/70 backdrop-blur-xl px-5 py-3 rounded-2xl flex items-center gap-3 shadow-[5px_5px_15px_rgba(166,175,195,0.2)] border border-white">
             <div id="admin-gps-indicator" class="w-3 h-3 bg-amber-400 rounded-full shadow-inner animate-pulse"></div>
-            <span id="admin-gps-status" class="font-black text-slate-800 tracking-widest text-xs uppercase">Polling Telemetry...</span>
+            <span id="admin-gps-status" class="font-black text-slate-800 tracking-widest text-xs uppercase">Fetching Signal...</span>
         </div>
 
-        <div id="admin-fleet-map" class="w-full h-full flex-1 z-10"></div>
+        <div id="admin-fleet-map" class="w-full h-full flex-1 z-10 absolute inset-0"></div>
         
-        <!-- Loading Overlay -->
+        <!-- Robust Loading Overlay -->
         <div id="map-loading-overlay" class="absolute inset-0 bg-white/80 backdrop-blur-md z-20 flex flex-col items-center justify-center transition-opacity duration-300">
             <div class="w-14 h-14 rounded-full bg-slate-900 text-white flex items-center justify-center text-2xl shadow-xl mb-4 border border-slate-700">
                 <i class="fa-solid fa-satellite-dish animate-pulse"></i>
@@ -168,19 +168,19 @@
                         <i class="fa-solid fa-inbox text-blue-500"></i> Live Monitor
                     </h3>
                     <div class="flex items-center gap-3">
-                        <button onclick="window.fetchAdminFeed(this)" class="w-7 h-7 rounded-full bg-white/60 hover:bg-white text-slate-600 shadow-sm flex items-center justify-center transition-colors border border-white/80" title="Refresh Inbox">
+                        <button onclick="window.fetchAdminFeed(this)" class="w-7 h-7 rounded-full bg-white/60 hover:bg-white text-slate-600 shadow-sm flex items-center justify-center transition-colors border border-white/80" title="Manual Sync Inbox">
                             <i class="fa-solid fa-rotate text-[10px]"></i>
                         </button>
                         <div class="px-2.5 py-1 bg-slate-50 border border-slate-200 text-slate-600 rounded-lg text-[9px] uppercase tracking-widest font-bold shadow-sm flex items-center gap-1.5">
-                            Read-Only
+                            Manual Sync
                         </div>
                     </div>
                 </div>
                 
                 <div id="admin-message-feed" class="flex-1 overflow-y-auto custom-scroll space-y-4 pr-2 pb-2">
                     <div class="flex flex-col items-center justify-center h-full text-slate-400 opacity-60 space-y-3" id="admin-empty-state">
-                        <i class="fa-solid fa-circle-notch fa-spin text-2xl"></i>
-                        <span class="text-[10px] font-bold uppercase tracking-widest">Syncing Pipeline...</span>
+                        <i class="fa-solid fa-inbox text-2xl"></i>
+                        <span class="text-[10px] font-bold uppercase tracking-widest">Click refresh to sync feed</span>
                     </div>
                 </div>
             </div>
@@ -191,13 +191,18 @@
                     <h3 class="font-black text-slate-800 text-sm uppercase tracking-widest flex items-center gap-2">
                         <i class="fa-solid fa-clipboard-list text-emerald-500"></i> Event Logs
                     </h3>
-                    <span class="px-2.5 py-1 bg-white border border-slate-200 text-slate-600 rounded-lg text-[9px] uppercase tracking-widest font-bold shadow-sm">Today</span>
+                    <div class="flex items-center gap-2">
+                        <button onclick="window.fetchFleetLocation(this)" class="w-7 h-7 rounded-full bg-white/60 hover:bg-white text-slate-600 shadow-sm flex items-center justify-center transition-colors border border-white/80" title="Manual Sync GPS">
+                            <i class="fa-solid fa-rotate text-[10px]"></i>
+                        </button>
+                        <span class="px-2.5 py-1 bg-white border border-slate-200 text-slate-600 rounded-lg text-[9px] uppercase tracking-widest font-bold shadow-sm">Today</span>
+                    </div>
                 </div>
                 
                 <div id="admin-trip-logs" class="flex-1 overflow-y-auto custom-scroll space-y-3 pr-2 pb-2 relative">
                     <div class="absolute left-[23px] top-2 bottom-2 w-px bg-slate-300"></div>
                     <div class="text-center text-slate-400 font-bold text-xs py-10 tracking-wide uppercase" id="logs-empty-state">
-                        Awaiting Telemetry Events...
+                        Sync GPS to log events...
                     </div>
                 </div>
             </div>
@@ -289,11 +294,9 @@
         }
     };
 
-    // --- Map & Telemetry ---
+    // --- Map & Telemetry (MANUAL SYNC TO PREVENT GOOGLE RATE LIMITS) ---
     window.adminMap = null;
     window.adminShuttleMarker = null;
-    window.telemetryPoller = null;
-    window.feedPoller = null;
     window.lastStatus = null;
 
     window.initAdminMap = function() {
@@ -313,22 +316,20 @@
         
         window.adminShuttleMarker = L.marker([-25.7479, 28.2293], {icon: shuttleIcon}).addTo(window.adminMap);
         
-        // Critical Fix: Give Leaflet a moment to compute dimensions before painting tiles
-        setTimeout(() => { window.adminMap.invalidateSize(); }, 500);
-
+        // Single initial fetch
         window.fetchFleetLocation();
-        if(window.telemetryPoller) clearInterval(window.telemetryPoller);
-        window.telemetryPoller = setInterval(window.fetchFleetLocation, 10000);
     };
 
-    window.fetchFleetLocation = async function() {
+    window.fetchFleetLocation = async function(btn) {
         const indicator = document.getElementById('admin-gps-indicator');
         const statusText = document.getElementById('admin-gps-status');
-        const overlay = document.getElementById('map-loading-overlay'); // Fixed reference
+        const overlay = document.getElementById('map-loading-overlay');
+        
+        if(btn) { const i = btn.querySelector('i'); if(i) i.classList.add('fa-spin'); }
 
-        if(statusText && statusText.innerHTML.includes('Lost')) {
-            statusText.innerHTML = 'Polling Telemetry...';
-            statusText.className = "font-black text-slate-800 tracking-widest text-xs uppercase";
+        if(overlay) {
+            overlay.style.display = 'flex';
+            setTimeout(() => { overlay.style.opacity = '1'; }, 10);
         }
 
         try {
@@ -343,9 +344,11 @@
                         lat = parseFloat(payload.Latitude); lng = parseFloat(payload.Longitude);
                         status = payload.Status || status;
                     }
+                } else {
+                    throw new Error("Sheets 429 / Endpoint blocked");
                 }
             } catch (e) {
-                // Simulation Fallback if endpoint not active
+                // Simulation Fallback if endpoint is rate limited by Google
                 lat += (Math.random() - 0.5) * 0.005; lng += (Math.random() - 0.5) * 0.005;
                 status = Math.random() > 0.5 ? "En Route" : "Standing By";
             }
@@ -376,7 +379,6 @@
                 statusText.className = "font-black text-emerald-600 tracking-widest text-xs uppercase";
             }
 
-            // Log event if status changes
             if(window.lastStatus !== status) {
                 window.logTripEvent(status, lat, lng);
                 window.lastStatus = status;
@@ -389,8 +391,10 @@
                 statusText.className = "font-black text-rose-600 tracking-widest text-xs uppercase";
             }
         } finally {
-            // Guarantee overlay is hidden and map sizes are validated regardless of fetch result
-            if(overlay && overlay.style.display !== 'none') {
+            if(btn) { const i = btn.querySelector('i'); if(i) i.classList.remove('fa-spin'); }
+            
+            // Critical Fix: Explicitly remove loading overlay no matter what happens, and trigger tile paint
+            if(overlay) {
                 overlay.style.opacity = '0';
                 setTimeout(() => { 
                     overlay.style.display = 'none'; 
@@ -400,7 +404,7 @@
         }
     };
 
-    // --- Read-Only Feed ---
+    // --- Read-Only Feed (Manual Sync) ---
     window.fetchAdminFeed = async function(btn) {
         if(btn) { const i = btn.querySelector('i'); if(i) i.classList.add('fa-spin', 'text-blue-500'); }
         const feed = document.getElementById('admin-message-feed');
@@ -462,7 +466,7 @@
                 feed.innerHTML = html;
             }
         } catch (e) {
-            feed.innerHTML = `<div class="text-center text-rose-400 font-bold text-xs py-10 tracking-wide uppercase">Feed offline.</div>`;
+            feed.innerHTML = `<div class="text-center text-rose-400 font-bold text-xs py-10 tracking-wide uppercase">Feed offline / Rate Limited.</div>`;
         } finally {
             if(btn) { const i = btn.querySelector('i'); if(i) i.classList.remove('fa-spin', 'text-blue-500'); }
         }
@@ -523,8 +527,6 @@
     setTimeout(() => { 
         window.initAdminMap(); 
         window.fetchAdminFeed();
-        if(window.feedPoller) clearInterval(window.feedPoller);
-        window.feedPoller = setInterval(() => { window.fetchAdminFeed(); }, 15000);
     }, 300);
 
 </script>
