@@ -63,14 +63,14 @@
         <!-- Primary KPI View Switcher -->
         <div class="flex justify-start sm:justify-center w-full mb-3 z-10 relative shrink-0">
             <div class="glass-segmented shadow-sm bg-white/50 backdrop-blur-md">
-                <button onclick="window.toggleOccupancyView('students')" id="btn-occ-students" class="glass-seg-btn active accent-blue text-[10px] sm:text-xs">
-                    <i class="fa-solid fa-users"></i> Allocated Students
-                    <span id="stat-allocated-beds" class="bg-blue-50 border border-blue-100 text-blue-600 px-2 py-0.5 rounded-full text-[8px] shadow-sm ml-1">-</span>
+                <button onclick="window.toggleOccupancyView('allocated_students')" id="btn-occ-allocated_students" class="glass-seg-btn active accent-blue text-[10px] sm:text-xs">
+                    <i class="fa-solid fa-bed"></i> Allocated Students
+                    <span id="stat-available-beds" class="bg-blue-50 border border-blue-100 text-blue-600 px-2 py-0.5 rounded-full text-[8px] shadow-sm ml-1">-</span>
                 </button>
                 <div class="w-px h-4 bg-slate-300/50 mx-1"></div>
-                <button onclick="window.toggleOccupancyView('rooms')" id="btn-occ-rooms" class="glass-seg-btn accent-emerald text-[10px] sm:text-xs">
-                    <i class="fa-solid fa-bed"></i> Room Inventory
-                    <span id="stat-available-beds" class="bg-emerald-50 border border-emerald-100 text-emerald-600 px-2 py-0.5 rounded-full text-[8px] shadow-sm ml-1">-</span>
+                <button onclick="window.toggleOccupancyView('student_info')" id="btn-occ-student_info" class="glass-seg-btn accent-emerald text-[10px] sm:text-xs">
+                    <i class="fa-solid fa-users"></i> Student Info
+                    <span id="stat-allocated-beds" class="bg-emerald-50 border border-emerald-100 text-emerald-600 px-2 py-0.5 rounded-full text-[8px] shadow-sm ml-1">-</span>
                 </button>
             </div>
         </div>
@@ -83,13 +83,13 @@
             
             <div class="px-3 py-3 border-b border-white/60 flex flex-col xl:flex-row gap-3 justify-between xl:items-center bg-white/50 backdrop-blur-md z-20 relative">
                 <div class="flex items-center gap-2 shrink-0">
-                    <div class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm"><i id="occ-icon" class="fa-solid fa-users text-xs"></i></div>
+                    <div class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm"><i id="occ-icon" class="fa-solid fa-bed text-xs"></i></div>
                     <h3 id="occupancy-title" class="font-black text-slate-800 text-xs sm:text-sm whitespace-nowrap">Allocated Students</h3>
                 </div>
                 
                 <div class="flex items-center gap-2 flex-wrap xl:flex-nowrap justify-end w-full xl:w-auto">
                     <!-- Adaptive Filter Segment Control -->
-                    <div id="occupancy-room-filters" class="hidden flex-wrap gap-1.5 w-full sm:w-auto">
+                    <div id="occupancy-room-filters" class="flex flex-wrap gap-1.5 w-full sm:w-auto">
                         <div class="glass-segmented max-w-full overflow-x-auto custom-scroll">
                             <button onclick="window.setOccupancyBlock('all')" id="occ-blk-all" class="glass-seg-btn active accent-emerald text-[8px] sm:text-[9px]">All</button>
                             <button onclick="window.setOccupancyBlock('A')" id="occ-blk-A" class="glass-seg-btn accent-emerald text-[8px] sm:text-[9px]">Blk A</button>
@@ -297,7 +297,7 @@
     // ----------------------------------------------------
     // CONFIGURATION & STATE
     // ----------------------------------------------------
-    var currentOccupancyView = 'students'; 
+    var currentOccupancyView = 'allocated_students'; 
     var currentOccupancyBlock = 'all'; 
     var currentOccupancyGender = 'all';
 
@@ -317,9 +317,9 @@
     // ----------------------------------------------------
     window.toggleOccupancyView = function(view) {
         currentOccupancyView = view;
-        ['students', 'rooms'].forEach(o => document.getElementById(`btn-occ-${o}`)?.classList.remove('active', 'accent-blue', 'accent-emerald'));
+        ['allocated_students', 'student_info'].forEach(o => document.getElementById(`btn-occ-${o}`)?.classList.remove('active', 'accent-blue', 'accent-emerald'));
         const el = document.getElementById(`btn-occ-${view}`);
-        if(el) { el.classList.add('active'); el.classList.add(view === 'students' ? 'accent-blue' : 'accent-emerald'); }
+        if(el) { el.classList.add('active'); el.classList.add(view === 'student_info' ? 'accent-emerald' : 'accent-blue'); }
 
         const title = document.getElementById('occupancy-title'); 
         const filters = document.getElementById('occupancy-room-filters');
@@ -328,14 +328,14 @@
         
         if(searchInput) searchInput.value = '';
         
-        if(view === 'rooms') { 
-            if(title) title.textContent = 'Live Room Inventory'; 
-            if(filters) { filters.classList.remove('hidden'); filters.classList.add('flex'); }
-            if(icon) { icon.className = "fa-solid fa-bed text-xs"; icon.parentElement.className = "w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shadow-sm"; }
-        } else { 
+        if(view === 'allocated_students') { 
             if(title) title.textContent = 'Allocated Students'; 
+            if(filters) { filters.classList.remove('hidden'); filters.classList.add('flex'); }
+            if(icon) { icon.className = "fa-solid fa-bed text-xs"; icon.parentElement.className = "w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm"; }
+        } else { 
+            if(title) title.textContent = 'Student Info'; 
             if(filters) { filters.classList.remove('flex'); filters.classList.add('hidden'); } 
-            if(icon) { icon.className = "fa-solid fa-users text-xs"; icon.parentElement.className = "w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm"; }
+            if(icon) { icon.className = "fa-solid fa-users text-xs"; icon.parentElement.className = "w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shadow-sm"; }
         }
 
         window.processStatsData();
@@ -362,12 +362,9 @@
         const dash = document.getElementById('analytics-dashboard');
         if (!dash) return;
 
-        if (currentOccupancyView === 'students') {
-            // 1. CAPACITY (Allocated vs Available)
-            let totalBeds = 0;
-            if (window.globalRoomData) {
-                window.globalRoomData.forEach(r => { totalBeds += parseInt(r.Total_Beds || r.Capacity) || 0; });
-            }
+        if (currentOccupancyView === 'student_info') {
+            // CAPACITY (Allocated vs Available) - Fixed to 241 Capacity
+            let totalBeds = 241;
             
             let allocated = 0;
             if (window.globalStudentData) {
@@ -479,15 +476,10 @@
     window.processStatsData = function() {
         if (!window.globalRoomData || !window.globalStudentData) return;
 
-        let totalBeds = 0; let occupiedBeds = 0;
-        if(window.globalRoomData && window.globalRoomData.length > 0) {
-            window.globalRoomData.forEach(r => { 
-                totalBeds += parseInt(r.Total_Beds || r.Capacity) || 0; 
-                occupiedBeds += parseInt(r.Occupied_Beds || r.Occupied) || 0; 
-            });
-        }
+        let totalBeds = 241;
         
         const allAllocated = window.globalStudentData.filter(s => s && s.Room_Allocation && s.Room_Allocation !== 'Unassigned' && s.Room_Allocation !== '--');
+        let occupiedBeds = allAllocated.length;
         
         if(document.getElementById('stat-available-beds')) document.getElementById('stat-available-beds').textContent = Math.max(0, totalBeds - occupiedBeds);
         if(document.getElementById('stat-allocated-beds')) document.getElementById('stat-allocated-beds').textContent = allAllocated.length;
@@ -522,7 +514,7 @@
 
         let htmlStr = '';
 
-        if (currentOccupancyView === 'rooms') {
+        if (currentOccupancyView === 'allocated_students') {
             thead.innerHTML = `<tr class="bg-white/40 text-slate-400 uppercase tracking-widest font-bold text-[9px] border-b border-slate-200/50"><th class="w-1/4">Room Details</th><th class="w-1/4">Zone / Block</th><th class="w-1/4">Bed Capacity</th><th class="text-right">Live Status</th></tr>`;
             
             if(filteredRooms.length === 0) { tbody.innerHTML = '<tr><td colspan="4" class="p-8 text-center text-slate-400 font-bold text-[10px]">No rooms match filters (or waiting for N8N sync).</td></tr>'; return; }
@@ -683,7 +675,7 @@
         const studentId = document.getElementById('swap-student-id').value; const newRoom = document.getElementById('swap-new-room').value;
         btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...'; btn.disabled = true;
         try {
-            await fetch('https://n8n.automania.cloud/webhook/reziflow-allocate', { 
+            await fetch('https://n8n.automania.cloud/webhook-test/room-swap', { 
                 method: 'POST', headers: { 'Content-Type': 'application/json' }, 
                 body: JSON.stringify({ Student_Number: studentId, Room_ID: newRoom, Swap_Trigger: true }) 
             });
@@ -699,7 +691,7 @@
         let csvContent = "data:text/csv;charset=utf-8,";
         let filename = "";
 
-        if (currentOccupancyView === 'rooms') {
+        if (currentOccupancyView === 'allocated_students') {
             filename = "Filtered_Room_Inventory";
             csvContent += "Room ID,Block,Type,Capacity,Occupied,Available Status\n";
             
