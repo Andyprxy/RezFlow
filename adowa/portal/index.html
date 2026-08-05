@@ -24,51 +24,28 @@
         .desktop-bg::before { content: ''; position: absolute; top: -20%; left: -10%; width: 60%; height: 60%; background: #3b82f6; border-radius: 50%; filter: blur(150px); opacity: 0.15; }
         .desktop-bg::after { content: ''; position: absolute; bottom: -20%; right: -10%; width: 60%; height: 60%; background: #06b6d4; border-radius: 50%; filter: blur(150px); opacity: 0.15; }
 
-        .mobile-container { width: 100%; height: 100dvh; background: #eef2f6; position: relative; display: flex; flex-direction: column; overflow: hidden; margin: 0 auto; }
+        .mobile-container { width: 100%; height: 100dvh; background: #f0f4f8; position: relative; display: flex; flex-direction: column; overflow: hidden; margin: 0 auto; }
         @media (min-width: 640px) {
             body { display: flex; align-items: center; justify-content: center; position: static; overflow: auto; min-height: 100vh; }
             .mobile-container { width: 100%; max-width: 420px; height: 90vh; max-height: 880px; border-radius: 40px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 0 0 2px rgba(255,255,255,0.2); border: 8px solid #1e293b; }
         }
 
-        /* --- GLASSMORPHISM --- */
+        /* --- APPLE-STYLE GLASSMORPHISM --- */
         .glass-panel {
-            background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.6); border-top: 1px solid rgba(255, 255, 255, 0.9); border-left: 1px solid rgba(255, 255, 255, 0.9);
-            box-shadow: 0 10px 40px -10px rgba(30, 41, 59, 0.15), inset 0 1px 0 rgba(255,255,255,0.8); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        /* --- NEUMORPHISM --- */
-        .neumorphic {
-            background: #eef2f6;
-            box-shadow: 8px 8px 16px rgba(163, 177, 198, 0.4), -8px -8px 16px rgba(255, 255, 255, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-        }
-        
-        .neumorphic-inset {
-            background: #eef2f6;
-            box-shadow: inset 5px 5px 10px rgba(163, 177, 198, 0.45), inset -5px -5px 10px rgba(255, 255, 255, 0.9);
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-        
-        .neumorphic-button {
-            background: #eef2f6;
-            box-shadow: 5px 5px 10px rgba(163, 177, 198, 0.4), -5px -5px 10px rgba(255, 255, 255, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            transition: all 0.2s ease;
-        }
-
-        .neumorphic-button:active {
-            box-shadow: inset 3px 3px 6px rgba(163, 177, 198, 0.4), inset -3px -3px 6px rgba(255, 255, 255, 0.9);
-        }
-
-        .neumorphic-active {
-            background: #e2eaf3;
-            box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.5), inset -4px -4px 8px rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.65); 
+            backdrop-filter: blur(30px) saturate(180%); 
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.5); 
+            border-top: 1px solid rgba(255, 255, 255, 0.9); 
+            border-left: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 10px 40px -10px rgba(30, 41, 59, 0.1), inset 0 1px 0 rgba(255,255,255,0.8); 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .tab-content { display: none; animation: fadeIn 0.3s ease-in-out; padding-bottom: 24px; }
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
         @keyframes spinOnce { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .spin-once { animation: spinOnce 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
@@ -76,10 +53,15 @@
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
         .custom-scroll::-webkit-scrollbar { width: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        
+        /* Frictionless Chat Scrolling */
         .chat-scroll { overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
-        .tap-effect:active { transform: scale(0.97); transition: transform 0.1s ease; }
 
-        .modal-overlay { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); opacity: 0; visibility: hidden; transition: all 0.3s ease; z-index: 2000; }
+        .tap-effect:active { transform: scale(0.97); transition: transform 0.1s ease; }
+        .card-shadow { box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.04); }
+        .soft-border { border: 1px solid rgba(226, 232, 240, 0.6); }
+
+        .modal-overlay { background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); opacity: 0; visibility: hidden; transition: all 0.3s ease; z-index: 2000; }
         .modal-overlay.active { opacity: 1; visibility: visible; }
         .modal-content { transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1); }
         .modal-overlay.active .modal-content { transform: translateY(0); }
@@ -87,8 +69,9 @@
         #toast-container { transform: translateY(-150%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 9999; }
         #toast-container.show { transform: translateY(0); }
 
-        .input-field { width: 100%; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 0.875rem 1rem; font-size: 0.75rem; font-weight: 600; color: #0f172a; transition: all 0.2s ease; }
-        .input-field:focus { outline: none; border-color: #3b82f6; background-color: #ffffff; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+        /* Premium translucent inputs */
+        .input-field { width: 100%; background-color: rgba(255, 255, 255, 0.6); border: 1px solid rgba(255, 255, 255, 0.8); border-radius: 1rem; padding: 0.875rem 1rem; font-size: 0.75rem; font-weight: 600; color: #0f172a; transition: all 0.2s ease; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+        .input-field:focus { outline: none; border-color: #3b82f6; background-color: rgba(255, 255, 255, 0.95); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
         select.input-field { appearance: none; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1.2em 1.2em; }
 
         .nav-locked { opacity: 0.5; filter: grayscale(100%); transition: all 0.3s ease; cursor: not-allowed; }
@@ -98,7 +81,7 @@
         .upload-zone.success-state { border: 2px solid #10b981; background-color: rgba(236, 253, 245, 0.9); }
         
         .funding-card { background: rgba(255, 255, 255, 0.6); transition: all 0.2s ease; }
-        .funding-card.active { border-color: #3b82f6; background-color: #eff6ff; box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.4), inset -4px -4px 8px rgba(255, 255, 255, 0.9); }
+        .funding-card.active { border-color: #3b82f6; background-color: #eff6ff; box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.2); }
         .doc-section { display: none; animation: fadeIn 0.4s ease forwards; }
         .doc-section.active { display: block; }
 
@@ -117,13 +100,13 @@
         
         <!-- ================= START: GLOBAL OVERLAYS ================= -->
         <div id="toast-container" class="absolute top-6 left-0 right-0 flex justify-center px-4 pointer-events-none z-[9999]">
-            <div id="toast-message" class="bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-xl shadow-slate-900/20 flex items-center gap-3 font-medium text-sm border border-slate-700">
+            <div id="toast-message" class="bg-slate-900/90 backdrop-blur-md text-white px-5 py-3 rounded-2xl shadow-xl shadow-slate-900/20 flex items-center gap-3 font-medium text-sm border border-slate-700">
                 <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400"></i>
                 <span id="toast-text">Action completed successfully.</span>
             </div>
         </div>
 
-        <div id="authGuard" class="absolute inset-0 bg-white z-[1900] flex flex-col items-center justify-center p-6 text-center text-slate-800 font-medium transition-all duration-500">
+        <div id="authGuard" class="absolute inset-0 bg-white/80 backdrop-blur-xl z-[1900] flex flex-col items-center justify-center p-6 text-center text-slate-800 font-medium transition-all duration-500">
             <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-3xl flex items-center justify-center mb-4 text-2xl shadow-sm animate-pulse">
                 <i class="fa-solid fa-layer-group"></i>
             </div>
@@ -150,33 +133,36 @@
             </div>
         </div>
 
-        <div id="welcomeModal" class="absolute inset-0 z-[2000] bg-slate-900/60 backdrop-blur-md flex flex-col items-center justify-center p-5 transition-opacity duration-500 hidden">
-            <div class="bg-white w-full max-w-sm rounded-[32px] shadow-2xl relative p-8 text-center border border-white/20">
-                <div class="relative mx-auto w-24 h-24 mb-6">
+        <div id="welcomeModal" class="absolute inset-0 z-[2000] bg-slate-900/40 backdrop-blur-xl flex flex-col items-center justify-center p-5 transition-opacity duration-500 hidden">
+            <div class="glass-panel w-full max-w-sm rounded-[40px] shadow-2xl relative p-8 text-center border border-white/40 overflow-hidden">
+                <div class="absolute -top-20 -right-20 w-40 h-40 bg-blue-400 opacity-20 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-20 -left-20 w-40 h-40 bg-cyan-400 opacity-20 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <div class="relative mx-auto w-24 h-24 mb-6 z-10">
                     <div class="absolute inset-0 bg-white rounded-2xl blur-md opacity-80"></div>
-                    <img src="../adowa%20living%20logo.png" onerror="this.src='https://placehold.co/400x400/0f172a/ffffff?text=AL'" alt="Adowa Living Logo" class="relative w-full h-full object-cover rounded-2xl shadow-xl shadow-blue-900/10 ring-4 ring-white">
+                    <img src="../adowa%20living%20logo.png" onerror="this.src='https://placehold.co/400x400/0f172a/ffffff?text=AL'" alt="Adowa Living Logo" class="relative w-full h-full object-cover rounded-2xl shadow-xl shadow-blue-900/10 ring-2 ring-white">
                 </div>
-                <h2 class="text-2xl font-black text-slate-900 mb-2 tracking-tight">Welcome to Adowa Living</h2>
-                <p class="text-slate-500 mb-6 text-xs font-medium leading-relaxed">Please confirm your name and student number to initialize your secure portal.</p>
-                <form id="welcomeForm" onsubmit="submitWelcomeSetup(event)">
+                <h2 class="text-2xl font-black text-slate-900 mb-2 tracking-tight relative z-10">Welcome to Adowa Living</h2>
+                <p class="text-slate-500 mb-6 text-xs font-medium leading-relaxed relative z-10">Please confirm your name and student number to initialize your secure portal.</p>
+                <form id="welcomeForm" onsubmit="submitWelcomeSetup(event)" class="relative z-10">
                     <div class="space-y-4 mb-6 text-left">
                         <div>
                             <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">First Name</label>
-                            <input type="text" id="setup-fname" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm text-slate-800 font-semibold focus:outline-none focus:border-blue-500 transition-colors" required>
+                            <input type="text" id="setup-fname" class="w-full bg-white/50 backdrop-blur-md border border-white/80 rounded-2xl p-4 text-sm text-slate-800 font-semibold focus:outline-none focus:border-blue-500 focus:bg-white/80 transition-all shadow-sm" required>
                         </div>
                         <div>
                             <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Surname</label>
-                            <input type="text" id="setup-sname" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm text-slate-800 font-semibold focus:outline-none focus:border-blue-500 transition-colors" required>
+                            <input type="text" id="setup-sname" class="w-full bg-white/50 backdrop-blur-md border border-white/80 rounded-2xl p-4 text-sm text-slate-800 font-semibold focus:outline-none focus:border-blue-500 focus:bg-white/80 transition-all shadow-sm" required>
                         </div>
                         <div>
                             <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Student Number</label>
-                            <input type="text" id="setup-student-num" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm text-slate-800 font-semibold font-mono focus:outline-none focus:border-blue-500 transition-colors" required>
+                            <input type="text" id="setup-student-num" class="w-full bg-white/50 backdrop-blur-md border border-white/80 rounded-2xl p-4 text-sm text-slate-800 font-semibold font-mono focus:outline-none focus:border-blue-500 focus:bg-white/80 transition-all shadow-sm" required>
                         </div>
                     </div>
-                    <button type="submit" id="btn-init-portal" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl py-4 shadow-lg shadow-blue-600/30 transition-all flex items-center justify-center gap-2 tap-effect mb-3">
+                    <button type="submit" id="btn-init-portal" class="w-full bg-blue-600/90 backdrop-blur-md hover:bg-blue-600 text-white font-bold rounded-2xl py-4 shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-2 tap-effect mb-3 border border-blue-400/50">
                         Initialize Portal <i class="fa-solid fa-arrow-right"></i>
                     </button>
-                    <button type="button" onclick="manualSync()" class="text-[10px] text-slate-400 font-bold hover:text-blue-500 transition-colors underline">Data already exists? Force Sync</button>
+                    <button type="button" onclick="manualSync()" class="text-[10px] text-slate-500 font-bold hover:text-blue-600 transition-colors underline">Data already exists? Force Sync</button>
                 </form>
             </div>
         </div>
@@ -185,7 +171,7 @@
         <header class="flex-shrink-0 pt-6 px-5 z-40 pb-4">
             <div class="glass-panel rounded-full px-5 py-3 flex justify-between items-center">
                 <div class="flex items-center gap-2">
-                    <img src="../RezFlow_Logo_WithTXT1.png" alt="RezFlow Logo" class="h-9 object-contain drop-shadow-sm" onerror="this.style.display='none'">
+                    <img src="../RezFlow_Logo_WithTXT1.png" alt="RezFlow Logo" class="h-10 object-contain drop-shadow-sm" onerror="this.style.display='none'">
                 </div>
                 <div class="flex items-center gap-3">
                     <button onclick="handleLogout()" class="w-9 h-9 rounded-full bg-white/50 text-slate-600 flex items-center justify-center font-bold text-sm shadow-sm hover:bg-rose-500 hover:text-white transition-colors tap-effect border border-white/60" title="Secure Logout"><i class="fa-solid fa-power-off"></i></button>
@@ -199,50 +185,53 @@
             
             <!-- ================= START: HOME MODULE ================= -->
             <div id="tab-home" class="tab-content active space-y-5">
-                <section id="resident-blue-card" class="bg-gradient-to-br from-blue-600 to-indigo-600 rounded-[28px] p-6 text-white shadow-[0_15px_30px_-10px_rgba(37,99,235,0.4)] relative overflow-hidden tap-effect border border-blue-400">
+                <section id="resident-blue-card" class="bg-gradient-to-br from-blue-600 to-cyan-400 rounded-[28px] p-6 text-white shadow-lg shadow-blue-500/20 relative overflow-hidden tap-effect border border-blue-400/50">
                     <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-white opacity-10 rounded-full blur-2xl"></div>
                     <div class="relative z-10 flex justify-between items-start mb-8">
                         <div>
-                            <p class="text-blue-200 text-[10px] font-bold uppercase tracking-widest mb-1.5" id="dyn-vetting-badge">Pending Vetting</p>
+                            <p class="text-blue-100 text-[10px] font-bold uppercase tracking-widest mb-1.5" id="dyn-vetting-badge">Pending Vetting</p>
                             <h1 id="dyn-fullname-home" class="text-2xl font-bold leading-tight tracking-tight">Loading...</h1>
                         </div>
                         <div class="bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-bold flex items-center gap-1.5 shadow-sm border border-white/20">
-                            <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]"></span> Active
+                            <span class="w-1.5 h-1.5 bg-emerald-300 rounded-full animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]"></span> Active
                         </div>
                     </div>
                     <div class="relative z-10 flex gap-8">
-                        <div><p class="text-blue-200 text-[10px] uppercase font-bold tracking-wider mb-1">Student ID</p><p id="dyn-id-home" class="font-bold text-sm">--</p></div>
-                        <div><p class="text-blue-200 text-[10px] uppercase font-bold tracking-wider mb-1">Room</p><p id="dyn-room-home" class="font-bold text-sm">--</p></div>
+                        <div><p class="text-blue-100 text-[10px] uppercase font-bold tracking-wider mb-1">Student ID</p><p id="dyn-id-home" class="font-bold text-sm">--</p></div>
+                        <div><p class="text-blue-100 text-[10px] uppercase font-bold tracking-wider mb-1">Room</p><p id="dyn-room-home" class="font-bold text-sm">--</p></div>
                     </div>
                 </section>
 
-                <section id="gateway-unlock-card" class="neumorphic rounded-[28px] p-5 relative overflow-hidden transition-all duration-300">
+                <section id="gateway-unlock-card" class="bg-white card-shadow soft-border rounded-[28px] p-5 relative overflow-hidden transition-all duration-300 border-2 border-transparent">
                     <div class="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white/40 to-transparent pointer-events-none"></div>
                     <div class="flex items-center gap-4 relative z-10 mb-4">
-                        <img src="../adowa%20living%20logo.png" onerror="this.src='https://placehold.co/100x100/0f172a/ffffff?text=AL'" class="w-14 h-14 rounded-[18px] object-cover shadow-sm border border-white flex-shrink-0 bg-white">
+                        <img src="../adowa%20living%20logo.png" onerror="this.src='https://placehold.co/100x100/0f172a/ffffff?text=AL'" class="w-14 h-14 rounded-[18px] object-cover shadow-sm border border-slate-100 flex-shrink-0 bg-slate-100">
                         <div>
                             <div class="flex items-center gap-2 mb-0.5"><h3 class="text-sm font-black text-slate-900 tracking-tight">Gateway Protocol</h3><i id="gateway-lock-icon" class="fa-solid fa-lock text-rose-500 text-xs"></i></div>
                             <p id="gateway-status-text" class="text-[10px] text-slate-500 font-medium leading-snug pr-2">Finish setting up your profile to unlock Wi-Fi & Transit.</p>
                         </div>
                     </div>
-                    <div id="gateway-dynamic-content" class="relative z-10 neumorphic-inset rounded-xl p-3 flex flex-col gap-2 transition-all duration-300"></div>
+                    <div id="gateway-dynamic-content" class="relative z-10 bg-slate-50/80 rounded-xl p-3 flex flex-col gap-2 transition-all duration-300 border border-slate-100"></div>
                 </section>
 
-                <div id="lease-magic-slot" class="hidden opacity-0 translate-y-4 neumorphic rounded-[28px] p-6 relative overflow-hidden transition-all duration-500 mt-2">
+                <div id="lease-magic-slot" class="hidden opacity-0 translate-y-4 glass-panel rounded-[28px] p-6 relative overflow-hidden transition-all duration-500 mt-2">
+                    <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-400 opacity-10 rounded-full blur-2xl pointer-events-none"></div>
+                    <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-cyan-400 opacity-10 rounded-full blur-2xl pointer-events-none"></div>
+                    
                     <div class="flex justify-between items-start mb-4 relative z-10">
                         <div class="pr-2">
                             <h3 class="text-base font-black text-slate-900 mb-1 tracking-tight">Accommodation Lease</h3>
                             <p class="text-[11px] text-slate-600 font-medium leading-relaxed">Review the terms of residency. You will be able to officially sign the contract once administration approves your vetting status.</p>
                         </div>
                         <div class="flex flex-col items-center flex-shrink-0 pt-1">
-                            <button onclick="checkVettingStatus(this)" class="w-8 h-8 rounded-full neumorphic-button text-blue-600 flex items-center justify-center text-sm hover:text-blue-700 transition-colors tap-effect group" title="Check Vetting Status">
+                            <button onclick="checkVettingStatus(this)" class="w-8 h-8 rounded-full bg-white text-blue-600 flex items-center justify-center text-sm shadow-sm hover:bg-blue-50 border border-slate-200 transition-colors tap-effect group" title="Check Vetting Status">
                                 <i class="fa-solid fa-rotate group-hover:rotate-180 transition-transform duration-500"></i>
                             </button>
                             <span class="text-[8px] text-slate-500 font-bold uppercase tracking-widest mt-1 text-center">Refresh<br>Status</span>
                         </div>
                     </div>
                     
-                    <div class="neumorphic-inset rounded-[20px] p-4 flex flex-col gap-4 relative z-10">
+                    <div class="bg-white/60 backdrop-blur-sm border border-white/80 rounded-[20px] p-4 flex flex-col gap-4 relative z-10 shadow-sm">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-full bg-blue-100/80 text-blue-600 flex items-center justify-center text-lg shadow-sm border border-blue-200/50 flex-shrink-0">
                                 <i class="fa-solid fa-file-signature"></i>
@@ -254,7 +243,7 @@
                                 </p>
                             </div>
                         </div>
-                        <button onclick="handleLeaseReview(this)" id="btn-home-lease" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl py-3 text-xs shadow-[0_8px_15px_rgba(37,99,235,0.3)] transition-all flex items-center justify-center gap-2 tap-effect">
+                        <button onclick="handleLeaseReview(this)" id="btn-home-lease" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl py-3 text-xs shadow-md shadow-blue-500/20 transition-all flex items-center justify-center gap-2 tap-effect">
                             Review Terms <i class="fa-solid fa-arrow-right"></i>
                         </button>
                     </div>
@@ -263,8 +252,8 @@
                 <section>
                     <h3 class="text-sm font-bold text-slate-800 mb-3 ml-2">Building Access</h3>
                     <div class="flex gap-4">
-                        <button class="flex-1 neumorphic-button py-4 rounded-[20px] flex flex-col items-center gap-2 tap-effect"><i class="fa-solid fa-key text-blue-500 text-xl drop-shadow-sm"></i><span class="text-xs font-semibold text-slate-700">Turnstiles</span></button>
-                        <button onclick="openModal('visitorModal')" class="flex-1 neumorphic-button py-4 rounded-[20px] flex flex-col items-center gap-2 tap-effect"><i class="fa-solid fa-user-plus text-blue-500 text-xl drop-shadow-sm"></i><span class="text-xs font-semibold text-slate-700">Visitor PIN</span></button>
+                        <button class="flex-1 bg-white hover:bg-blue-50 card-shadow soft-border py-4 rounded-[20px] flex flex-col items-center gap-2 tap-effect transition-colors"><i class="fa-solid fa-key text-blue-500 text-xl drop-shadow-sm"></i><span class="text-xs font-semibold text-slate-700">Turnstiles</span></button>
+                        <button onclick="openModal('visitorModal')" class="flex-1 bg-white hover:bg-blue-50 card-shadow soft-border py-4 rounded-[20px] flex flex-col items-center gap-2 tap-effect transition-colors"><i class="fa-solid fa-user-plus text-blue-500 text-xl drop-shadow-sm"></i><span class="text-xs font-semibold text-slate-700">Visitor PIN</span></button>
                     </div>
                 </section>
                 
@@ -278,18 +267,18 @@
 
             <!-- ================= START: WI-FI MODULE ================= -->
             <div id="tab-wifi" class="tab-content space-y-5">
-                <div class="neumorphic rounded-[28px] p-6 text-center">
-                    <div class="w-16 h-16 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-3xl mx-auto mb-4 shadow-inner border border-white/50">
+                <div class="bg-white card-shadow soft-border rounded-[28px] p-6 text-center">
+                    <div class="w-16 h-16 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-3xl mx-auto mb-4 border border-blue-100">
                         <i class="fa-solid fa-wifi"></i>
                     </div>
                     <h2 class="text-xl font-bold text-slate-900 mb-1 tracking-tight">RezFlow_5G</h2>
                     <p class="text-sm text-slate-500 mb-6 font-medium">High-Speed Campus Network</p>
                     
-                    <div class="neumorphic-inset rounded-[20px] p-4 text-left">
+                    <div class="bg-slate-50 border border-slate-100 rounded-[20px] p-4 text-left">
                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 pl-1">Your Unique Password</p>
                         <div class="flex items-center justify-between pl-1">
                             <p id="wifi-pass" class="font-mono text-lg font-bold text-slate-800 tracking-widest blur-sm transition-all duration-300">------</p>
-                            <button onclick="togglePasswordVisibility()" class="w-10 h-10 rounded-full neumorphic-button flex items-center justify-center text-slate-600 tap-effect">
+                            <button onclick="togglePasswordVisibility()" class="w-10 h-10 rounded-full bg-white shadow-sm border border-slate-200 flex items-center justify-center text-slate-600 tap-effect hover:bg-slate-50 transition-colors">
                                 <i id="eye-icon" class="fa-solid fa-eye"></i>
                             </button>
                         </div>
@@ -300,10 +289,10 @@
                     <div class="flex justify-between items-center mb-3 ml-2 mr-2">
                         <h3 class="text-sm font-bold text-slate-800">Connected Devices (2/3)</h3>
                     </div>
-                    <div class="neumorphic rounded-[28px] p-4 space-y-3">
-                        <div class="flex items-center justify-between p-3 neumorphic-inset rounded-[20px]">
+                    <div class="bg-white card-shadow soft-border rounded-[28px] p-4 space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-slate-50 border border-slate-100 rounded-[20px]">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-white shadow-sm text-blue-500 flex items-center justify-center flex-shrink-0">
+                                <div class="w-10 h-10 rounded-full bg-blue-100/50 text-blue-600 flex items-center justify-center flex-shrink-0">
                                     <i class="fa-solid fa-mobile-screen"></i>
                                 </div>
                                 <div>
@@ -311,11 +300,11 @@
                                     <p class="text-[11px] text-emerald-500 font-medium mt-0.5">Connected</p>
                                 </div>
                             </div>
-                            <button class="bg-rose-100/50 hover:bg-rose-100 border border-rose-200 text-rose-600 px-3 py-1.5 rounded-xl text-[10px] font-bold transition-colors tap-effect shadow-sm" onclick="showToast('Device disconnected.', 'success')">Disconnect</button>
+                            <button class="bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 px-3 py-1.5 rounded-xl text-[10px] font-bold transition-colors tap-effect shadow-sm" onclick="showToast('Device disconnected.', 'success')">Disconnect</button>
                         </div>
-                        <div class="flex items-center justify-between p-3 neumorphic-inset rounded-[20px]">
+                        <div class="flex items-center justify-between p-3 bg-slate-50 border border-slate-100 rounded-[20px]">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-white shadow-sm text-blue-500 flex items-center justify-center flex-shrink-0">
+                                <div class="w-10 h-10 rounded-full bg-blue-100/50 text-blue-600 flex items-center justify-center flex-shrink-0">
                                     <i class="fa-solid fa-laptop"></i>
                                 </div>
                                 <div>
@@ -323,7 +312,7 @@
                                     <p class="text-[11px] text-emerald-500 font-medium mt-0.5">Connected</p>
                                 </div>
                             </div>
-                            <button class="bg-rose-100/50 hover:bg-rose-100 border border-rose-200 text-rose-600 px-3 py-1.5 rounded-xl text-[10px] font-bold transition-colors tap-effect shadow-sm" onclick="showToast('Device disconnected.', 'success')">Disconnect</button>
+                            <button class="bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 px-3 py-1.5 rounded-xl text-[10px] font-bold transition-colors tap-effect shadow-sm" onclick="showToast('Device disconnected.', 'success')">Disconnect</button>
                         </div>
                     </div>
                 </section>
@@ -332,31 +321,31 @@
 
             <!-- ================= START: PREMIUM SNAGS MODULE ================= -->
             <div id="tab-snags" class="tab-content space-y-5">
-                <div class="neumorphic rounded-[28px] p-5">
+                <div class="bg-white card-shadow soft-border rounded-[28px] p-5">
                     <div class="flex justify-between items-center mb-5">
                         <div>
                             <h2 class="text-xl font-black text-slate-900 tracking-tight">Maintenance</h2>
                             <p class="text-xs text-slate-500 font-medium mt-0.5">Report & track room issues</p>
                         </div>
-                        <button onclick="openModal('snagModal')" class="bg-gradient-to-tr from-blue-600 to-indigo-600 text-white rounded-full w-12 h-12 flex items-center justify-center tap-effect shadow-[0_8px_15px_rgba(37,99,235,0.4)] transition-transform hover:scale-105 border border-blue-400">
+                        <button onclick="openModal('snagModal')" class="bg-blue-600 hover:bg-blue-700 text-white rounded-full w-10 h-10 flex items-center justify-center tap-effect shadow-md shadow-blue-500/30 transition-colors">
                             <i class="fa-solid fa-plus text-lg"></i>
                         </button>
                     </div>
 
                     <div class="flex gap-4 overflow-x-auto no-scrollbar pb-3 pt-2 -mx-2 px-2">
-                        <div onclick="openModalWithCategory('Plumbing')" class="neumorphic-button flex-shrink-0 w-24 p-3.5 rounded-[20px] flex flex-col items-center gap-2.5 tap-effect cursor-pointer group">
+                        <div onclick="openModalWithCategory('Plumbing')" class="bg-[#f5f5f7] hover:bg-blue-50 border border-slate-100 flex-shrink-0 w-24 p-3.5 rounded-[20px] flex flex-col items-center gap-2.5 tap-effect transition-colors cursor-pointer group">
                             <i class="fa-solid fa-faucet-drip text-2xl text-blue-500 group-hover:scale-110 transition-transform drop-shadow-sm"></i>
                             <span class="text-[10px] font-bold text-slate-700">Plumbing</span>
                         </div>
-                        <div onclick="openModalWithCategory('Electrical')" class="neumorphic-button flex-shrink-0 w-24 p-3.5 rounded-[20px] flex flex-col items-center gap-2.5 tap-effect cursor-pointer group">
+                        <div onclick="openModalWithCategory('Electrical')" class="bg-[#f5f5f7] hover:bg-yellow-50 border border-slate-100 flex-shrink-0 w-24 p-3.5 rounded-[20px] flex flex-col items-center gap-2.5 tap-effect transition-colors cursor-pointer group">
                             <i class="fa-solid fa-plug text-2xl text-yellow-500 group-hover:scale-110 transition-transform drop-shadow-sm"></i>
                             <span class="text-[10px] font-bold text-slate-700">Electrical</span>
                         </div>
-                        <div onclick="openModalWithCategory('Furniture')" class="neumorphic-button flex-shrink-0 w-24 p-3.5 rounded-[20px] flex flex-col items-center gap-2.5 tap-effect cursor-pointer group">
+                        <div onclick="openModalWithCategory('Furniture')" class="bg-[#f5f5f7] hover:bg-orange-50 border border-slate-100 flex-shrink-0 w-24 p-3.5 rounded-[20px] flex flex-col items-center gap-2.5 tap-effect transition-colors cursor-pointer group">
                             <i class="fa-solid fa-chair text-2xl text-orange-500 group-hover:scale-110 transition-transform drop-shadow-sm"></i>
                             <span class="text-[10px] font-bold text-slate-700">Furniture</span>
                         </div>
-                        <div onclick="openModalWithCategory('Locks')" class="neumorphic-button flex-shrink-0 w-24 p-3.5 rounded-[20px] flex flex-col items-center gap-2.5 tap-effect cursor-pointer group">
+                        <div onclick="openModalWithCategory('Locks')" class="bg-[#f5f5f7] hover:bg-slate-100 border border-slate-100 flex-shrink-0 w-24 p-3.5 rounded-[20px] flex flex-col items-center gap-2.5 tap-effect transition-colors cursor-pointer group">
                             <i class="fa-solid fa-door-closed text-2xl text-slate-600 group-hover:scale-110 transition-transform drop-shadow-sm"></i>
                             <span class="text-[10px] font-bold text-slate-700">Locks</span>
                         </div>
@@ -374,7 +363,7 @@
 
             <!-- ================= START: SECURITY MODULE ================= -->
             <div id="tab-security" class="tab-content space-y-5">
-                <section class="neumorphic rounded-[28px] p-5 flex items-center justify-between gap-4">
+                <section class="bg-white card-shadow soft-border rounded-[28px] p-5 flex items-center justify-between gap-4">
                     <div class="text-left flex-1">
                         <h2 class="text-lg font-black text-slate-900 mb-1 tracking-tight">Emergency SOS</h2>
                         <p class="text-[10px] text-slate-500 font-medium leading-relaxed">Tap to immediately alert on-site dispatch. Room and ID are shared.</p>
@@ -383,42 +372,40 @@
                     <div class="relative w-20 h-20 flex items-center justify-center flex-shrink-0">
                         <div class="absolute inset-0 bg-red-100 rounded-full animate-ping opacity-70"></div>
                         <div class="absolute inset-2 bg-red-200 rounded-full"></div>
-                        <button id="btn-sos" onclick="triggerSOS()" class="relative z-10 w-[60px] h-[60px] bg-gradient-to-br from-red-500 to-rose-600 text-white rounded-full flex flex-col items-center justify-center tap-effect shadow-[4px_4px_10px_rgba(225,29,72,0.3),-4px_-4px_10px_rgba(255,255,255,0.9)] border border-red-400/50 active:scale-95 transition-all duration-300">
+                        <button id="btn-sos" onclick="triggerSOS()" class="relative z-10 w-[60px] h-[60px] bg-red-600 text-white rounded-full flex flex-col items-center justify-center tap-effect shadow-xl shadow-red-500/30 active:scale-95 transition-all duration-300 border border-red-500">
                             <i id="sos-icon" class="fa-solid fa-light-emergency-on text-xl mb-0.5"></i>
                             <span id="sos-text" class="font-bold text-[8px] uppercase tracking-wider">SOS</span>
                         </button>
                     </div>
                 </section>
 
-                <section class="neumorphic rounded-[28px] p-6">
+                <section class="bg-white card-shadow soft-border rounded-[28px] p-6">
                     <h2 class="text-sm font-black text-slate-900 mb-1 tracking-tight">Ping Security</h2>
                     <p class="text-[10px] text-slate-500 mb-5 font-medium">Select the type of assistance required</p>
 
                     <div class="grid grid-cols-2 gap-4 mb-5">
-                        <button type="button" onclick="selectSecurityOption(this, 'Suspicious Person')" class="sec-option neumorphic-button rounded-[20px] p-3.5 flex flex-col items-center justify-center gap-2 tap-effect transition-all">
-                            <i class="fa-regular fa-eye text-slate-400 text-lg"></i>
-                            <span class="text-[10px] font-bold text-slate-500">Suspicious</span>
+                        <button type="button" onclick="selectSecurityOption(this, 'Suspicious Person')" class="sec-option bg-slate-50 border border-slate-100 rounded-[20px] p-3.5 flex flex-col items-center justify-center gap-2 tap-effect transition-all">
+                            <i class="fa-regular fa-eye text-blue-500 text-lg"></i>
+                            <span class="text-[10px] font-bold text-slate-700">Suspicious</span>
                         </button>
-                        <button type="button" onclick="selectSecurityOption(this, 'Escort Request')" class="sec-option neumorphic-active rounded-[20px] p-3.5 flex flex-col items-center justify-center gap-2 tap-effect transition-all border border-blue-200/50">
+                        <button type="button" onclick="selectSecurityOption(this, 'Escort Request')" class="sec-option bg-blue-50 border-2 border-blue-600 rounded-[20px] p-3.5 flex flex-col items-center justify-center gap-2 tap-effect transition-all active-sec-option">
                             <i class="fa-solid fa-location-dot text-blue-600 text-lg"></i>
                             <span class="text-[10px] font-bold text-blue-600">Escort</span>
                         </button>
-                        <button type="button" onclick="selectSecurityOption(this, 'Disturbance')" class="sec-option neumorphic-button rounded-[20px] p-3.5 flex flex-col items-center justify-center gap-2 tap-effect transition-all">
-                            <i class="fa-solid fa-triangle-exclamation text-slate-400 text-lg"></i>
-                            <span class="text-[10px] font-bold text-slate-500">Disturbance</span>
+                        <button type="button" onclick="selectSecurityOption(this, 'Disturbance')" class="sec-option bg-slate-50 border border-slate-100 rounded-[20px] p-3.5 flex flex-col items-center justify-center gap-2 tap-effect transition-all">
+                            <i class="fa-solid fa-triangle-exclamation text-blue-500 text-lg"></i>
+                            <span class="text-[10px] font-bold text-slate-700">Disturbance</span>
                         </button>
-                        <button type="button" onclick="selectSecurityOption(this, 'Medical Help')" class="sec-option neumorphic-button rounded-[20px] p-3.5 flex flex-col items-center justify-center gap-2 tap-effect transition-all">
-                            <i class="fa-solid fa-phone text-slate-400 text-lg"></i>
-                            <span class="text-[10px] font-bold text-slate-500">Medical</span>
+                        <button type="button" onclick="selectSecurityOption(this, 'Medical Help')" class="sec-option bg-slate-50 border border-slate-100 rounded-[20px] p-3.5 flex flex-col items-center justify-center gap-2 tap-effect transition-all">
+                            <i class="fa-solid fa-phone text-blue-500 text-lg"></i>
+                            <span class="text-[10px] font-bold text-slate-700">Medical</span>
                         </button>
                     </div>
 
                     <input type="hidden" id="selected-security-type" value="Escort Request">
-                    <div class="neumorphic-inset rounded-xl p-1 mb-5">
-                        <textarea id="security-notes" rows="2" class="w-full bg-transparent border-none rounded-xl p-3 text-xs text-slate-700 focus:outline-none resize-none transition-all placeholder-slate-400 font-medium" placeholder="Add details for 'Escort Request'..."></textarea>
-                    </div>
+                    <textarea id="security-notes" rows="2" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-700 focus:outline-none focus:border-blue-500 mb-4 resize-none transition-all placeholder-slate-400 font-medium" placeholder="Add details for 'Escort Request'..."></textarea>
                     
-                    <button id="btn-security-ping" onclick="sendSecurityPing()" class="w-full bg-slate-900 hover:bg-blue-600 text-white font-bold rounded-xl py-4 text-xs tap-effect shadow-[4px_4px_10px_rgba(15,23,42,0.2),-4px_-4px_10px_rgba(255,255,255,0.8)] transition-all duration-300 flex items-center justify-center gap-2">
+                    <button id="btn-security-ping" onclick="sendSecurityPing()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl py-4 text-xs tap-effect shadow-md shadow-blue-500/20 transition-all duration-300 flex items-center justify-center gap-2">
                         <i class="fa-regular fa-paper-plane"></i> Dispatch Alert
                     </button>
                 </section>
@@ -427,10 +414,10 @@
             
             <!-- ================= START: PROFILE MODULE ================= -->
             <div id="tab-profile" class="tab-content space-y-5">
-                <div class="neumorphic rounded-[28px] p-5 flex items-center gap-4">
+                <div class="bg-white card-shadow soft-border rounded-[28px] p-5 flex items-center gap-4">
                     <div class="relative flex-shrink-0">
-                        <div class="w-14 h-14 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xl shadow-[inset_0_4px_8px_rgba(0,0,0,0.2)] overflow-hidden" id="profile-initials">--</div>
-                        <button id="btn-profile-upload" onclick="document.getElementById('profile-upload').click()" class="hidden absolute -bottom-1 -right-1 w-7 h-7 bg-white text-blue-600 rounded-full flex items-center justify-center text-[10px] shadow-md tap-effect hover:bg-slate-50 transition-colors">
+                        <div class="w-14 h-14 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xl shadow-inner overflow-hidden" id="profile-initials">--</div>
+                        <button id="btn-profile-upload" onclick="document.getElementById('profile-upload').click()" class="hidden absolute -bottom-1 -right-1 w-7 h-7 bg-white text-blue-600 rounded-full flex items-center justify-center text-[10px] shadow-sm border border-slate-100 tap-effect hover:bg-slate-50 transition-colors">
                             <i class="fa-solid fa-camera"></i>
                         </button>
                         <input type="file" id="profile-upload" accept="image/*" class="hidden" onchange="handleProfilePicUpload(event)">
@@ -441,8 +428,8 @@
                     </div>
                 </div>
 
-                <div class="neumorphic rounded-[28px] p-6">
-                    <h3 class="text-sm font-black text-slate-900 mb-4 border-b border-white/60 pb-3 tracking-tight"><i class="fa-regular fa-address-card text-blue-500 mr-2"></i> Personal Information</h3>
+                <div class="bg-white card-shadow soft-border rounded-[28px] p-6">
+                    <h3 class="text-sm font-black text-slate-900 mb-4 border-b border-slate-100 pb-3 tracking-tight"><i class="fa-regular fa-address-card text-blue-500 mr-2"></i> Personal Information</h3>
                     <div class="space-y-3">
                         <div class="flex justify-between"><span class="text-xs text-slate-500 font-medium">ID Number</span><span id="dyn-id-number" class="text-xs font-bold text-slate-800">--</span></div>
                         <div class="flex justify-between"><span class="text-xs text-slate-500 font-medium">Gender</span><span id="dyn-gender" class="text-xs font-bold text-slate-800">--</span></div>
@@ -451,33 +438,33 @@
                     </div>
                 </div>
 
-                <div class="neumorphic rounded-[28px] p-6">
-                    <h3 class="text-sm font-black text-slate-900 mb-4 border-b border-white/60 pb-3 tracking-tight"><i class="fa-solid fa-shield-heart text-indigo-500 mr-2"></i> Guardian Details</h3>
+                <div class="bg-white card-shadow soft-border rounded-[28px] p-6">
+                    <h3 class="text-sm font-black text-slate-900 mb-4 border-b border-slate-100 pb-3 tracking-tight"><i class="fa-solid fa-shield-heart text-indigo-500 mr-2"></i> Guardian Details</h3>
                     <div class="space-y-3">
                         <div class="flex justify-between"><span class="text-xs text-slate-500 font-medium">Name</span><span id="dyn-guardian-name" class="text-xs font-bold text-slate-800">--</span></div>
                         <div class="flex justify-between"><span class="text-xs text-slate-500 font-medium">Relationship</span><span id="dyn-guardian-rel" class="text-xs font-bold text-slate-800">--</span></div>
                         <div class="flex justify-between"><span class="text-xs text-slate-500 font-medium">Contact Number</span><span id="dyn-guardian-num" class="text-xs font-bold text-slate-800">--</span></div>
                     </div>
                     
-                    <div class="pt-3 border-t border-white/60 mt-3">
+                    <div class="pt-3 border-t border-slate-100 mt-3">
                         <span class="text-[10px] text-rose-600 font-bold uppercase tracking-widest block mb-1"><i class="fa-solid fa-notes-medical mr-1"></i> Medical Conditions & Allergies</span>
                         <span id="dyn-medical" class="text-xs font-bold text-slate-800 leading-relaxed block">None</span>
                     </div>
                 </div>
 
-                <div class="neumorphic rounded-[28px] p-6 mb-4">
+                <div class="bg-white card-shadow soft-border rounded-[28px] p-6 mb-4">
                     <div class="flex justify-between items-start mb-5">
                         <div>
                             <h3 class="text-base font-black text-slate-900 mb-1 tracking-tight">Digital Vault</h3>
                             <p class="text-[11px] text-slate-500 font-medium">Access your securely uploaded files.</p>
                         </div>
-                        <button onclick="manualSync()" class="w-8 h-8 rounded-full neumorphic-button text-blue-600 flex items-center justify-center text-xs" title="Sync Vault"><i class="fa-solid fa-rotate-right"></i></button>
+                        <button onclick="manualSync()" class="w-8 h-8 rounded-full bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center text-xs hover:bg-blue-100 transition-colors tap-effect" title="Sync Vault"><i class="fa-solid fa-rotate-right"></i></button>
                     </div>
                     
                     <div class="space-y-4 mb-6">
-                        <div class="flex items-center justify-between p-3 neumorphic-inset rounded-[20px]">
+                        <div class="flex items-center justify-between p-3 bg-slate-50 border border-slate-100 rounded-[20px]">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-white text-blue-600 flex items-center justify-center text-sm shadow-sm"><i class="fa-solid fa-id-card"></i></div>
+                                <div class="w-10 h-10 rounded-full bg-white border border-blue-100 text-blue-600 flex items-center justify-center text-sm shadow-sm"><i class="fa-solid fa-id-card"></i></div>
                                 <div>
                                     <p class="text-sm font-semibold text-slate-800 tracking-tight">Identity Document</p>
                                     <p class="text-[10px] text-slate-500 mt-0.5 font-medium">ID / Passport</p>
@@ -485,9 +472,9 @@
                             </div>
                             <div id="doc-btn-id"></div>
                         </div>
-                        <div class="flex items-center justify-between p-3 neumorphic-inset rounded-[20px]">
+                        <div class="flex items-center justify-between p-3 bg-slate-50 border border-slate-100 rounded-[20px]">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-white text-indigo-600 flex items-center justify-center text-sm shadow-sm"><i class="fa-solid fa-graduation-cap"></i></div>
+                                <div class="w-10 h-10 rounded-full bg-white border border-indigo-100 text-indigo-600 flex items-center justify-center text-sm shadow-sm"><i class="fa-solid fa-graduation-cap"></i></div>
                                 <div>
                                     <p class="text-sm font-semibold text-slate-800 tracking-tight">Academic Registration</p>
                                     <p class="text-[10px] text-slate-500 mt-0.5 font-medium" id="dyn-course-name">--</p>
@@ -495,9 +482,9 @@
                             </div>
                             <div id="doc-btn-reg"></div>
                         </div>
-                        <div class="flex items-center justify-between p-3 neumorphic-inset rounded-[20px]">
+                        <div class="flex items-center justify-between p-3 bg-slate-50 border border-slate-100 rounded-[20px]">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-white text-emerald-600 flex items-center justify-center text-sm shadow-sm"><i class="fa-solid fa-landmark"></i></div>
+                                <div class="w-10 h-10 rounded-full bg-white border border-emerald-100 text-emerald-600 flex items-center justify-center text-sm shadow-sm"><i class="fa-solid fa-landmark"></i></div>
                                 <div>
                                     <p class="text-sm font-semibold text-slate-800 tracking-tight">Funding Pipeline</p>
                                     <p class="text-[10px] text-slate-500 mt-0.5 capitalize font-medium" id="dyn-funding-type">--</p>
@@ -506,9 +493,9 @@
                             <div id="doc-btn-fund"></div>
                         </div>
 
-                        <div id="profile-vault-payslip" class="hidden flex items-center justify-between p-3 neumorphic-inset rounded-[20px]">
+                        <div id="profile-vault-payslip" class="hidden flex items-center justify-between p-3 bg-slate-50 border border-slate-100 rounded-[20px]">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-white text-emerald-600 flex items-center justify-center text-sm shadow-sm"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                                <div class="w-10 h-10 rounded-full bg-white border border-emerald-100 text-emerald-600 flex items-center justify-center text-sm shadow-sm"><i class="fa-solid fa-file-invoice-dollar"></i></div>
                                 <div>
                                     <p class="text-sm font-semibold text-slate-800 tracking-tight">Latest Payslip</p>
                                     <p class="text-[10px] text-slate-500 mt-0.5 font-medium">Cash Payer Docs</p>
@@ -517,7 +504,7 @@
                             <div id="doc-btn-payslip"></div>
                         </div>
                         
-                        <div class="flex items-center justify-between p-3 neumorphic-inset rounded-[20px]">
+                        <div class="flex items-center justify-between p-3 bg-slate-50 border border-slate-100 rounded-[20px]">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center text-sm shadow-sm"><i class="fa-solid fa-file-signature"></i></div>
                                 <div>
@@ -529,7 +516,7 @@
                         </div>
                     </div>
                     
-                    <div class="bg-blue-50/50 rounded-2xl p-4 flex items-start gap-3 border border-blue-200/50">
+                    <div class="bg-blue-50/80 rounded-[20px] p-4 flex items-start gap-3 border border-blue-100">
                         <i class="fa-solid fa-shield-check text-blue-500 text-lg mt-0.5"></i>
                         <div>
                             <p class="text-xs font-bold text-slate-800">Automania Architecture</p>
@@ -539,14 +526,14 @@
                 </div>
 
                 <!-- ADMINISTRATIVE ACTIONS -->
-                <div class="neumorphic rounded-[28px] p-6 mb-4">
-                    <h3 class="text-sm font-black text-slate-900 mb-4 border-b border-white/60 pb-3 tracking-tight"><i class="fa-solid fa-sliders text-slate-500 mr-2"></i> Administrative Actions</h3>
+                <div class="bg-white card-shadow soft-border rounded-[28px] p-6 mb-4">
+                    <h3 class="text-sm font-black text-slate-900 mb-4 border-b border-slate-100 pb-3 tracking-tight"><i class="fa-solid fa-sliders text-slate-500 mr-2"></i> Administrative Actions</h3>
                     <div class="space-y-4">
-                        <button onclick="openAdminRequestModal('Room Change')" class="w-full neumorphic-button text-slate-700 font-bold rounded-[20px] py-4 text-xs tap-effect flex items-center justify-between px-5">
+                        <button onclick="openAdminRequestModal('Room Change')" class="w-full bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 font-bold rounded-[20px] py-4 text-xs tap-effect flex items-center justify-between px-5 transition-colors">
                             <span class="flex items-center gap-3"><i class="fa-solid fa-person-shelter text-blue-500 text-sm"></i> Request Room Change</span>
                             <i class="fa-solid fa-chevron-right text-slate-400 text-[10px]"></i>
                         </button>
-                        <button onclick="openAdminRequestModal('Terminate Lease')" class="w-full neumorphic-button text-rose-600 font-bold rounded-[20px] py-4 text-xs tap-effect flex items-center justify-between px-5 border border-rose-100">
+                        <button onclick="openAdminRequestModal('Terminate Lease')" class="w-full bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 font-bold rounded-[20px] py-4 text-xs tap-effect flex items-center justify-between px-5 transition-colors">
                             <span class="flex items-center gap-3"><i class="fa-solid fa-file-circle-xmark text-rose-500 text-sm"></i> Terminate Lease</span>
                             <i class="fa-solid fa-chevron-right text-rose-400 text-[10px]"></i>
                         </button>
@@ -651,7 +638,7 @@
         <!-- ================= END: FLOATING RIGHT-HALF CHAT WIDGETS ================= -->
 
         <!-- ================= START: BOTTOM NAVIGATION ================= -->
-        <nav class="flex-shrink-0 bg-white pt-3 px-6 border-t border-slate-100 shadow-[0_-10px_20px_rgba(0,0,0,0.03)] z-50 pb-[calc(1rem+env(safe-area-inset-bottom))]">
+        <nav class="flex-shrink-0 bg-white/90 backdrop-blur-md pt-3 px-6 border-t border-slate-200/60 shadow-[0_-10px_20px_rgba(0,0,0,0.03)] z-50 pb-[calc(1rem+env(safe-area-inset-bottom))]">
             <div class="flex justify-between items-center w-full">
                 <button onclick="switchTab('home', this)" id="nav-home" class="nav-btn text-blue-600 flex flex-col items-center gap-1 tap-effect transition-colors"><i class="fa-solid fa-house text-lg mb-0.5"></i><span class="text-[10px] font-bold">Home</span></button>
                 <button onclick="switchTab('wifi', this)" id="nav-wifi" class="nav-btn text-slate-400 flex flex-col items-center gap-1 tap-effect transition-colors nav-locked pointer-events-none"><i class="fa-solid fa-wifi text-lg mb-0.5"></i><span class="text-[10px] font-medium">Wi-Fi</span></button>
@@ -668,7 +655,7 @@
     <!-- ================= START: ALL MODALS ================= -->
     <!-- NEW ADMIN REQUEST MODAL -->
     <div id="adminRequestModal" class="absolute inset-0 z-[2100] modal-overlay flex items-end justify-center">
-        <div class="modal-content bg-white w-full max-w-md rounded-t-[32px] shadow-2xl p-6 pb-10">
+        <div class="modal-content glass-panel w-full max-w-md rounded-t-[40px] shadow-2xl p-6 pb-10">
             <div class="flex justify-between items-center mb-6">
                 <h2 id="admin-request-title" class="text-xl font-bold text-slate-900 tracking-tight">Request</h2>
                 <button onclick="closeModal('adminRequestModal')" class="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
@@ -680,9 +667,9 @@
                 <input type="hidden" id="admin-request-type" value="">
                 <div class="mb-6">
                     <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Detailed Reason</label>
-                    <textarea id="admin-request-reason" rows="4" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-sm text-slate-800 focus:outline-none focus:border-blue-500 resize-none transition-colors" required></textarea>
+                    <textarea id="admin-request-reason" rows="4" class="w-full bg-white/60 border border-slate-200 rounded-[20px] p-4 text-sm text-slate-800 focus:outline-none focus:border-blue-500 resize-none transition-colors shadow-inner" required></textarea>
                 </div>
-                <button type="submit" id="btn-submit-admin-req" class="w-full bg-slate-900 hover:bg-blue-600 text-white font-bold rounded-xl py-4 shadow-lg transition-all flex justify-center items-center gap-2 tap-effect">
+                <button type="submit" id="btn-submit-admin-req" class="w-full bg-slate-900 hover:bg-blue-600 text-white font-bold rounded-[20px] py-4 shadow-lg transition-all flex justify-center items-center gap-2 tap-effect">
                     Submit Request <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </form>
@@ -691,7 +678,7 @@
 
     <!-- VISITOR MODAL -->
     <div id="visitorModal" class="absolute inset-0 z-[2100] modal-overlay flex items-end justify-center">
-        <div class="modal-content bg-white w-full max-w-md rounded-t-[32px] shadow-2xl p-6 pb-10">
+        <div class="modal-content glass-panel w-full max-w-md rounded-t-[40px] shadow-2xl p-6 pb-10">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-xl font-bold text-slate-900 tracking-tight">Request Visitor PIN</h2>
                 <button onclick="closeModal('visitorModal')" class="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
@@ -702,17 +689,17 @@
             <form id="visitorForm" onsubmit="submitVisitorPin(event)">
                 <div class="mb-4">
                     <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">First Name</label>
-                    <input id="vis-fname" type="text" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-sm text-slate-800 focus:outline-none focus:border-blue-500 transition-colors" placeholder="e.g. John" required>
+                    <input id="vis-fname" type="text" class="w-full bg-white/60 border border-slate-200 rounded-[20px] p-4 text-sm text-slate-800 focus:outline-none focus:border-blue-500 transition-colors shadow-inner" placeholder="e.g. John" required>
                 </div>
                 <div class="mb-4">
                     <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Surname</label>
-                    <input id="vis-sname" type="text" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-sm text-slate-800 focus:outline-none focus:border-blue-500 transition-colors" placeholder="e.g. Doe" required>
+                    <input id="vis-sname" type="text" class="w-full bg-white/60 border border-slate-200 rounded-[20px] p-4 text-sm text-slate-800 focus:outline-none focus:border-blue-500 transition-colors shadow-inner" placeholder="e.g. Doe" required>
                 </div>
                 <div class="mb-6">
                     <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Email Address</label>
-                    <input id="vis-email" type="email" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-sm text-slate-800 focus:outline-none focus:border-blue-500 transition-colors" placeholder="visitor@email.com" required>
+                    <input id="vis-email" type="email" class="w-full bg-white/60 border border-slate-200 rounded-[20px] p-4 text-sm text-slate-800 focus:outline-none focus:border-blue-500 transition-colors shadow-inner" placeholder="visitor@email.com" required>
                 </div>
-                <button type="submit" id="btn-submit-visitor" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl py-4 shadow-lg shadow-blue-600/20 transition-all flex justify-center items-center gap-2">
+                <button type="submit" id="btn-submit-visitor" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-[20px] py-4 shadow-lg shadow-blue-600/20 transition-all flex justify-center items-center gap-2 tap-effect">
                     Request Visit <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </form>
@@ -721,7 +708,7 @@
 
     <!-- LOG SNAG MODAL -->
     <div id="snagModal" class="absolute inset-0 z-[2100] modal-overlay flex items-end justify-center">
-        <div class="modal-content bg-white w-full max-w-md rounded-t-[32px] shadow-2xl p-6 pb-10">
+        <div class="modal-content glass-panel w-full max-w-md rounded-t-[40px] shadow-2xl p-6 pb-10">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-xl font-bold text-slate-900 tracking-tight">Log Maintenance</h2>
                 <button onclick="closeModal('snagModal')" class="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
@@ -732,7 +719,7 @@
             <form id="snagForm" onsubmit="submitSnag(event)">
                 <div class="mb-4">
                     <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Category</label>
-                    <select id="snag-category" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-sm text-slate-800 focus:outline-none focus:border-blue-500 transition-colors" required>
+                    <select id="snag-category" class="w-full bg-white/60 border border-slate-200 rounded-[20px] p-4 text-sm text-slate-800 focus:outline-none focus:border-blue-500 transition-colors shadow-inner" required>
                         <option value="" disabled selected>Select issue type...</option>
                         <option value="Plumbing">Plumbing (Leaks, Toilets)</option>
                         <option value="Electrical">Electrical (Lights, Plugs)</option>
@@ -743,9 +730,9 @@
                 </div>
                 <div class="mb-6">
                     <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Description</label>
-                    <textarea id="snag-desc" rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-sm text-slate-800 focus:outline-none focus:border-blue-500 resize-none transition-colors" placeholder="Provide details about the issue..." required></textarea>
+                    <textarea id="snag-desc" rows="3" class="w-full bg-white/60 border border-slate-200 rounded-[20px] p-4 text-sm text-slate-800 focus:outline-none focus:border-blue-500 resize-none transition-colors shadow-inner" placeholder="Provide details about the issue..." required></textarea>
                 </div>
-                <button type="submit" id="btn-submit-snag" class="w-full bg-slate-900 hover:bg-blue-600 text-white font-bold rounded-xl py-4 shadow-lg shadow-slate-900/20 transition-all flex justify-center items-center gap-2">
+                <button type="submit" id="btn-submit-snag" class="w-full bg-slate-900 hover:bg-blue-600 text-white font-bold rounded-[20px] py-4 shadow-lg shadow-slate-900/20 transition-all flex justify-center items-center gap-2 tap-effect">
                     Submit Ticket <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </form>
@@ -754,8 +741,8 @@
 
     <!-- SHUTTLE TRANSIT MODAL -->
     <div id="shuttleMapModal" class="absolute inset-0 z-[2100] modal-overlay flex items-end justify-center">
-        <div class="modal-content bg-white w-full h-[92dvh] rounded-t-[40px] shadow-2xl p-6 pb-8 flex flex-col justify-between">
-            <div class="flex justify-between items-center pb-4 border-b border-slate-100 flex-shrink-0">
+        <div class="modal-content glass-panel w-full h-[92dvh] rounded-t-[40px] shadow-2xl p-6 pb-8 flex flex-col justify-between">
+            <div class="flex justify-between items-center pb-4 border-b border-slate-200/50 flex-shrink-0">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-cyan-50 text-cyan-600 rounded-xl flex items-center justify-center text-sm border border-cyan-100"><i class="fa-solid fa-map-location-dot"></i></div>
                     <div>
@@ -765,25 +752,25 @@
                         </p>
                     </div>
                 </div>
-                <button onclick="closeShuttleMap()" class="w-9 h-9 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
+                <button onclick="closeShuttleMap()" class="w-9 h-9 bg-white/80 rounded-full flex items-center justify-center text-slate-500 hover:bg-white shadow-sm border border-slate-200 transition-colors">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
 
-            <div class="my-3 flex justify-between items-center bg-slate-50 border border-slate-100 rounded-2xl p-3 shadow-sm flex-shrink-0">
+            <div class="my-3 flex justify-between items-center bg-white/60 border border-white/80 rounded-2xl p-3 shadow-sm flex-shrink-0">
                 <span class="text-xs text-slate-600 font-semibold"><i class="fa-solid fa-route text-blue-500 mr-1"></i> Destination Status</span>
                 <span id="shuttle-eta" class="text-xs font-black text-white bg-slate-900 px-3 py-1 rounded-lg">Calculating...</span>
             </div>
 
-            <div class="flex-1 bg-slate-100 border border-slate-200 rounded-[28px] overflow-hidden relative shadow-inner p-1">
-                <div id="telemetry-map" class="h-full w-full"></div>
+            <div class="flex-1 bg-white/40 border border-white/60 rounded-[28px] overflow-hidden relative shadow-inner p-1">
+                <div id="telemetry-map" class="h-full w-full rounded-[24px]"></div>
             </div>
 
             <div class="mt-4 grid grid-cols-2 gap-3 flex-shrink-0">
-                <button onclick="sendShuttleRequest('Stop Request', 'Please pass by Quagga Centre on the next route.', this)" class="py-3.5 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-all shadow-sm flex items-center justify-center gap-2">
+                <button onclick="sendShuttleRequest('Stop Request', 'Please pass by Quagga Centre on the next route.', this)" class="py-4 bg-white/80 backdrop-blur-md hover:bg-white border border-white shadow-sm text-slate-700 text-xs font-bold rounded-[20px] transition-all flex items-center justify-center gap-2 tap-effect">
                     <i class="fa-solid fa-map-pin text-cyan-500"></i> Quagga Stop
                 </button>
-                <button onclick="openCustomMessagePrompt()" class="py-3.5 bg-slate-900 hover:bg-blue-600 text-white text-xs font-bold rounded-xl transition-all shadow-md flex items-center justify-center gap-2">
+                <button onclick="openCustomMessagePrompt()" class="py-4 bg-slate-900 hover:bg-blue-600 text-white text-xs font-bold rounded-[20px] transition-all shadow-md flex items-center justify-center gap-2 tap-effect">
                     <i class="fa-regular fa-comment-dots text-cyan-400"></i> Custom Msg
                 </button>
             </div>
@@ -792,23 +779,23 @@
 
     <!-- DISPATCH CUSTOM PAYLOAD MODALS -->
     <div id="customMsgModal" class="absolute inset-0 z-[2200] modal-overlay flex items-center justify-center p-6">
-        <div class="bg-white w-full max-w-sm rounded-[32px] shadow-2xl p-6 border border-slate-100 transition-all transform scale-95 duration-300">
+        <div class="glass-panel w-full max-w-sm rounded-[32px] shadow-2xl p-6 transition-all transform scale-95 duration-300">
             <h3 class="text-lg font-black text-slate-900 tracking-tight mb-2 flex items-center gap-2">
                 <i class="fa-solid fa-message text-blue-500"></i> Dispatch options
             </h3>
             <p class="text-xs text-slate-500 font-medium mb-4">Would you like to request the driver to wait 5 minutes, or type a custom note?</p>
             
             <div class="space-y-2.5">
-                <button onclick="sendShuttleRequest('Delay Request', 'Please hold the shuttle for 5 minutes. I am on my way.', this)" class="w-full py-3.5 bg-blue-50 hover:bg-blue-100 border border-blue-100 text-blue-600 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2">
+                <button onclick="sendShuttleRequest('Delay Request', 'Please hold the shuttle for 5 minutes. I am on my way.', this)" class="w-full py-4 bg-blue-50/80 hover:bg-blue-100 border border-blue-200/50 text-blue-600 text-xs font-bold rounded-[20px] transition-all flex items-center justify-center gap-2 tap-effect">
                     <i class="fa-solid fa-hourglass-half"></i> Ask Driver to Wait 5 Mins
                 </button>
                 
-                <div class="border-t border-slate-100 my-3 pt-3">
-                    <textarea id="custom-driver-text" rows="2" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-none focus:border-blue-500 mb-3 resize-none transition-all" placeholder="Type custom dispatch payload..."></textarea>
+                <div class="border-t border-slate-200/60 my-3 pt-3">
+                    <textarea id="custom-driver-text" rows="2" class="w-full bg-white/60 border border-slate-200/80 rounded-[20px] p-4 text-xs text-slate-800 focus:outline-none focus:border-blue-500 mb-3 resize-none transition-all shadow-inner" placeholder="Type custom dispatch payload..."></textarea>
                     
                     <div class="grid grid-cols-2 gap-2">
-                        <button onclick="closeModal('customMsgModal')" class="py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold rounded-xl transition-all">Cancel</button>
-                        <button onclick="submitCustomDriverMsg(this)" class="py-3 bg-slate-900 hover:bg-blue-600 text-white text-xs font-bold rounded-xl transition-all">Send Note</button>
+                        <button onclick="closeModal('customMsgModal')" class="py-3 bg-white/60 hover:bg-white text-slate-600 text-xs font-bold rounded-xl transition-all shadow-sm border border-slate-200">Cancel</button>
+                        <button onclick="submitCustomDriverMsg(this)" class="py-3 bg-slate-900 hover:bg-blue-600 text-white text-xs font-bold rounded-xl transition-all shadow-md">Send Note</button>
                     </div>
                 </div>
             </div>
@@ -817,195 +804,196 @@
 
     <!-- PROFILE STEP WIZARD MODAL -->
     <div id="setupWizardModal" class="absolute inset-0 z-[1600] modal-overlay flex items-end justify-center">
-        <div class="modal-content bg-white w-full h-[90dvh] max-h-[900px] rounded-t-[40px] shadow-2xl flex flex-col overflow-hidden relative">
-            <div class="flex justify-between items-center p-6 pb-4 border-b border-slate-100 flex-shrink-0 bg-white z-10 shadow-sm">
-                <div><h2 class="text-lg font-black text-slate-900 tracking-tight" id="wizard-title">Personal Details</h2><p class="text-[10px] text-blue-500 font-bold uppercase tracking-widest mt-0.5" id="wizard-step-indicator">Step 1 of 2</p></div>
-                <button onclick="closeWizardModal()" class="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors"><i class="fa-solid fa-xmark"></i></button>
+        <div class="modal-content glass-panel w-full h-[90dvh] max-h-[900px] rounded-t-[40px] shadow-2xl flex flex-col overflow-hidden relative">
+            <div class="flex justify-between items-center p-6 pb-4 border-b border-white/50 flex-shrink-0 bg-white/40 backdrop-blur-md z-10 shadow-sm">
+                <div><h2 class="text-lg font-black text-slate-900 tracking-tight" id="wizard-title">Personal Details</h2><p class="text-[10px] text-blue-600 font-bold uppercase tracking-widest mt-0.5" id="wizard-step-indicator">Step 1 of 2</p></div>
+                <button onclick="closeWizardModal()" class="w-8 h-8 bg-white/80 rounded-full flex items-center justify-center text-slate-500 hover:bg-white shadow-sm transition-colors border border-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div class="flex-1 overflow-y-auto custom-scroll p-6 bg-slate-50/50 relative">
+            <div class="flex-1 overflow-y-auto custom-scroll p-6 relative">
                 <form id="wizardForm">
                     <div id="wizard-step-1" class="space-y-4 doc-section active">
                         <div class="grid grid-cols-2 gap-3">
-                            <div><label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 pl-1">First Name</label><input type="text" name="First_Name" class="input-field" required></div>
-                            <div><label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 pl-1">Surname</label><input type="text" name="Surname" class="input-field" required></div>
+                            <div><label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">First Name</label><input type="text" name="First_Name" class="input-field shadow-inner" required></div>
+                            <div><label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Surname</label><input type="text" name="Surname" class="input-field shadow-inner" required></div>
                         </div>
-                        <div><label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 pl-1">Mobile Number</label><input type="tel" name="Mobile_Number" class="input-field" placeholder="081 234 5678" required></div>
+                        <div><label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Mobile Number</label><input type="tel" name="Mobile_Number" class="input-field shadow-inner" placeholder="081 234 5678" required></div>
                         <div class="grid grid-cols-2 gap-3">
-                            <div><label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 pl-1">Student Number</label><input type="text" name="Student_Number" class="input-field font-mono" required></div>
+                            <div><label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Student Number</label><input type="text" name="Student_Number" class="input-field font-mono shadow-inner" required></div>
                             <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 pl-1">Gender</label>
-                                <select name="Gender" class="input-field" required>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Gender</label>
+                                <select name="Gender" class="input-field shadow-inner" required>
                                     <option value="" disabled selected>Select</option><option value="Male">Male</option><option value="Female">Female</option>
                                 </select>
                             </div>
                         </div>
                         <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 pl-1">ID Number</label>
-                            <input type="text" name="ID_Number" class="input-field font-mono" placeholder="13 digits" required minlength="13" maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 13)">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">ID Number</label>
+                            <input type="text" name="ID_Number" class="input-field font-mono shadow-inner" placeholder="13 digits" required minlength="13" maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 13)">
                         </div>
-                        <div><label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 pl-1">Email Address</label><input type="email" name="Email_Address" class="input-field" required readonly></div>
+                        <div><label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Email Address</label><input type="email" name="Email_Address" class="input-field opacity-70 shadow-inner" required readonly></div>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 pl-1">Campus</label>
-                                <select name="Campus_Hub" class="input-field" required>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Campus</label>
+                                <select name="Campus_Hub" class="input-field shadow-inner" required>
                                     <option value="" disabled selected>Select</option><option>TUT Pretoria West</option><option>TUT Arcadia</option><option>TUT Arts Campus</option><option>UP Main Campus</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 pl-1">Year Level</label>
-                                <select name="Year_Level" class="input-field" required>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Year Level</label>
+                                <select name="Year_Level" class="input-field shadow-inner" required>
                                     <option value="" disabled selected>Select</option><option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option>Postgraduate (Hons/Masters)</option>
                                 </select>
                             </div>
                         </div>
-                        <div><label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 pl-1">Course Name</label><input type="text" name="Course" class="input-field" placeholder="e.g. Industrial Engineering" required></div>
-                        <div class="border-t border-slate-200/60 pt-4 mt-2">
-                            <div><label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 pl-1">Street Address</label><input type="text" name="Street_Address" class="input-field" required></div>
+                        <div><label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Course Name</label><input type="text" name="Course" class="input-field shadow-inner" placeholder="e.g. Industrial Engineering" required></div>
+                        <div class="border-t border-white/50 pt-4 mt-2">
+                            <div><label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Street Address</label><input type="text" name="Street_Address" class="input-field shadow-inner" required></div>
                             <div class="grid grid-cols-2 gap-3 mt-4">
-                                <div><label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 pl-1">City</label><input type="text" name="City" class="input-field" required></div>
-                                <div><label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 pl-1">Postal Code</label><input type="text" name="Postal_Code" class="input-field font-mono" required></div>
+                                <div><label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">City</label><input type="text" name="City" class="input-field shadow-inner" required></div>
+                                <div><label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Postal Code</label><input type="text" name="Postal_Code" class="input-field font-mono shadow-inner" required></div>
                             </div>
                         </div>
                     </div>
 
                     <div id="wizard-step-2" class="space-y-4 doc-section">
-                        <div><label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 pl-1">Guardian Name</label><input type="text" name="Guardian_Name" class="input-field" required></div>
+                        <div><label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Guardian Name</label><input type="text" name="Guardian_Name" class="input-field shadow-inner" required></div>
                         <div class="grid grid-cols-2 gap-3">
-                            <div><label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 pl-1">Contact Number</label><input type="tel" name="Guardian_Number" class="input-field font-mono" required></div>
+                            <div><label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Contact Number</label><input type="tel" name="Guardian_Number" class="input-field font-mono shadow-inner" required></div>
                             <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 pl-1">Relationship</label>
-                                <select name="Guardian_Relationship" class="input-field" required>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Relationship</label>
+                                <select name="Guardian_Relationship" class="input-field shadow-inner" required>
                                     <option value="" disabled selected>Select</option><option>Parent</option><option>Sibling</option><option>Relative</option><option>Other</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="pt-4 border-t border-slate-200/60">
-                            <label class="block text-[10px] font-bold text-rose-400 uppercase tracking-widest mb-1 pl-1"><i class="fa-solid fa-staff-snake mr-1"></i> Medical Condition (Optional)</label>
-                            <textarea name="Medical_Condition" rows="3" class="input-field resize-none" placeholder="Please list any allergies, chronic conditions, or required medications for emergencies..."></textarea>
+                        <div class="pt-4 border-t border-white/50">
+                            <label class="block text-[10px] font-bold text-rose-500 uppercase tracking-widest mb-1 pl-1"><i class="fa-solid fa-staff-snake mr-1"></i> Medical Condition (Optional)</label>
+                            <textarea name="Medical_Condition" rows="3" class="input-field resize-none shadow-inner" placeholder="Please list any allergies, chronic conditions, or required medications for emergencies..."></textarea>
                         </div>
                     </div>
 
                     <div id="wizard-step-3" class="doc-section">
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 text-center">Select Funding Source</label>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 text-center">Select Funding Source</label>
                         <div class="grid grid-cols-3 gap-2 mb-6">
-                            <div id="btn-nsfas" onclick="selectFunding('nsfas')" class="funding-card border-2 border-slate-200 rounded-[16px] p-3 cursor-pointer text-center group tap-effect">
-                                <i class="fa-solid fa-landmark text-slate-400 group-hover:text-blue-600 text-xl mb-1 transition-colors"></i>
+                            <div id="btn-nsfas" onclick="selectFunding('nsfas')" class="funding-card border border-white/60 rounded-[20px] p-3 cursor-pointer text-center group tap-effect">
+                                <i class="fa-solid fa-landmark text-slate-400 group-hover:text-blue-600 text-xl mb-1 transition-colors drop-shadow-sm"></i>
                                 <h3 class="font-bold text-slate-800 text-[10px] group-hover:text-blue-700">NSFAS</h3>
                             </div>
-                            <div id="btn-bursary" onclick="selectFunding('bursary')" class="funding-card border-2 border-slate-200 rounded-[16px] p-3 cursor-pointer text-center group tap-effect">
-                                <i class="fa-solid fa-file-contract text-slate-400 group-hover:text-indigo-600 text-xl mb-1 transition-colors"></i>
+                            <div id="btn-bursary" onclick="selectFunding('bursary')" class="funding-card border border-white/60 rounded-[20px] p-3 cursor-pointer text-center group tap-effect">
+                                <i class="fa-solid fa-file-contract text-slate-400 group-hover:text-indigo-600 text-xl mb-1 transition-colors drop-shadow-sm"></i>
                                 <h3 class="font-bold text-slate-800 text-[10px] group-hover:text-indigo-700">Bursary</h3>
                             </div>
-                            <div id="btn-cash" onclick="selectFunding('cash')" class="funding-card border-2 border-slate-200 rounded-[16px] p-3 cursor-pointer text-center group tap-effect">
-                                <i class="fa-solid fa-wallet text-slate-400 group-hover:text-emerald-600 text-xl mb-1 transition-colors"></i>
+                            <div id="btn-cash" onclick="selectFunding('cash')" class="funding-card border border-white/60 rounded-[20px] p-3 cursor-pointer text-center group tap-effect">
+                                <i class="fa-solid fa-wallet text-slate-400 group-hover:text-emerald-600 text-xl mb-1 transition-colors drop-shadow-sm"></i>
                                 <h3 class="font-bold text-slate-800 text-[10px] group-hover:text-emerald-700">Cash</h3>
                             </div>
                         </div>
 
                         <div id="req-default" class="doc-section active flex flex-col items-center text-center py-6 opacity-60">
-                            <i class="fa-solid fa-file-shield text-3xl text-slate-300 mb-2"></i>
-                            <p class="text-xs font-bold text-slate-500">Select pipeline to view requirements.</p>
+                            <i class="fa-solid fa-file-shield text-3xl text-slate-400 mb-2 drop-shadow-sm"></i>
+                            <p class="text-xs font-bold text-slate-600">Select pipeline to view requirements.</p>
+                            <p class="text-[9px] text-rose-500 font-bold mt-1 max-w-[200px] leading-snug">Max upload size: 65 KB per document.</p>
                         </div>
 
                         <div id="req-nsfas" class="doc-section space-y-3">
-                            <div class="upload-zone rounded-xl p-3 flex items-center gap-3 cursor-pointer tap-effect" data-doc-key="Doc_3_URL_Funding" data-base-icon="fa-image" data-base-color="blue" onclick="this.querySelector('input').click()">
-                                <input type="file" class="hidden" onchange="handleFileUpload(this)">
-                                <div class="icon-container w-10 h-10 rounded-lg bg-blue-50 text-blue-500 flex items-center justify-center shadow-sm border border-blue-100"><i class="fa-solid fa-image"></i></div>
-                                <div class="flex-1 min-w-0"><p class="title-text text-xs font-bold text-slate-800 truncate" data-orig-title="Proof of Funding">Proof of Funding</p><p class="subtitle-text text-[9px] text-slate-500 truncate">Screenshot or PDF of portal approval</p></div>
-                                <div class="action-btn text-[10px] font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg shadow-sm border border-blue-100 transition-colors">Upload</div>
+                            <div class="upload-zone rounded-[20px] p-3 flex items-center gap-3 cursor-pointer tap-effect shadow-inner border border-white/60" data-doc-key="Doc_3_URL_Funding" data-base-icon="fa-image" data-base-color="blue" onclick="this.querySelector('input').click()">
+                                <input type="file" accept="image/*,.pdf" class="hidden" onchange="handleFileUpload(this)">
+                                <div class="icon-container w-10 h-10 rounded-[14px] bg-white text-blue-500 flex items-center justify-center shadow-sm border border-blue-100"><i class="fa-solid fa-image"></i></div>
+                                <div class="flex-1 min-w-0"><p class="title-text text-xs font-bold text-slate-800 truncate" data-orig-title="Proof of Funding">Proof of Funding</p><p class="subtitle-text text-[9px] text-slate-500 truncate">Max 65 KB (PDF/Image)</p></div>
+                                <div class="action-btn text-[10px] font-bold text-blue-600 bg-blue-50/80 px-3 py-1.5 rounded-lg shadow-sm border border-blue-100/50 transition-colors">Upload</div>
                             </div>
-                            <div class="upload-zone rounded-xl p-3 flex items-center gap-3 cursor-pointer tap-effect" data-doc-key="Doc_1_URL_ID" data-base-icon="fa-id-card" data-base-color="blue" onclick="this.querySelector('input').click()">
-                                <input type="file" class="hidden" onchange="handleFileUpload(this)">
-                                <div class="icon-container w-10 h-10 rounded-lg bg-blue-50 text-blue-500 flex items-center justify-center shadow-sm border border-blue-100"><i class="fa-solid fa-id-card"></i></div>
-                                <div class="flex-1 min-w-0"><p class="title-text text-xs font-bold text-slate-800 truncate" data-orig-title="Student ID Copy">Student ID Copy</p><p class="subtitle-text text-[9px] text-slate-500 truncate">Clear photo or scan</p></div>
-                                <div class="action-btn text-[10px] font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg shadow-sm border border-blue-100 transition-colors">Upload</div>
+                            <div class="upload-zone rounded-[20px] p-3 flex items-center gap-3 cursor-pointer tap-effect shadow-inner border border-white/60" data-doc-key="Doc_1_URL_ID" data-base-icon="fa-id-card" data-base-color="blue" onclick="this.querySelector('input').click()">
+                                <input type="file" accept="image/*,.pdf" class="hidden" onchange="handleFileUpload(this)">
+                                <div class="icon-container w-10 h-10 rounded-[14px] bg-white text-blue-500 flex items-center justify-center shadow-sm border border-blue-100"><i class="fa-solid fa-id-card"></i></div>
+                                <div class="flex-1 min-w-0"><p class="title-text text-xs font-bold text-slate-800 truncate" data-orig-title="Student ID Copy">Student ID Copy</p><p class="subtitle-text text-[9px] text-slate-500 truncate">Max 65 KB</p></div>
+                                <div class="action-btn text-[10px] font-bold text-blue-600 bg-blue-50/80 px-3 py-1.5 rounded-lg shadow-sm border border-blue-100/50 transition-colors">Upload</div>
                             </div>
-                            <div class="upload-zone rounded-xl p-3 flex items-center gap-3 cursor-pointer tap-effect" data-doc-key="Doc_2_URL_Reg" data-base-icon="fa-graduation-cap" data-base-color="blue" onclick="this.querySelector('input').click()">
-                                <input type="file" class="hidden" onchange="handleFileUpload(this)">
-                                <div class="icon-container w-10 h-10 rounded-lg bg-blue-50 text-blue-500 flex items-center justify-center shadow-sm border border-blue-100"><i class="fa-solid fa-graduation-cap"></i></div>
-                                <div class="flex-1 min-w-0"><p class="title-text text-xs font-bold text-slate-800 truncate" data-orig-title="Proof of Registration">Proof of Registration</p><p class="subtitle-text text-[9px] text-slate-500 truncate">Current academic year</p></div>
-                                <div class="action-btn text-[10px] font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg shadow-sm border border-blue-100 transition-colors">Upload</div>
+                            <div class="upload-zone rounded-[20px] p-3 flex items-center gap-3 cursor-pointer tap-effect shadow-inner border border-white/60" data-doc-key="Doc_2_URL_Reg" data-base-icon="fa-graduation-cap" data-base-color="blue" onclick="this.querySelector('input').click()">
+                                <input type="file" accept="image/*,.pdf" class="hidden" onchange="handleFileUpload(this)">
+                                <div class="icon-container w-10 h-10 rounded-[14px] bg-white text-blue-500 flex items-center justify-center shadow-sm border border-blue-100"><i class="fa-solid fa-graduation-cap"></i></div>
+                                <div class="flex-1 min-w-0"><p class="title-text text-xs font-bold text-slate-800 truncate" data-orig-title="Proof of Registration">Proof of Registration</p><p class="subtitle-text text-[9px] text-slate-500 truncate">Max 65 KB</p></div>
+                                <div class="action-btn text-[10px] font-bold text-blue-600 bg-blue-50/80 px-3 py-1.5 rounded-lg shadow-sm border border-blue-100/50 transition-colors">Upload</div>
                             </div>
                         </div>
 
                         <div id="req-bursary" class="doc-section space-y-3">
-                            <div class="upload-zone rounded-xl p-3 flex items-center gap-3 cursor-pointer tap-effect" data-doc-key="Doc_3_URL_Funding" data-base-icon="fa-file-contract" data-base-color="indigo" onclick="this.querySelector('input').click()">
-                                <input type="file" class="hidden" onchange="handleFileUpload(this)">
-                                <div class="icon-container w-10 h-10 rounded-lg bg-indigo-50 text-indigo-500 flex items-center justify-center shadow-sm border border-indigo-100"><i class="fa-solid fa-file-contract"></i></div>
-                                <div class="flex-1 min-w-0"><p class="title-text text-xs font-bold text-slate-800 truncate" data-orig-title="Confirmation Letter">Confirmation Letter</p><p class="subtitle-text text-[9px] text-slate-500 truncate">Official letterhead</p></div>
-                                <div class="action-btn text-[10px] font-bold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg shadow-sm border border-indigo-100 transition-colors">Upload</div>
+                            <div class="upload-zone rounded-[20px] p-3 flex items-center gap-3 cursor-pointer tap-effect shadow-inner border border-white/60" data-doc-key="Doc_3_URL_Funding" data-base-icon="fa-file-contract" data-base-color="indigo" onclick="this.querySelector('input').click()">
+                                <input type="file" accept="image/*,.pdf" class="hidden" onchange="handleFileUpload(this)">
+                                <div class="icon-container w-10 h-10 rounded-[14px] bg-white text-indigo-500 flex items-center justify-center shadow-sm border border-indigo-100"><i class="fa-solid fa-file-contract"></i></div>
+                                <div class="flex-1 min-w-0"><p class="title-text text-xs font-bold text-slate-800 truncate" data-orig-title="Confirmation Letter">Confirmation Letter</p><p class="subtitle-text text-[9px] text-slate-500 truncate">Max 65 KB</p></div>
+                                <div class="action-btn text-[10px] font-bold text-indigo-600 bg-indigo-50/80 px-3 py-1.5 rounded-lg shadow-sm border border-indigo-100/50 transition-colors">Upload</div>
                             </div>
-                            <div class="upload-zone rounded-xl p-3 flex items-center gap-3 cursor-pointer tap-effect" data-doc-key="Doc_1_URL_ID" data-base-icon="fa-id-card-clip" data-base-color="indigo" onclick="this.querySelector('input').click()">
-                                <input type="file" class="hidden" onchange="handleFileUpload(this)">
-                                <div class="icon-container w-10 h-10 rounded-lg bg-indigo-50 text-indigo-500 flex items-center justify-center shadow-sm border border-indigo-100"><i class="fa-solid fa-id-card-clip"></i></div>
-                                <div class="flex-1 min-w-0"><p class="title-text text-xs font-bold text-slate-800 truncate" data-orig-title="Certified ID Copy">Certified ID Copy</p><p class="subtitle-text text-[9px] text-slate-500 truncate">Certified within last 3 months</p></div>
-                                <div class="action-btn text-[10px] font-bold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg shadow-sm border border-indigo-100 transition-colors">Upload</div>
+                            <div class="upload-zone rounded-[20px] p-3 flex items-center gap-3 cursor-pointer tap-effect shadow-inner border border-white/60" data-doc-key="Doc_1_URL_ID" data-base-icon="fa-id-card-clip" data-base-color="indigo" onclick="this.querySelector('input').click()">
+                                <input type="file" accept="image/*,.pdf" class="hidden" onchange="handleFileUpload(this)">
+                                <div class="icon-container w-10 h-10 rounded-[14px] bg-white text-indigo-500 flex items-center justify-center shadow-sm border border-indigo-100"><i class="fa-solid fa-id-card-clip"></i></div>
+                                <div class="flex-1 min-w-0"><p class="title-text text-xs font-bold text-slate-800 truncate" data-orig-title="Certified ID Copy">Certified ID Copy</p><p class="subtitle-text text-[9px] text-slate-500 truncate">Max 65 KB</p></div>
+                                <div class="action-btn text-[10px] font-bold text-indigo-600 bg-indigo-50/80 px-3 py-1.5 rounded-lg shadow-sm border border-indigo-100/50 transition-colors">Upload</div>
                             </div>
-                            <div class="upload-zone rounded-xl p-3 flex items-center gap-3 cursor-pointer tap-effect" data-doc-key="Doc_2_URL_Reg" data-base-icon="fa-graduation-cap" data-base-color="indigo" onclick="this.querySelector('input').click()">
-                                <input type="file" class="hidden" onchange="handleFileUpload(this)">
-                                <div class="icon-container w-10 h-10 rounded-lg bg-indigo-50 text-indigo-500 flex items-center justify-center shadow-sm border border-indigo-100"><i class="fa-solid fa-graduation-cap"></i></div>
-                                <div class="flex-1 min-w-0"><p class="title-text text-xs font-bold text-slate-800 truncate" data-orig-title="Proof of Registration">Proof of Registration</p><p class="subtitle-text text-[9px] text-slate-500 truncate">Current academic year</p></div>
-                                <div class="action-btn text-[10px] font-bold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg shadow-sm border border-indigo-100 transition-colors">Upload</div>
+                            <div class="upload-zone rounded-[20px] p-3 flex items-center gap-3 cursor-pointer tap-effect shadow-inner border border-white/60" data-doc-key="Doc_2_URL_Reg" data-base-icon="fa-graduation-cap" data-base-color="indigo" onclick="this.querySelector('input').click()">
+                                <input type="file" accept="image/*,.pdf" class="hidden" onchange="handleFileUpload(this)">
+                                <div class="icon-container w-10 h-10 rounded-[14px] bg-white text-indigo-500 flex items-center justify-center shadow-sm border border-indigo-100"><i class="fa-solid fa-graduation-cap"></i></div>
+                                <div class="flex-1 min-w-0"><p class="title-text text-xs font-bold text-slate-800 truncate" data-orig-title="Proof of Registration">Proof of Registration</p><p class="subtitle-text text-[9px] text-slate-500 truncate">Max 65 KB</p></div>
+                                <div class="action-btn text-[10px] font-bold text-indigo-600 bg-indigo-50/80 px-3 py-1.5 rounded-lg shadow-sm border border-indigo-100/50 transition-colors">Upload</div>
                             </div>
                         </div>
 
                         <div id="req-cash" class="doc-section space-y-3">
-                            <div class="upload-zone rounded-xl p-3 flex items-center gap-3 cursor-pointer tap-effect" data-doc-key="Doc_3_URL_Funding" data-base-icon="fa-building-columns" data-base-color="emerald" onclick="this.querySelector('input').click()">
-                                <input type="file" class="hidden" onchange="handleFileUpload(this)">
-                                <div class="icon-container w-10 h-10 rounded-lg bg-emerald-50 text-emerald-500 flex items-center justify-center shadow-sm border border-emerald-100"><i class="fa-solid fa-building-columns"></i></div>
-                                <div class="flex-1 min-w-0"><p class="title-text text-xs font-bold text-slate-800 truncate" data-orig-title="3 Months Bank Statement">3 Months Bank Statement</p><p class="subtitle-text text-[9px] text-slate-500 truncate">Recent stamped statements</p></div>
-                                <div class="action-btn text-[10px] font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-lg shadow-sm border border-emerald-100 transition-colors">Upload</div>
+                            <div class="upload-zone rounded-[20px] p-3 flex items-center gap-3 cursor-pointer tap-effect shadow-inner border border-white/60" data-doc-key="Doc_3_URL_Funding" data-base-icon="fa-building-columns" data-base-color="emerald" onclick="this.querySelector('input').click()">
+                                <input type="file" accept="image/*,.pdf" class="hidden" onchange="handleFileUpload(this)">
+                                <div class="icon-container w-10 h-10 rounded-[14px] bg-white text-emerald-500 flex items-center justify-center shadow-sm border border-emerald-100"><i class="fa-solid fa-building-columns"></i></div>
+                                <div class="flex-1 min-w-0"><p class="title-text text-xs font-bold text-slate-800 truncate" data-orig-title="3 Months Bank Statement">3 Months Bank Statement</p><p class="subtitle-text text-[9px] text-slate-500 truncate">Max 65 KB</p></div>
+                                <div class="action-btn text-[10px] font-bold text-emerald-600 bg-emerald-50/80 px-3 py-1.5 rounded-lg shadow-sm border border-emerald-100/50 transition-colors">Upload</div>
                             </div>
-                            <div class="upload-zone rounded-xl p-3 flex items-center gap-3 cursor-pointer tap-effect" data-doc-key="Doc_4_URL_Payslip" data-base-icon="fa-file-invoice-dollar" data-base-color="emerald" onclick="this.querySelector('input').click()">
-                                <input type="file" class="hidden" onchange="handleFileUpload(this)">
-                                <div class="icon-container w-10 h-10 rounded-lg bg-emerald-50 text-emerald-500 flex items-center justify-center shadow-sm border border-emerald-100"><i class="fa-solid fa-file-invoice-dollar"></i></div>
-                                <div class="flex-1 min-w-0"><p class="title-text text-xs font-bold text-slate-800 truncate" data-orig-title="Latest Payslip">Latest Payslip</p><p class="subtitle-text text-[9px] text-slate-500 truncate">From the account payer</p></div>
-                                <div class="action-btn text-[10px] font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-lg shadow-sm border border-emerald-100 transition-colors">Upload</div>
+                            <div class="upload-zone rounded-[20px] p-3 flex items-center gap-3 cursor-pointer tap-effect shadow-inner border border-white/60" data-doc-key="Doc_4_URL_Payslip" data-base-icon="fa-file-invoice-dollar" data-base-color="emerald" onclick="this.querySelector('input').click()">
+                                <input type="file" accept="image/*,.pdf" class="hidden" onchange="handleFileUpload(this)">
+                                <div class="icon-container w-10 h-10 rounded-[14px] bg-white text-emerald-500 flex items-center justify-center shadow-sm border border-emerald-100"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                                <div class="flex-1 min-w-0"><p class="title-text text-xs font-bold text-slate-800 truncate" data-orig-title="Latest Payslip">Latest Payslip</p><p class="subtitle-text text-[9px] text-slate-500 truncate">Max 65 KB</p></div>
+                                <div class="action-btn text-[10px] font-bold text-emerald-600 bg-emerald-50/80 px-3 py-1.5 rounded-lg shadow-sm border border-emerald-100/50 transition-colors">Upload</div>
                             </div>
-                            <div class="upload-zone rounded-xl p-3 flex items-center gap-3 cursor-pointer tap-effect" data-doc-key="Doc_1_URL_ID" data-base-icon="fa-id-card" data-base-color="emerald" onclick="this.querySelector('input').click()">
-                                <input type="file" class="hidden" onchange="handleFileUpload(this)">
-                                <div class="icon-container w-10 h-10 rounded-lg bg-emerald-50 text-emerald-500 flex items-center justify-center shadow-sm border border-emerald-100"><i class="fa-solid fa-id-card"></i></div>
-                                <div class="flex-1 min-w-0"><p class="title-text text-xs font-bold text-slate-800 truncate" data-orig-title="ID Copy (Payer & Student)">ID Copy (Payer & Student)</p><p class="subtitle-text text-[9px] text-slate-500 truncate">Clear photos or scans</p></div>
-                                <div class="action-btn text-[10px] font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-lg shadow-sm border border-emerald-100 transition-colors">Upload</div>
+                            <div class="upload-zone rounded-[20px] p-3 flex items-center gap-3 cursor-pointer tap-effect shadow-inner border border-white/60" data-doc-key="Doc_1_URL_ID" data-base-icon="fa-id-card" data-base-color="emerald" onclick="this.querySelector('input').click()">
+                                <input type="file" accept="image/*,.pdf" class="hidden" onchange="handleFileUpload(this)">
+                                <div class="icon-container w-10 h-10 rounded-[14px] bg-white text-emerald-500 flex items-center justify-center shadow-sm border border-emerald-100"><i class="fa-solid fa-id-card"></i></div>
+                                <div class="flex-1 min-w-0"><p class="title-text text-xs font-bold text-slate-800 truncate" data-orig-title="ID Copy (Payer & Student)">ID Copy (Payer & Student)</p><p class="subtitle-text text-[9px] text-slate-500 truncate">Max 65 KB</p></div>
+                                <div class="action-btn text-[10px] font-bold text-emerald-600 bg-emerald-50/80 px-3 py-1.5 rounded-lg shadow-sm border border-emerald-100/50 transition-colors">Upload</div>
                             </div>
-                            <div class="upload-zone rounded-xl p-3 flex items-center gap-3 cursor-pointer tap-effect" data-doc-key="Doc_2_URL_Reg" data-base-icon="fa-graduation-cap" data-base-color="emerald" onclick="this.querySelector('input').click()">
-                                <input type="file" class="hidden" onchange="handleFileUpload(this)">
-                                <div class="icon-container w-10 h-10 rounded-lg bg-emerald-50 text-emerald-500 flex items-center justify-center shadow-sm border border-emerald-100"><i class="fa-solid fa-graduation-cap"></i></div>
-                                <div class="flex-1 min-w-0"><p class="title-text text-xs font-bold text-slate-800 truncate" data-orig-title="Proof of Registration">Proof of Registration</p><p class="subtitle-text text-[9px] text-slate-500 truncate">Current academic year</p></div>
-                                <div class="action-btn text-[10px] font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-lg shadow-sm border border-emerald-100 transition-colors">Upload</div>
+                            <div class="upload-zone rounded-[20px] p-3 flex items-center gap-3 cursor-pointer tap-effect shadow-inner border border-white/60" data-doc-key="Doc_2_URL_Reg" data-base-icon="fa-graduation-cap" data-base-color="emerald" onclick="this.querySelector('input').click()">
+                                <input type="file" accept="image/*,.pdf" class="hidden" onchange="handleFileUpload(this)">
+                                <div class="icon-container w-10 h-10 rounded-[14px] bg-white text-emerald-500 flex items-center justify-center shadow-sm border border-emerald-100"><i class="fa-solid fa-graduation-cap"></i></div>
+                                <div class="flex-1 min-w-0"><p class="title-text text-xs font-bold text-slate-800 truncate" data-orig-title="Proof of Registration">Proof of Registration</p><p class="subtitle-text text-[9px] text-slate-500 truncate">Max 65 KB</p></div>
+                                <div class="action-btn text-[10px] font-bold text-emerald-600 bg-emerald-50/80 px-3 py-1.5 rounded-lg shadow-sm border border-emerald-100/50 transition-colors">Upload</div>
                             </div>
                         </div>
                     </div>
                 </form>
             </div>
             
-            <div class="p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] bg-white border-t border-slate-100 flex-shrink-0 grid grid-cols-2 gap-3 z-10">
-                <button type="button" id="btn-wizard-back" onclick="wizardStep(-1)" class="w-full py-4 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-xl text-xs transition-colors hidden tap-effect">Go Back</button>
-                <button type="button" id="btn-wizard-next" onclick="wizardStep(1)" class="col-span-2 w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs shadow-lg shadow-blue-600/30 transition-all flex items-center justify-center gap-2 tap-effect">Submit & Proceed <i class="fa-solid fa-arrow-right"></i></button>
-                <button type="button" id="btn-profile-submit" onclick="submitProfileData()" class="col-span-1 w-full py-4 bg-slate-900 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs shadow-lg shadow-slate-900/20 transition-all hidden flex items-center justify-center gap-2 tap-effect"><i class="fa-solid fa-check-double"></i> Save Profile</button>
-                <button type="button" id="btn-vault-submit" onclick="submitApplication()" class="col-span-2 w-full py-4 bg-slate-900 hover:bg-indigo-600 text-white font-bold rounded-xl text-xs shadow-lg shadow-slate-900/20 transition-all hidden flex items-center justify-center gap-2 tap-effect"><i class="fa-solid fa-cloud-arrow-up"></i> Push to Vault</button>
+            <div class="p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] bg-white/40 backdrop-blur-md border-t border-white/60 flex-shrink-0 grid grid-cols-2 gap-3 z-10 shadow-sm">
+                <button type="button" id="btn-wizard-back" onclick="wizardStep(-1)" class="w-full py-4 bg-white hover:bg-slate-50 text-slate-600 font-bold rounded-[20px] text-xs transition-colors hidden tap-effect shadow-sm border border-slate-200">Go Back</button>
+                <button type="button" id="btn-wizard-next" onclick="wizardStep(1)" class="col-span-2 w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-[20px] text-xs shadow-[0_8px_15px_rgba(37,99,235,0.3)] transition-all flex items-center justify-center gap-2 tap-effect">Submit & Proceed <i class="fa-solid fa-arrow-right"></i></button>
+                <button type="button" id="btn-profile-submit" onclick="submitProfileData()" class="col-span-1 w-full py-4 bg-slate-900 hover:bg-emerald-500 text-white font-bold rounded-[20px] text-xs shadow-[0_8px_15px_rgba(15,23,42,0.3)] transition-all hidden flex items-center justify-center gap-2 tap-effect"><i class="fa-solid fa-check-double"></i> Save Profile</button>
+                <button type="button" id="btn-vault-submit" onclick="submitApplication()" class="col-span-2 w-full py-4 bg-slate-900 hover:bg-indigo-600 text-white font-bold rounded-[20px] text-xs shadow-[0_8px_15px_rgba(15,23,42,0.3)] transition-all hidden flex items-center justify-center gap-2 tap-effect"><i class="fa-solid fa-cloud-arrow-up"></i> Push to Vault</button>
             </div>
         </div>
     </div>
 
     <!-- LEASE CONTRACT AGREEMENT MODAL -->
     <div id="leaseModal" class="absolute inset-0 z-[1600] modal-overlay flex items-end justify-center">
-        <div class="modal-content bg-white w-full h-[90dvh] max-h-[900px] rounded-t-[40px] shadow-2xl p-6 pb-8 flex flex-col relative overflow-hidden">
-            <div class="flex justify-between items-center pb-4 border-b border-slate-100 flex-shrink-0 relative z-10 bg-white">
+        <div class="modal-content glass-panel w-full h-[90dvh] max-h-[900px] rounded-t-[40px] shadow-2xl p-6 pb-8 flex flex-col relative overflow-hidden">
+            <div class="flex justify-between items-center pb-4 border-b border-slate-200/50 flex-shrink-0 relative z-10 bg-transparent">
                 <div>
                     <h2 class="text-xl font-bold text-slate-900 tracking-tight">Digital Lease</h2>
                     <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">Legally Binding</p>
                 </div>
-                <button onclick="closeModal('leaseModal')" class="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
+                <button onclick="closeModal('leaseModal')" class="w-8 h-8 bg-white/80 rounded-full flex items-center justify-center text-slate-500 hover:bg-white shadow-sm transition-colors">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
 
-            <div class="flex-1 overflow-y-auto custom-scroll my-4 bg-slate-50 border border-slate-200 rounded-2xl p-4 text-xs text-slate-600 leading-relaxed font-medium relative z-10">
+            <div class="flex-1 overflow-y-auto custom-scroll my-4 bg-white/60 border border-slate-200/50 rounded-2xl p-4 text-xs text-slate-600 leading-relaxed font-medium relative z-10 shadow-inner">
                 <h4 class="font-bold text-slate-800 mb-2">Adowa Living Residency Terms</h4>
                 <p class="mb-4 text-slate-500">Please review the official lease agreement document before providing your signature.</p>
                 
-                <a href="/adowa/lease.pdf" target="_blank" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl py-3 mb-4 flex items-center justify-center gap-2 transition-colors tap-effect shadow-inner">
+                <a href="/adowa/lease.pdf" target="_blank" class="w-full bg-slate-200/80 hover:bg-slate-300 text-slate-700 font-bold rounded-[20px] py-3 mb-4 flex items-center justify-center gap-2 transition-colors tap-effect border border-slate-300">
                     <i class="fa-solid fa-file-pdf text-rose-500"></i> Read Full Lease (PDF)
                 </a>
 
@@ -1015,10 +1003,10 @@
                 <p>4. By signing below, the resident consents to the use of their digital signature to be populated across the master lease PDF and securely stored within the vault infrastructure.</p>
             </div>
 
-            <div id="signature-area-container" class="flex-shrink-0 relative z-10 bg-white">
+            <div id="signature-area-container" class="flex-shrink-0 relative z-10 bg-transparent">
                 
-                <div id="sig-locked-state" class="hidden bg-orange-50 border border-orange-200 rounded-2xl p-5 text-center mt-2">
-                    <i class="fa-solid fa-file-shield text-orange-400 text-3xl mb-3"></i>
+                <div id="sig-locked-state" class="hidden bg-orange-50/80 border border-orange-200/50 rounded-2xl p-5 text-center mt-2 shadow-inner">
+                    <i class="fa-solid fa-file-shield text-orange-400 text-3xl mb-3 drop-shadow-sm"></i>
                     <p class="text-sm font-bold text-orange-700 tracking-tight">Signature Locked</p>
                     <p class="text-xs text-orange-600 mt-1 font-medium leading-relaxed">You can digitally sign this lease once administration approves your vetting status.</p>
                 </div>
@@ -1026,15 +1014,15 @@
                 <div id="sig-active-state" class="hidden">
                     <p class="text-xs font-bold text-slate-800 mb-2 flex justify-between items-end">
                         <span>Draw your signature</span>
-                        <button type="button" onclick="clearSignature()" class="text-[10px] text-blue-500 hover:text-blue-700 uppercase tracking-widest">Clear</button>
+                        <button type="button" onclick="clearSignature()" class="text-[10px] text-blue-500 hover:text-blue-700 uppercase tracking-widest bg-white/60 px-2 py-1 rounded-md shadow-sm border border-slate-200">Clear</button>
                     </p>
                     
-                    <div class="bg-slate-50 border-2 border-dashed border-slate-300 rounded-2xl overflow-hidden relative">
+                    <div class="bg-white/80 border-2 border-dashed border-slate-300 rounded-[20px] overflow-hidden relative shadow-inner">
                         <canvas id="signature-pad" class="w-full h-32 touch-none cursor-crosshair"></canvas>
-                        <div id="sig-placeholder" class="absolute inset-0 pointer-events-none flex items-center justify-center text-slate-300 font-medium text-sm">Sign here</div>
+                        <div id="sig-placeholder" class="absolute inset-0 pointer-events-none flex items-center justify-center text-slate-400 font-medium text-sm">Sign here</div>
                     </div>
 
-                    <button onclick="submitLeaseSignature(this)" class="w-full mt-4 bg-slate-900 hover:bg-emerald-600 text-white font-bold rounded-xl py-4 shadow-xl shadow-slate-900/10 transition-all flex items-center justify-center gap-2 tap-effect">
+                    <button onclick="submitLeaseSignature(this)" class="w-full mt-4 bg-slate-900 hover:bg-emerald-600 text-white font-bold rounded-[20px] py-4 shadow-[0_8px_15px_rgba(15,23,42,0.3)] transition-all flex items-center justify-center gap-2 tap-effect">
                         <i class="fa-solid fa-file-signature"></i> Confirm Signature
                     </button>
                 </div>
@@ -1398,7 +1386,7 @@
             const vettingBadge = document.getElementById('dyn-vetting-badge');
 
             const progressBarsHtml = `
-                <div onclick="openWizardFlow('profile')" class="flex items-center justify-between gap-3 p-2 hover:bg-slate-200/50 rounded-lg cursor-pointer transition-colors tap-effect group">
+                <div onclick="openWizardFlow('profile')" class="flex items-center justify-between gap-3 p-2 hover:bg-slate-100 rounded-lg cursor-pointer transition-colors tap-effect group">
                     <div class="flex-1">
                         <div class="flex justify-between items-center mb-1">
                             <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1 group-hover:text-blue-500 transition-colors"><i class="fa-regular fa-user"></i> Profile Info</span>
@@ -1408,7 +1396,7 @@
                     </div>
                     <button class="w-6 h-6 rounded-full bg-white border border-slate-200 text-slate-400 group-hover:text-blue-500 flex items-center justify-center text-[10px] shadow-sm flex-shrink-0 transition-colors"><i class="fa-solid fa-chevron-right"></i></button>
                 </div>
-                <div onclick="openWizardFlow('documents')" class="flex items-center justify-between gap-3 p-2 hover:bg-slate-200/50 rounded-lg cursor-pointer transition-colors tap-effect group border-t border-slate-200/50">
+                <div onclick="openWizardFlow('documents')" class="flex items-center justify-between gap-3 p-2 hover:bg-slate-100 rounded-lg cursor-pointer transition-colors tap-effect group border-t border-slate-100">
                     <div class="flex-1">
                         <div class="flex justify-between items-center mb-1">
                             <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1 group-hover:text-indigo-500 transition-colors"><i class="fa-regular fa-folder-open"></i> Documents</span>
@@ -1433,8 +1421,8 @@
             else if (isAdminAlerted || (profilePercentage >= 100 && vaultPercentage >= 100)) {
                 if (isAdminAlerted) {
                     gatewayCardContent.innerHTML = progressBarsHtml + `
-                        <div class="mt-2 bg-emerald-50 rounded-xl p-3 border border-emerald-100 flex items-start gap-3">
-                            <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shadow-sm flex-shrink-0"><i class="fa-solid fa-check-double"></i></div>
+                        <div class="mt-2 bg-emerald-50/80 rounded-[20px] p-3 border border-emerald-100 flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-full bg-white text-emerald-600 flex items-center justify-center shadow-sm border border-emerald-100 flex-shrink-0"><i class="fa-solid fa-check-double"></i></div>
                             <div>
                                 <p class="text-[10px] font-bold text-emerald-700 uppercase tracking-widest">Admin Alerted</p>
                                 <p class="text-xs text-emerald-600 font-medium leading-tight mt-0.5">Vetting in progress. Please review your lease below. You will be able to sign it once vetting is approved.</p>
@@ -1465,7 +1453,7 @@
                         }
                         if(leaseBtnEl) {
                             leaseBtnEl.innerHTML = 'Review Terms <i class="fa-solid fa-file-contract"></i>';
-                            leaseBtnEl.className = 'w-full bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold rounded-xl py-3 text-xs shadow-sm transition-all flex items-center justify-center gap-2 tap-effect';
+                            leaseBtnEl.className = 'w-full bg-blue-50 hover:bg-blue-100 border border-blue-200/50 text-blue-600 font-bold rounded-[20px] py-4 text-xs shadow-sm transition-all flex items-center justify-center gap-2 tap-effect';
                             leaseBtnEl.onclick = () => handleLeaseReview(leaseBtnEl);
                         }
                         
@@ -1473,7 +1461,7 @@
                         if(sigLockedState) {
                             sigLockedState.classList.remove('hidden');
                             sigLockedState.innerHTML = `
-                                <i class="fa-solid fa-file-shield text-orange-400 text-3xl mb-3"></i>
+                                <i class="fa-solid fa-file-shield text-orange-400 text-3xl mb-3 drop-shadow-sm"></i>
                                 <p class="text-sm font-bold text-orange-700 tracking-tight">Signature Locked</p>
                                 <p class="text-xs text-orange-600 mt-1 font-medium leading-relaxed">You can digitally sign this lease once administration approves your vetting status.</p>
                             `;
@@ -1487,7 +1475,7 @@
                         }
                         if(leaseBtnEl) {
                             leaseBtnEl.innerHTML = 'Review & Sign <i class="fa-solid fa-arrow-right"></i>';
-                            leaseBtnEl.className = 'w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl py-3 text-xs shadow-md shadow-blue-500/20 transition-all flex items-center justify-center gap-2 tap-effect';
+                            leaseBtnEl.className = 'w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-[20px] py-4 text-xs shadow-[0_8px_15px_rgba(37,99,235,0.3)] transition-all flex items-center justify-center gap-2 tap-effect';
                             leaseBtnEl.onclick = () => handleLeaseReview(leaseBtnEl);
                         }
                         
@@ -1498,8 +1486,8 @@
                 } 
                 else {
                     gatewayCardContent.innerHTML = progressBarsHtml + `
-                        <div class="mt-2 pt-3 border-t border-slate-200/50">
-                            <button onclick="triggerAdminAlert(this)" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl py-4 shadow-[0_8px_15px_rgba(37,99,235,0.3)] transition-all flex items-center justify-center gap-2 tap-effect text-sm">
+                        <div class="mt-2 pt-3 border-t border-slate-100">
+                            <button onclick="triggerAdminAlert(this)" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-[20px] py-4 shadow-[0_8px_15px_rgba(37,99,235,0.3)] transition-all flex items-center justify-center gap-2 tap-effect text-sm">
                                 <i class="fa-solid fa-paper-plane animate-pulse text-blue-200"></i> Finalize & Alert Admin
                             </button>
                         </div>
@@ -1528,7 +1516,7 @@
 
                 if (docKey && isValidData(session[docKey])) {
                     zone.classList.add('success-state');
-                    iconContainer.className = 'icon-container w-10 h-10 rounded-lg bg-emerald-500 text-white flex items-center justify-center shadow-sm border border-emerald-100';
+                    iconContainer.className = 'icon-container w-10 h-10 rounded-[14px] bg-emerald-500 text-white flex items-center justify-center shadow-sm border border-emerald-100';
                     iconContainer.innerHTML = '<i class="fa-solid fa-check"></i>';
                     titleText.textContent = "Document Attached";
                     titleText.className = "title-text text-xs font-black text-emerald-700 truncate";
@@ -1538,13 +1526,13 @@
                     }
                 } else {
                     zone.classList.remove('success-state');
-                    iconContainer.className = `icon-container w-10 h-10 rounded-lg bg-${baseColor}-50 text-${baseColor}-500 flex items-center justify-center shadow-sm border border-${baseColor}-100`;
+                    iconContainer.className = `icon-container w-10 h-10 rounded-[14px] bg-white text-${baseColor}-500 flex items-center justify-center shadow-sm border border-${baseColor}-100`;
                     iconContainer.innerHTML = `<i class="fa-solid ${baseIcon}"></i>`;
                     titleText.textContent = origTitle;
                     titleText.className = "title-text text-xs font-bold text-slate-800 truncate";
                     if(actionBtn) {
                         actionBtn.textContent = "Upload";
-                        actionBtn.className = `action-btn text-[10px] font-bold text-${baseColor}-600 bg-${baseColor}-50 px-3 py-1.5 rounded-lg shadow-sm border border-${baseColor}-100 transition-colors`;
+                        actionBtn.className = `action-btn text-[10px] font-bold text-${baseColor}-600 bg-${baseColor}-50/80 px-3 py-1.5 rounded-lg shadow-sm border border-${baseColor}-100/50 transition-colors`;
                     }
                 }
             });
@@ -1806,7 +1794,7 @@
         async function triggerSOS() {
             const session = getSessionData();
             const btn = document.getElementById('btn-sos'); const icon = document.getElementById('sos-icon'); const text = document.getElementById('sos-text');
-            btn.classList.replace('bg-gradient-to-br', 'bg-orange-500'); icon.classList.replace('fa-light-emergency-on', 'fa-circle-notch'); icon.classList.add('fa-spin');
+            btn.classList.replace('bg-red-600', 'bg-orange-500'); icon.classList.replace('fa-light-emergency-on', 'fa-circle-notch'); icon.classList.add('fa-spin');
             text.textContent = 'Wait'; btn.disabled = true;
 
             try {
@@ -1818,12 +1806,12 @@
                 btn.classList.replace('bg-orange-500', 'bg-emerald-500'); icon.classList.remove('fa-circle-notch', 'fa-spin'); icon.classList.add('fa-check');
                 text.textContent = 'Sent'; showToast("Security Dispatched to your location.", "success");
                 setTimeout(() => {
-                    btn.classList.replace('bg-emerald-500', 'bg-gradient-to-br'); icon.classList.replace('fa-check', 'fa-light-emergency-on');
+                    btn.classList.replace('bg-emerald-500', 'bg-red-600'); icon.classList.replace('fa-check', 'fa-light-emergency-on');
                     text.textContent = 'SOS'; btn.disabled = false;
                 }, 5000);
             } catch(error) {
                 showToast("Connection error. Call security directly.", "error");
-                btn.classList.replace('bg-orange-500', 'bg-gradient-to-br'); icon.classList.replace('fa-circle-notch', 'fa-light-emergency-on'); icon.classList.remove('fa-spin');
+                btn.classList.replace('bg-orange-500', 'bg-red-600'); icon.classList.replace('fa-circle-notch', 'fa-light-emergency-on'); icon.classList.remove('fa-spin');
                 text.textContent = 'SOS'; btn.disabled = false;
             }
         }
@@ -1850,13 +1838,13 @@
 
         function selectSecurityOption(element, optionName) {
             document.querySelectorAll('.sec-option').forEach(btn => {
-                btn.className = 'sec-option neumorphic-button rounded-[20px] p-3.5 flex flex-col items-center justify-center gap-2 tap-effect transition-all';
-                btn.querySelector('i').classList.replace('text-blue-600', 'text-slate-400');
-                btn.querySelector('span').classList.replace('text-blue-600', 'text-slate-500');
+                btn.className = 'sec-option bg-slate-50 border border-slate-100 rounded-[20px] p-3 text-left tap-effect transition-all';
+                btn.querySelector('i').classList.replace('text-blue-600', 'text-blue-500');
+                btn.querySelector('span').classList.replace('text-slate-900', 'text-slate-700');
             });
-            element.className = 'sec-option neumorphic-active rounded-[20px] p-3.5 flex flex-col items-center justify-center gap-2 tap-effect transition-all border border-blue-200/50';
-            element.querySelector('i').classList.replace('text-slate-400', 'text-blue-600');
-            element.querySelector('span').classList.replace('text-slate-500', 'text-blue-600');
+            element.className = 'sec-option bg-blue-50 border-2 border-blue-600 rounded-[20px] p-3 text-left tap-effect transition-all active-sec-option';
+            element.querySelector('i').classList.replace('text-blue-500', 'text-blue-600');
+            element.querySelector('span').classList.replace('text-slate-700', 'text-slate-900');
             document.getElementById('selected-security-type').value = optionName;
             document.getElementById('security-notes').placeholder = `Add details for "${optionName}"...`;
         }
@@ -1945,11 +1933,11 @@
             if (type === 'Terminate Lease') {
                 titleEl.innerHTML = '<i class="fa-solid fa-file-circle-xmark text-rose-500 mr-2"></i> Terminate Lease';
                 reasonInput.placeholder = "Please explain your reason for terminating the lease...";
-                submitBtn.className = 'w-full bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl py-4 shadow-[0_8px_15px_rgba(225,29,72,0.3)] transition-all flex justify-center items-center gap-2 tap-effect';
+                submitBtn.className = 'w-full bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl py-4 shadow-lg shadow-rose-600/20 transition-all flex justify-center items-center gap-2 tap-effect';
             } else {
                 titleEl.innerHTML = '<i class="fa-solid fa-person-shelter text-blue-500 mr-2"></i> Request Room Change';
                 reasonInput.placeholder = "Please detail why you are requesting a room change...";
-                submitBtn.className = 'w-full bg-slate-900 hover:bg-blue-600 text-white font-bold rounded-xl py-4 shadow-[0_8px_15px_rgba(15,23,42,0.3)] transition-all flex justify-center items-center gap-2 tap-effect';
+                submitBtn.className = 'w-full bg-slate-900 hover:bg-blue-600 text-white font-bold rounded-xl py-4 shadow-lg shadow-slate-900/20 transition-all flex justify-center items-center gap-2 tap-effect';
             }
             
             openModal('adminRequestModal');
@@ -2006,7 +1994,7 @@
             if (!isAppUnlocked && (tabId === 'wifi' || tabId === 'snags' || tabId === 'security' || tabId === 'transport')) {
                 showToast("Access Denied: Pending Vetting or Room Allocation.", "error");
                 const card = document.getElementById('gateway-unlock-card');
-                if (card) { card.classList.add('border-rose-400'); setTimeout(() => card.classList.remove('border-rose-400'), 600); }
+                if (card) { card.classList.add('border-rose-400', 'bg-rose-50'); setTimeout(() => card.classList.remove('border-rose-400', 'bg-rose-50'), 600); }
                 return;
             }
 
@@ -2093,10 +2081,19 @@
 
         function handleFileUpload(input) {
             if (input.files && input.files[0]) {
+                const file = input.files[0];
+                
+                // 65 KB SIZE LIMIT CHECK
+                if (file.size > 65 * 1024) {
+                    showToast("File is too large. Max size is 65 KB.", "error");
+                    input.value = ''; // Reset input
+                    return;
+                }
+
                 const zone = input.closest('.upload-zone'); zone.classList.add('success-state');
-                const icon = zone.querySelector('.icon-container'); icon.className = 'icon-container w-10 h-10 rounded-lg bg-emerald-500 text-white flex items-center justify-center shadow-sm border border-emerald-100'; icon.innerHTML = '<i class="fa-solid fa-check"></i>';
+                const icon = zone.querySelector('.icon-container'); icon.className = 'icon-container w-10 h-10 rounded-[14px] bg-emerald-500 text-white flex items-center justify-center shadow-sm border border-emerald-100'; icon.innerHTML = '<i class="fa-solid fa-check"></i>';
                 const titleText = zone.querySelector('.title-text'); if(titleText) { titleText.textContent = "Document Attached"; titleText.className = "title-text text-xs font-black text-emerald-700 truncate"; }
-                const actionBtn = zone.querySelector('.action-btn'); if(actionBtn) { actionBtn.textContent = "Ready to Push"; actionBtn.className = "action-btn text-[10px] font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-lg shadow-sm border border-emerald-200"; }
+                const actionBtn = zone.querySelector('.action-btn'); if(actionBtn) { actionBtn.textContent = "Ready to Push"; actionBtn.className = "action-btn text-[10px] font-bold text-emerald-700 bg-emerald-50/80 px-3 py-1.5 rounded-lg shadow-sm border border-emerald-200"; }
             }
         }
 
@@ -2373,10 +2370,11 @@
             const studentNum = session.Student_Number;
             
             if (!studentNum || studentNum === '--' || studentNum === 'Unknown') {
-                container.innerHTML = '<div class="text-center p-4 text-slate-500 text-xs bg-slate-50 rounded-[20px] border border-slate-100 shadow-inner">Verify your profile to view snags.</div>';
+                container.innerHTML = '<div class="text-center p-4 text-slate-500 text-xs bg-slate-50 rounded-2xl border border-slate-100 shadow-inner">Verify your profile to view snags.</div>';
                 return;
             }
 
+            // Only show main spinner if it's currently empty, otherwise silent update via the small btn spinner
             if (!container.innerHTML.trim() || container.innerHTML.includes("Verify your profile")) {
                 container.innerHTML = '<div class="flex justify-center p-6"><i class="fa-solid fa-circle-notch fa-spin text-blue-500 text-2xl"></i></div>';
             }
@@ -2389,7 +2387,7 @@
                 let logs = window.parseN8n(data);
                 
                 if (logs.length === 0) {
-                    container.innerHTML = '<div class="text-center p-4 text-slate-500 text-xs bg-slate-50 rounded-[20px] border border-slate-100 shadow-inner">No active maintenance requests.</div>';
+                    container.innerHTML = '<div class="text-center p-4 text-slate-500 text-xs bg-slate-50 rounded-2xl border border-slate-100 shadow-inner">No active maintenance requests.</div>';
                     return;
                 }
 
@@ -2434,10 +2432,10 @@
                     const descVal = log.Description || log.Notes || 'No description provided.';
 
                     html += `
-                        <div class="neumorphic rounded-[28px] p-5 transition-all duration-300">
+                        <div class="bg-white border border-slate-100 rounded-[28px] p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300">
                             <div class="flex justify-between items-start mb-4">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-[14px] bg-white flex items-center justify-center text-blue-600 border border-blue-100 flex-shrink-0 shadow-sm">
+                                    <div class="w-10 h-10 rounded-[14px] bg-blue-50 flex items-center justify-center text-blue-600 border border-blue-100 flex-shrink-0">
                                         <i class="fa-solid fa-wrench text-lg"></i>
                                     </div>
                                     <div class="min-w-0 pr-2">
@@ -2455,8 +2453,8 @@
                                 </div>
                             </div>
 
-                            <div class="neumorphic-inset rounded-[16px] p-3 mb-4">
-                                <div class="grid grid-cols-3 gap-2 mb-2 pb-2 border-b border-slate-200/50">
+                            <div class="bg-slate-50/80 rounded-[16px] p-3 mb-4 border border-slate-100/60">
+                                <div class="grid grid-cols-3 gap-2 mb-2 pb-2 border-b border-slate-200/60">
                                     <div class="col-span-1">
                                         <span class="block text-[8px] font-bold text-slate-400 uppercase tracking-widest">Ticket ID</span>
                                         <span class="text-[10px] font-bold text-slate-800 tracking-tight">#${ticketId}</span>
@@ -2477,7 +2475,7 @@
                             </div>
 
                             <div class="relative pt-2 pb-2 px-1">
-                                <div class="absolute left-0 top-[13px] w-full h-1 bg-white rounded-full z-0 shadow-inner"></div>
+                                <div class="absolute left-0 top-[13px] w-full h-1 bg-slate-100 rounded-full z-0"></div>
                                 <div class="absolute left-0 top-[13px] h-1 ${lineBg} rounded-full z-0 transition-all duration-1000 ease-in-out" style="width: ${progressPercent}"></div>
                                 
                                 <div class="relative z-10 flex justify-between">
@@ -2501,7 +2499,7 @@
                 container.innerHTML = html;
 
             } catch (error) {
-                // Fails silently if webhooks are unreachable or return an error, preventing red UI stains.
+                // Fail silently to prevent the red stain. Leave it empty if there's a webhook error.
                 container.innerHTML = '';
             }
         }
