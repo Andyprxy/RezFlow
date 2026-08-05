@@ -742,7 +742,7 @@
         const studentId = document.getElementById('swap-student-id').value; const newRoom = document.getElementById('swap-new-room').value;
         btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...'; btn.disabled = true;
         try {
-            await fetch('https://n8n.automania.cloud/webhook-test/room-swap', { 
+            await fetch('https://n8n.automania.cloud/webhook/room-swap', { 
                 method: 'POST', headers: { 'Content-Type': 'application/json' }, 
                 body: JSON.stringify({ Student_Number: studentId, Room_ID: newRoom, Swap_Trigger: true }) 
             });
