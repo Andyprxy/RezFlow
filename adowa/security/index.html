@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ReziOps | Security Command</title>
+    <title>Adowa | Security Command</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -138,7 +138,10 @@
 
     <!-- Mobile Header -->
     <div class="lg:hidden flex items-center justify-between p-3 sm:p-4 bg-white/60 backdrop-blur-2xl border-b border-white/80 z-50 sticky top-0 shadow-sm">
-        <div class="flex items-center gap-2"><i class="fa-solid fa-shield-halved text-rose-600 text-lg"></i><span class="font-black text-lg tracking-tight text-slate-800">Rezi<span class="text-rose-500">Guard</span></span></div>
+        <div class="flex items-center gap-2">
+            <img src="/adowa.png" alt="Adowa" class="h-6 w-auto object-contain">
+            <span class="font-black text-lg tracking-tight text-slate-800">Adowa</span>
+        </div>
         <button onclick="window.toggleSecSidebar()" class="neo-button w-9 h-9 rounded-full flex items-center justify-center text-slate-600"><i class="fa-solid fa-bars"></i></button>
     </div>
 
@@ -154,7 +157,7 @@
                     <p id="matrixSub" class="text-[10px] sm:text-xs text-slate-500 font-medium">Active Threats & Facility Status</p>
                 </div>
                 <div class="flex items-center gap-3">
-                    <button class="w-9 h-9 rounded-full neo-button flex items-center justify-center text-rose-500 transition-colors radar-active">
+                    <button onclick="window.openDispatchModal()" class="w-9 h-9 rounded-full neo-button flex items-center justify-center text-rose-500 transition-colors radar-active">
                         <i class="fa-solid fa-bell text-[12px]"></i>
                     </button>
                     <div class="h-9 px-4 rounded-full bg-slate-800 border border-slate-700 flex items-center gap-2 shadow-inner text-xs font-bold text-white hidden sm:flex">
@@ -349,12 +352,12 @@
             
             <div onclick="window.toggleSecSidebar()" class="nav-block flex items-center justify-between cursor-pointer hover:bg-white/80 transition-colors">
                 <div class="flex items-center gap-2 w-full">
-                    <div class="w-8 h-8 bg-gradient-to-br from-rose-500 to-red-600 rounded-xl shadow-sm flex items-center justify-center text-white text-xs shrink-0">
-                        <i class="fa-solid fa-shield-halved"></i>
+                    <div class="w-8 h-8 flex items-center justify-center shrink-0">
+                        <img src="/adowa.png" alt="Adowa Logo" class="w-full h-full object-contain">
                     </div>
                     <div class="flex flex-col nav-text flex-1 overflow-hidden">
-                        <span class="font-black text-xs tracking-tight text-slate-900 leading-none truncate">Sec<span class="text-rose-500">Ctrl</span></span>
-                        <span class="text-[7px] font-bold tracking-widest text-slate-500 uppercase mt-1 truncate">Overwatch Panel</span>
+                        <span class="font-black text-xs tracking-tight text-slate-900 leading-none truncate">Adowa</span>
+                        <span class="text-[7px] font-bold tracking-widest text-slate-500 uppercase mt-1 truncate">Security Protocol</span>
                     </div>
                 </div>
                 <i id="sec-sidebar-toggle-icon" class="fa-solid fa-chevron-right text-slate-400 text-[10px] pr-1"></i>
@@ -401,7 +404,7 @@
             <div class="nav-block">
                 <p class="px-1 text-[7px] font-extrabold text-slate-400 uppercase tracking-widest mb-2 nav-text truncate">Emergency Dispatch</p>
                 <div class="space-y-2">
-                    <button onclick="window.openDispatchModal('Armed Response', 'fa-shield-halved', 'rose')" class="block-btn btn-primary-rose justify-center gap-2 !py-2.5 relative overflow-hidden rounded-xl" title="Panic Button">
+                    <button onclick="window.openDispatchModal()" class="block-btn btn-primary-rose justify-center gap-2 !py-2.5 relative overflow-hidden rounded-xl" title="Panic Button">
                         <span class="absolute right-3 top-3 flex h-2.5 w-2.5">
                           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
                           <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-white"></span>
@@ -502,28 +505,22 @@
         </div>
     </div>
 
-    <!-- Emergency Dispatch Modal -->
+    <!-- Emergency Dispatch Panic Modal -->
     <div id="dispatchModal" class="modal-overlay">
-        <div class="modal-content w-full max-w-sm relative">
-            <button onclick="document.getElementById('dispatchModal').classList.remove('active')" class="absolute top-4 right-4 w-7 h-7 neo-button rounded-full flex items-center justify-center text-slate-500 transition-colors z-20"><i class="fa-solid fa-xmark text-[10px]"></i></button>
-            <div class="flex items-center gap-3 mb-5 mt-2">
-                <div id="dispatch-icon-bg" class="w-12 h-12 rounded-xl flex items-center justify-center text-xl shadow-sm border"><i id="dispatch-icon" class="fa-solid"></i></div>
-                <div>
-                    <h2 class="text-lg font-black text-slate-900 tracking-tight leading-none">Emergency Dispatch</h2>
-                    <p class="text-[9px] font-bold text-slate-500 mt-1.5 uppercase tracking-widest">Target: <span id="dispatch-target-name" class="text-slate-800"></span></p>
-                </div>
-            </div>
-            <div class="bg-rose-50 border border-rose-200 p-4 rounded-xl mb-5 flex gap-3 items-start shadow-sm">
-                <i class="fa-solid fa-triangle-exclamation text-rose-600 mt-0.5 text-sm"></i>
-                <p class="text-[10px] font-bold text-rose-800 leading-relaxed">You are about to trigger a high-priority dispatch via the n8n logic engine. This will immediately alert external rapid response units.</p>
+        <div class="modal-content w-full max-w-sm relative !bg-rose-600 !border-rose-500">
+            <button onclick="document.getElementById('dispatchModal').classList.remove('active')" class="absolute top-4 right-4 w-7 h-7 bg-white/20 rounded-full flex items-center justify-center text-white transition-colors z-20 hover:bg-white/40"><i class="fa-solid fa-xmark text-[10px]"></i></button>
+            <div class="text-center mt-6 mb-8">
+                <i class="fa-solid fa-triangle-exclamation text-white text-4xl mb-4 animate-pulse"></i>
+                <h2 class="text-2xl font-black text-white tracking-tight leading-none uppercase">Emergency Panic</h2>
+                <p class="text-xs font-bold text-rose-200 mt-2 uppercase tracking-widest">Immediate Armed Response</p>
             </div>
             <form onsubmit="window.submitDispatch(event)">
-                <input type="hidden" id="dispatch-target-val">
-                <div class="mb-5">
-                    <label class="block text-[8px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 pl-1">Dispatch Location / Room</label>
-                    <input type="text" id="dispatch-location" class="w-full neo-inset rounded-xl py-3 px-4 text-xs font-medium outline-none focus:border-rose-400" placeholder="e.g. Block B, Floor 2" required>
-                </div>
-                <button type="submit" id="btn-submit-dispatch" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-black rounded-xl py-3.5 shadow-md flex justify-center items-center gap-2 text-xs uppercase tracking-widest border border-rose-400"><i class="fa-solid fa-satellite-dish"></i> Execute Dispatch</button>
+                <input type="hidden" id="dispatch-target-val" value="Armed Response">
+                <button type="submit" id="btn-submit-dispatch" class="w-40 h-40 mx-auto bg-rose-500 hover:bg-rose-400 border-4 border-white text-white font-black rounded-full shadow-[0_0_40px_rgba(255,255,255,0.4)] flex flex-col justify-center items-center gap-3 text-lg uppercase tracking-widest transition-all radar-active tap-effect">
+                    <i class="fa-solid fa-satellite-dish text-2xl"></i>
+                    DISPATCH
+                </button>
+                <p class="text-center text-[9px] text-rose-200 font-bold uppercase tracking-widest mt-8">Warning: This instantly alerts external units.</p>
             </form>
         </div>
     </div>
@@ -572,9 +569,13 @@
             }
         };
 
-        // Global State for WhatsApp-Style Replies
+        // ----------------------------------------------------
+        // STATE MANAGEMENT (Preserves chat across refreshes)
+        // ----------------------------------------------------
         window.activeChatsByTicket = {};
         window.activeReplies = {}; 
+        window.openSecurityDetails = new Map(); // Tracks open detail rows
+        window.openSecurityChats = new Map();   // Tracks expanded chat containers & inputs
 
         // ----------------------------------------------------
         // ARCHITECTURAL DATA PIPELINE INITIALIZATION
@@ -722,8 +723,10 @@
                     detailRow.classList.remove('hidden');
                     const innerDiv = detailRow.querySelector('.detail-row-content');
                     if(innerDiv) { innerDiv.style.animation = 'none'; void innerDiv.offsetWidth; innerDiv.style.animation = null; }
+                    window.openSecurityDetails.set(ticketId, true);
                 } else {
                     detailRow.classList.add('hidden');
+                    window.openSecurityDetails.delete(ticketId);
                 }
             }
         };
@@ -756,11 +759,12 @@
 
         // Real-Time Poller for Chat (Every 3 seconds)
         setInterval(async function pollRealtimeData() {
-            for (const ticketId in window.activeChatsByTicket) {
+            for (const ticketId of window.openSecurityChats.keys()) {
                 const container = document.getElementById(`chat-container-${ticketId}`);
-                if (container && !container.classList.contains('h-[52px]')) {
+                if (container) {
                     try {
-                        const studentId = container.dataset.studentId || '';
+                        const chatData = window.openSecurityChats.get(ticketId);
+                        const studentId = chatData.studentId || container.dataset.studentId || '';
                         const params = new URLSearchParams({ Ticket_ID: ticketId, ticket_id: ticketId, Student_Number: studentId, studentn: studentId });
                         const res = await fetch(`https://n8n.automania.cloud/webhook/reziflow-get-snag-chat0?${params.toString()}`, {
                             method: 'GET'
@@ -772,7 +776,7 @@
                             const oldLength = (window.activeChatsByTicket[ticketId] || []).length;
                             if (chats.length !== oldLength) {
                                 window.activeChatsByTicket[ticketId] = chats;
-                                const studentName = container.dataset.studentName || 'Resident';
+                                const studentName = chatData.studentName || container.dataset.studentName || 'Resident';
                                 window.renderChatUI(ticketId, studentId, studentName);
                             }
                         }
@@ -788,9 +792,9 @@
             const chevron = document.getElementById(`chat-chevron-${ticketId}`);
             const historyEl = document.getElementById(`chat-history-${ticketId}`);
             
-            if (container.classList.contains('h-[52px]')) {
-                // Expand Chat Window
-                container.classList.remove('h-[52px]');
+            if (container.classList.contains('h-[56px]')) {
+                // Expand Chat Window & Persist State
+                container.classList.remove('h-[56px]');
                 container.classList.add('h-[400px]');
                 body.classList.remove('hidden');
                 setTimeout(() => body.classList.remove('opacity-0'), 50);
@@ -798,6 +802,7 @@
                 
                 container.dataset.studentName = studentName;
                 container.dataset.studentId = studentId;
+                window.openSecurityChats.set(ticketId, { room, studentId, studentName });
 
                 // Show loading state if no cache
                 if (!window.activeChatsByTicket[ticketId]) {
@@ -830,13 +835,14 @@
                 
                 window.renderChatUI(ticketId, studentId, studentName);
             } else {
-                // Collapse Chat Window
+                // Collapse Chat Window & Clear State
                 body.classList.add('opacity-0');
                 chevron.classList.remove('rotate-180');
+                window.openSecurityChats.delete(ticketId);
                 setTimeout(() => {
                     body.classList.add('hidden');
                     container.classList.remove('h-[400px]');
-                    container.classList.add('h-[52px]');
+                    container.classList.add('h-[56px]');
                 }, 200); 
             }
         };
@@ -1128,6 +1134,11 @@
                 const safeRoom = String(log.Room || '--').replace(/'/g, "\\'");
                 const safeName = String(res.name || 'Unknown').replace(/'/g, "\\'");
 
+                // Preserve UI States natively within render loop
+                const isDetailOpen = window.openSecurityDetails.has(safeId);
+                const chatState = window.openSecurityChats.get(safeId);
+                const isChatOpen = !!chatState;
+
                 htmlStr += `
                     <tr class="${isCritical ? 'bg-rose-50/40' : 'bg-transparent'} hover:bg-white/60 transition-colors border-b border-white/50 cursor-pointer group" onclick="window.toggleRowDetails('${safeId}', '${studentId}', '${safeName}')" data-ticket-id="${safeId}">
                         <td class="align-middle">
@@ -1152,8 +1163,8 @@
                         </td>
                     </tr>
                     
-                    <!-- EXPANDED DETAIL ROW (HIDDEN BY DEFAULT) -->
-                    <tr id="detail-${safeId}" class="hidden bg-[#e0e5eb]/40 shadow-[inset_0_4px_6px_-4px_rgba(0,0,0,0.05)] detail-row border-b-2 border-rose-100">
+                    <!-- EXPANDED DETAIL ROW -->
+                    <tr id="detail-${safeId}" class="${isDetailOpen ? '' : 'hidden'} bg-[#e0e5eb]/40 shadow-[inset_0_4px_6px_-4px_rgba(0,0,0,0.05)] detail-row border-b-2 border-rose-100">
                         <td colspan="5" class="p-0">
                             <div class="detail-row-content p-4 sm:p-5 grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-5 items-start">
                                 
@@ -1188,7 +1199,7 @@
                                 </div>
 
                                 <!-- Right Col: Collapsible Compact Chat Container -->
-                                <div id="chat-container-${safeId}" class="w-full shrink-0 glass-panel border border-white shadow-lg rounded-[24px] flex flex-col overflow-hidden transition-all duration-300 h-[56px] bg-white/60">
+                                <div id="chat-container-${safeId}" class="w-full shrink-0 glass-panel border border-white shadow-lg rounded-[24px] flex flex-col overflow-hidden transition-all duration-300 ${isChatOpen ? 'h-[400px]' : 'h-[56px]'} bg-white/60">
                                     
                                     <div class="px-4 py-3 border-b border-white flex items-center justify-between cursor-pointer tap-effect shrink-0 z-10 hover:bg-white/50 transition-colors" onclick="window.toggleInlineChat('${safeId}', '${safeRoom}', '${studentId}', '${safeName}')">
                                         <div class="flex items-center gap-3">
@@ -1204,11 +1215,11 @@
                                             <button onclick="event.stopPropagation(); window.forceRefreshChat('${safeId}', '${studentId}', '${safeName}')" class="w-7 h-7 rounded-full bg-white border border-slate-200 text-slate-400 hover:text-blue-600 flex items-center justify-center transition-all shadow-sm" title="Refresh Chat">
                                                 <i class="fa-solid fa-rotate-right text-[10px]"></i>
                                             </button>
-                                            <i id="chat-chevron-${safeId}" class="fa-solid fa-chevron-down text-slate-400 text-sm pr-1 pl-1 transition-transform duration-300"></i>
+                                            <i id="chat-chevron-${safeId}" class="fa-solid fa-chevron-down text-slate-400 text-sm pr-1 pl-1 transition-transform duration-300 ${isChatOpen ? 'rotate-180' : ''}"></i>
                                         </div>
                                     </div>
                                     
-                                    <div id="chat-body-${safeId}" class="flex-1 flex flex-col hidden opacity-0 transition-opacity duration-300 min-h-0 relative">
+                                    <div id="chat-body-${safeId}" class="flex-1 flex flex-col ${isChatOpen ? '' : 'hidden opacity-0'} transition-opacity duration-300 min-h-0 relative">
                                         
                                         <!-- History Layer -->
                                         <div id="chat-history-${safeId}" class="flex-1 overflow-y-auto custom-scroll p-4 flex flex-col bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-slate-50/50 min-h-0 pb-5">
@@ -1246,6 +1257,11 @@
                 `;
             });
             body.innerHTML = htmlStr;
+
+            // Re-render chat contents for any open chats seamlessly
+            window.openSecurityChats.forEach((state, tId) => {
+                window.renderChatUI(tId, state.studentId, state.studentName);
+            });
         };
 
         window.renderSecurityHistory = function() {
@@ -1279,6 +1295,10 @@
                 const safeRoom = String(log.Room || '--').replace(/'/g, "\\'");
                 const safeName = String(res.name || 'Unknown').replace(/'/g, "\\'");
 
+                const isDetailOpen = window.openSecurityDetails.has(safeId);
+                const chatState = window.openSecurityChats.get(safeId);
+                const isChatOpen = !!chatState;
+
                 htmlStr += `
                     <tr class="hover:bg-white/50 transition-colors border-b border-white/50 opacity-80 hover:opacity-100 cursor-pointer" onclick="window.toggleRowDetails('${safeId}', '${studentId}', '${safeName}')" data-ticket-id="${safeId}">
                         <td class="align-top">
@@ -1300,7 +1320,7 @@
                     </tr>
                     
                     <!-- EXPANDED DETAIL ROW (HISTORY) -->
-                    <tr id="detail-${safeId}" class="hidden bg-[#e0e5eb]/40 shadow-[inset_0_4px_6px_-4px_rgba(0,0,0,0.05)] detail-row border-b-2 border-emerald-100">
+                    <tr id="detail-${safeId}" class="${isDetailOpen ? '' : 'hidden'} bg-[#e0e5eb]/40 shadow-[inset_0_4px_6px_-4px_rgba(0,0,0,0.05)] detail-row border-b-2 border-emerald-100">
                         <td colspan="5" class="p-0">
                             <div class="detail-row-content p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-6 items-start">
                                 
@@ -1323,7 +1343,7 @@
                                 </div>
 
                                 <!-- Right Col: Collapsible Compact Chat Container -->
-                                <div id="chat-container-${safeId}" class="w-full shrink-0 glass-panel border border-white shadow-lg rounded-[24px] flex flex-col overflow-hidden transition-all duration-300 h-[56px] bg-white/60">
+                                <div id="chat-container-${safeId}" class="w-full shrink-0 glass-panel border border-white shadow-lg rounded-[24px] flex flex-col overflow-hidden transition-all duration-300 ${isChatOpen ? 'h-[400px]' : 'h-[56px]'} bg-white/60">
                                     
                                     <div class="px-4 py-3 border-b border-white flex items-center justify-between cursor-pointer tap-effect shrink-0 z-10 hover:bg-white/50 transition-colors" onclick="window.toggleInlineChat('${safeId}', '${safeRoom}', '${studentId}', '${safeName}')">
                                         <div class="flex items-center gap-3">
@@ -1339,11 +1359,11 @@
                                             <button onclick="event.stopPropagation(); window.forceRefreshChat('${safeId}', '${studentId}', '${safeName}')" class="w-7 h-7 rounded-full bg-white border border-slate-200 text-slate-400 hover:text-blue-600 flex items-center justify-center transition-all shadow-sm" title="Refresh Chat">
                                                 <i class="fa-solid fa-rotate-right text-[10px]"></i>
                                             </button>
-                                            <i id="chat-chevron-${safeId}" class="fa-solid fa-chevron-down text-slate-400 text-sm pr-1 pl-1 transition-transform duration-300"></i>
+                                            <i id="chat-chevron-${safeId}" class="fa-solid fa-chevron-down text-slate-400 text-sm pr-1 pl-1 transition-transform duration-300 ${isChatOpen ? 'rotate-180' : ''}"></i>
                                         </div>
                                     </div>
                                     
-                                    <div id="chat-body-${safeId}" class="flex-1 flex flex-col hidden opacity-0 transition-opacity duration-300 min-h-0 relative">
+                                    <div id="chat-body-${safeId}" class="flex-1 flex flex-col ${isChatOpen ? '' : 'hidden opacity-0'} transition-opacity duration-300 min-h-0 relative">
                                         
                                         <!-- History Layer -->
                                         <div id="chat-history-${safeId}" class="flex-1 overflow-y-auto custom-scroll p-4 flex flex-col bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-slate-50/50 min-h-0 pb-5">
@@ -1381,6 +1401,11 @@
                 `;
             });
             body.innerHTML = htmlStr;
+
+            // Re-render chat contents for any open chats seamlessly
+            window.openSecurityChats.forEach((state, tId) => {
+                window.renderChatUI(tId, state.studentId, state.studentName);
+            });
         };
 
         window.resolveSecurity = async function(timestamp, room, ticketId, btnElement) {
@@ -1752,23 +1777,38 @@
             } catch(error) { window.showToast("Failed to log incident.", "error"); } finally { btn.innerHTML = ogText; btn.disabled = false; }
         };
 
-        window.openDispatchModal = function(targetName, iconClass, color) {
-            document.getElementById('dispatch-target-name').textContent = targetName;
-            document.getElementById('dispatch-target-val').value = targetName;
-            const iconContainer = document.getElementById('dispatch-icon-bg'); const icon = document.getElementById('dispatch-icon');
-            iconContainer.className = `w-12 h-12 rounded-xl flex items-center justify-center text-xl shadow-sm border bg-${color}-50 text-${color}-600 border-${color}-100`;
-            icon.className = `fa-solid ${iconClass}`;
+        // Simplified for the new Panic workflow
+        window.openDispatchModal = function() {
             document.getElementById('dispatchModal').classList.add('active');
         };
 
         window.submitDispatch = async function(e) {
-            e.preventDefault(); const btn = document.getElementById('btn-submit-dispatch'); const ogText = btn.innerHTML;
-            const target = document.getElementById('dispatch-target-val').value; const location = document.getElementById('dispatch-location').value;
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Transmitting...'; btn.disabled = true;
+            e.preventDefault(); 
+            const btn = document.getElementById('btn-submit-dispatch'); 
+            const ogText = btn.innerHTML;
+            const target = document.getElementById('dispatch-target-val').value;
+            
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-2xl"></i>'; 
+            btn.disabled = true;
+            
             try {
-                await fetch('https://n8n.automania.cloud/webhook/reziflow-send-communication', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ Target: target, Message: `EMERGENCY DISPATCH REQUIRED at ${location}` }) });
-                document.getElementById('dispatchModal').classList.remove('active'); e.target.reset(); window.showToast(`${target} dispatch signal sent.`);
-            } catch(error) { window.showToast("Failed to transmit dispatch.", "error"); } finally { btn.innerHTML = ogText; btn.disabled = false; }
+                // Flash red and beep when panic is hit
+                window.triggerAudioAlarm();
+                
+                await fetch('https://n8n.automania.cloud/webhook/reziflow-send-communication', { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ Target: target, Message: `EMERGENCY PANIC DISPATCH TRIGGERED FROM SECURITY DESK` }) 
+                });
+                
+                document.getElementById('dispatchModal').classList.remove('active'); 
+                window.showToast(`${target} dispatch signal sent.`);
+            } catch(error) { 
+                window.showToast("Failed to transmit dispatch.", "error"); 
+            } finally { 
+                btn.innerHTML = ogText; 
+                btn.disabled = false; 
+            }
         };
 
         // ----------------------------------------------------
