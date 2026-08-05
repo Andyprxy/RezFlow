@@ -1,355 +1,299 @@
+<!-- LEAFLET DEPENDENCIES -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <style>
     /* ---------------------------------------------------
-       PREMIUM LIQUID GLASS & NEUMORPHIC LAYOUT
+       ADOWA HYBRID NEUMORPHISM + GLASSMORPHISM
        --------------------------------------------------- */
-    .glass-segmented {
-        background: rgba(230, 230, 235, 0.45); backdrop-filter: blur(20px); border-radius: 12px; padding: 4px; 
-        border: 1px solid rgba(255, 255, 255, 0.5); box-shadow: inset 0 1px 4px rgba(0,0,0,0.03); 
-        display: inline-flex; flex-wrap: wrap; gap: 4px; align-items: center;
+    .glass-panel {
+        background: rgba(255, 255, 255, 0.45); 
+        backdrop-filter: blur(24px); 
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.8); 
+        box-shadow: 8px 8px 24px rgba(166, 175, 195, 0.25), -8px -8px 24px rgba(255, 255, 255, 0.9); 
+        border-radius: 28px;
     }
-    
-    .glass-seg-btn {
-        padding: 6px 14px; font-size: 0.65rem; font-weight: 800; color: #64748b; border-radius: 10px; 
-        transition: all 0.3s ease; cursor: pointer; display: flex; align-items: center; gap: 6px; border: 1px solid transparent; justify-content: center; text-transform: uppercase; letter-spacing: 0.05em;
-    }
-    .glass-seg-btn:hover:not(.active) { background: rgba(255, 255, 255, 0.6); color: #334155; }
-    .glass-seg-btn.active {
-        background: rgba(255, 255, 255, 1); color: #1d1d1f; box-shadow: 0 4px 12px rgba(0,0,0,0.05), 0 0 0 1px rgba(255,255,255,0.9); border: 1px solid rgba(255, 255, 255, 1); transform: scale(1.02);
-    }
-    .glass-seg-btn.active.accent-blue { color: #0071e3; } 
-    .glass-seg-btn.active.accent-indigo { color: #6366f1; }
-    .glass-seg-btn.active.accent-emerald { color: #10b981; }
 
-    /* Right Sidebar (Command & Telemetry Panel) */
-    .hub-sidebar { width: 30%; max-width: 340px; min-width: 280px; flex-shrink: 0; display: flex; flex-direction: column; gap: 0.75rem; transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), min-width 0.4s; position: relative; }
-    .hub-sidebar.collapsed { width: 48px !important; min-width: 48px !important; }
-    .hub-sidebar.collapsed .nav-text { display: none !important; }
-    .hub-sidebar.collapsed .nav-block { padding: 6px !important; }
-    .hub-sidebar.collapsed .block-btn { padding: 10px 0 !important; justify-content: center !important; }
-    .hub-sidebar.collapsed .block-btn i { margin: 0 !important; font-size: 1.1rem; }
-    
-    .glass-panel { background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: 0 12px 40px -12px rgba(0,0,0,0.08); border-radius: 24px; }
-    
-    /* Map Container & Marker Overrides */
-    #admin-fleet-map { border-radius: 20px; z-index: 10; }
-    .leaflet-control-container { z-index: 10 !important; }
-    .leaflet-bottom { z-index: 10 !important; }
-    
-    .shuttle-marker {
-        background: #0f172a; border: 3px solid #ffffff; border-radius: 50%;
-        box-shadow: 0 0 20px rgba(15, 23, 42, 0.4), inset 0 2px 4px rgba(255,255,255,0.3); 
-        transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        display: flex; align-items: center; justify-content: center; color: white;
+    .neo-inset {
+        background: rgba(240, 242, 245, 0.5);
+        box-shadow: inset 4px 4px 8px rgba(166, 175, 195, 0.25), inset -4px -4px 8px rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(255,255,255,0.4);
+    }
+
+    .neo-button {
+        background: #f0f2f5;
+        box-shadow: 5px 5px 12px rgba(166, 175, 195, 0.3), -5px -5px 12px rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        transition: all 0.2s ease;
+    }
+    .neo-button:active {
+        box-shadow: inset 3px 3px 6px rgba(166, 175, 195, 0.3), inset -3px -3px 6px rgba(255, 255, 255, 0.9);
+        transform: scale(0.98);
+    }
+    .neo-button.active-tab {
+        background: #0f172a; color: white;
+        box-shadow: inset 3px 3px 8px rgba(0,0,0,0.5);
+        border: 1px solid #1e293b;
+    }
+
+    .neo-button-primary {
+        background: #0f172a; color: white;
+        box-shadow: 5px 5px 15px rgba(15, 23, 42, 0.3), -5px -5px 15px rgba(255, 255, 255, 0.8);
+        border: 1px solid #1e293b;
+    }
+    .neo-button-primary:active { box-shadow: inset 3px 3px 8px rgba(0,0,0,0.5); transform: scale(0.98); }
+
+    /* Map Marker */
+    .driver-marker {
+        background: #2563eb; border: 4px solid white; border-radius: 50%;
+        box-shadow: 0 0 20px rgba(37, 99, 235, 0.6), inset 0 2px 4px rgba(0,0,0,0.3); 
+        transition: all 0.5s ease-out;
     }
     
     .pulse-ring-map {
         position: absolute; width: 100%; height: 100%; top: 0; left: 0; border-radius: 50%;
-        box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.6); animation: pulsate-map 2s infinite ease-out; z-index: -1;
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.6); animation: pulsate-map 1.5s infinite ease-out; z-index: -1;
     }
-    @keyframes pulsate-map { 0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.6); } 100% { box-shadow: 0 0 0 30px rgba(99, 102, 241, 0); } }
+    @keyframes pulsate-map { 0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.6); } 100% { box-shadow: 0 0 0 25px rgba(37, 99, 235, 0); } }
 
-    /* Feed Card Styling */
-    .feed-card {
-        background: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 4px 15px -5px rgba(0,0,0,0.05);
-        border-radius: 16px; padding: 12px; transition: transform 0.2s ease;
-    }
-    .feed-card:hover { transform: translateY(-2px); background: rgba(255,255,255,0.9); }
+    /* Scrollbars & Overrides */
+    .custom-scroll::-webkit-scrollbar { width: 5px; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.5); border-radius: 10px; }
     
-    .custom-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
-    .custom-scroll::-webkit-scrollbar-track { background: transparent; }
-    .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    .leaflet-control-zoom a {
+        background: #f0f2f5 !important; color: #475569 !important; border: 1px solid rgba(255,255,255,0.8) !important;
+        box-shadow: 2px 2px 5px rgba(166, 175, 195, 0.3), -2px -2px 5px rgba(255, 255, 255, 0.9) !important;
+        border-radius: 8px !important; margin-bottom: 5px !important;
+    }
+    
+    @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+    .msg-card { animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 </style>
 
-<!-- Main Component Structure -->
-<div class="flex-1 flex flex-col sm:flex-row w-full h-full min-h-0 gap-4 overflow-hidden relative">
+<!-- Main Component Wrapper -->
+<div class="flex-1 flex flex-col lg:flex-row w-full h-full min-h-0 gap-4 lg:gap-6 relative p-2 lg:p-4 bg-[#f0f2f5] overflow-hidden rounded-[32px]">
     
-    <!-- Canvas (Left) - Live Map & Telemetry -->
-    <div class="flex-1 flex flex-col min-w-0 min-h-0 custom-scroll pr-1 pb-10">
+    <!-- Background Ambience (Matching Driver Portal) -->
+    <div class="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-blue-300 rounded-full mix-blend-multiply filter blur-[140px] opacity-[0.25] z-0 pointer-events-none"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-emerald-200 rounded-full mix-blend-multiply filter blur-[120px] opacity-[0.2] z-0 pointer-events-none"></div>
+
+    <!-- Map Section (Left) -->
+    <div class="flex-1 relative rounded-[32px] overflow-hidden shadow-[10px_10px_30px_rgba(166,175,195,0.2),-10px_-10px_30px_rgba(255,255,255,0.9)] border border-white flex flex-col z-10 bg-[#f0f2f5]">
         
-        <div class="glass-panel p-4 flex flex-col h-full border border-white/60 relative overflow-hidden">
-            
-            <!-- Command Header -->
-            <div class="flex items-center justify-between mb-4 border-b border-slate-200/50 pb-4 shrink-0 bg-white/40 px-4 py-3 rounded-2xl">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-[14px] bg-[#1d1d1f] text-white flex items-center justify-center text-xl shadow-lg border border-slate-700">
-                        <i class="fa-solid fa-satellite"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-base font-black text-slate-900 tracking-tight leading-none">Global Overwatch</h2>
-                        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Live Fleet Telemetry</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div class="flex flex-col items-end mr-2">
-                        <span class="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Network Status</span>
-                        <span id="fleet-status-badge" class="text-amber-500 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 mt-0.5">
-                            <i class="fa-solid fa-circle-notch fa-spin"></i> Polling
-                        </span>
-                    </div>
-                    <button onclick="window.fetchFleetLocation()" class="bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 font-bold w-10 h-10 rounded-xl transition-all shadow-sm flex items-center justify-center text-sm" title="Force Sync">
-                        <i class="fa-solid fa-rotate text-indigo-500"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Map Container -->
-            <div class="flex-1 relative rounded-[20px] overflow-hidden border-2 border-white shadow-inner bg-slate-100 z-10 w-full min-h-0">
-                <div id="admin-fleet-map" class="w-full h-full absolute inset-0"></div>
-                
-                <!-- Loading Overlay -->
-                <div id="map-loading-overlay" class="absolute inset-0 bg-white/80 backdrop-blur-md z-20 flex flex-col items-center justify-center transition-opacity duration-300">
-                    <div class="w-14 h-14 rounded-full bg-slate-900 text-white flex items-center justify-center text-2xl shadow-xl mb-4 border border-slate-700">
-                        <i class="fa-solid fa-satellite-dish animate-pulse"></i>
-                    </div>
-                    <span class="text-[10px] font-black text-slate-800 tracking-widest uppercase">Establishing Uplink...</span>
-                </div>
-
-                <!-- Floating Live Telemetry HUD -->
-                <div class="absolute top-4 right-4 z-[400] bg-white/90 backdrop-blur-xl p-4 rounded-[20px] shadow-2xl border border-white min-w-[220px]">
-                    <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2">
-                        <div class="flex items-center gap-2">
-                            <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                            <span class="text-[9px] font-black text-slate-800 uppercase tracking-widest">Shuttle 01</span>
-                        </div>
-                        <span id="hud-status" class="bg-slate-100 text-slate-600 text-[8px] px-2 py-1 rounded-md font-bold uppercase tracking-wider border border-slate-200">Standby</span>
-                    </div>
-                    <div class="space-y-2">
-                        <div class="flex justify-between items-center">
-                            <span class="text-[8px] font-bold text-slate-400 uppercase tracking-widest"><i class="fa-solid fa-location-crosshairs mr-1"></i> Lat</span>
-                            <span id="hud-lat" class="text-[10px] font-mono font-bold text-slate-700">--.------</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-[8px] font-bold text-slate-400 uppercase tracking-widest"><i class="fa-solid fa-location-crosshairs mr-1"></i> Lng</span>
-                            <span id="hud-lng" class="text-[10px] font-mono font-bold text-slate-700">--.------</span>
-                        </div>
-                        <div class="flex justify-between items-center pt-2 border-t border-slate-100">
-                            <span class="text-[8px] font-bold text-slate-400 uppercase tracking-widest"><i class="fa-regular fa-clock mr-1"></i> Last Ping</span>
-                            <span id="hud-time" class="text-[10px] font-mono font-bold text-indigo-600">--:--:--</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+        <!-- Live GPS Indicator overlay -->
+        <div class="absolute top-6 left-6 z-[400] bg-white/70 backdrop-blur-xl px-5 py-3 rounded-2xl flex items-center gap-3 shadow-[5px_5px_15px_rgba(166,175,195,0.2)] border border-white">
+            <div id="admin-gps-indicator" class="w-3 h-3 bg-amber-400 rounded-full shadow-inner animate-pulse"></div>
+            <span id="admin-gps-status" class="font-black text-slate-800 tracking-widest text-xs uppercase">Polling Telemetry...</span>
         </div>
+
+        <div id="admin-fleet-map" class="w-full h-full z-10 absolute inset-0"></div>
     </div>
 
-    <!-- RIGHT SIDEBAR (Command Logs & Dispatch) -->
-    <div id="trans-right-sidebar" class="hub-sidebar bg-transparent shrink-0">
+    <!-- Control Panel (Right) -->
+    <div class="w-full lg:w-[420px] flex flex-col gap-4 lg:gap-5 z-20 flex-shrink-0 h-full">
         
-        <!-- Toggle Button for Sidebar -->
-        <div onclick="window.toggleTransSidebar()" class="nav-block flex items-center justify-between !p-2 bg-white/90 cursor-pointer hover:bg-white transition-colors border border-white shadow-sm rounded-[16px] mb-3">
-            <div class="flex items-center gap-2 w-full">
-                <div class="w-8 h-8 bg-gradient-to-br from-indigo-600 to-blue-600 rounded-[10px] shadow-md flex items-center justify-center text-white text-[11px] shrink-0">
-                    <i class="fa-solid fa-tower-cell"></i>
+        <!-- Header & View Switcher -->
+        <div class="glass-panel p-6 lg:p-7 flex flex-col flex-shrink-0 relative overflow-hidden">
+            <!-- Branding -->
+            <div class="flex items-center justify-between mb-5 pb-4 border-b border-white">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-[14px] bg-[#1d1d1f] text-white flex items-center justify-center text-lg shadow-[5px_5px_15px_rgba(15,23,42,0.3),-5px_-5px_15px_rgba(255,255,255,0.8)] border border-slate-700">
+                        <i class="fa-solid fa-satellite"></i>
+                    </div>
+                    <div class="flex flex-col">
+                        <h1 class="text-lg font-black tracking-tight text-slate-900 leading-none">Admin Overwatch</h1>
+                        <span class="text-[8px] text-slate-500 font-bold uppercase tracking-widest mt-1">Fleet Command</span>
+                    </div>
                 </div>
-                <div class="flex flex-col nav-text flex-1 overflow-hidden">
-                    <span class="font-black text-[11px] tracking-tight text-slate-900 leading-none truncate">Command<span class="text-indigo-600">Center</span></span>
-                    <span class="text-[7px] font-bold tracking-widest text-slate-400 uppercase mt-0.5 truncate">Data & Logistics</span>
+                <div class="neo-inset px-4 py-2 rounded-xl text-center min-w-[80px]">
+                    <span id="system-clock-admin" class="text-sm font-black text-slate-800 font-mono tracking-wider">00:00</span>
                 </div>
             </div>
-            <i id="trans-sidebar-toggle-icon" class="fa-solid fa-chevron-right text-slate-300 text-[9px] pr-2"></i>
+
+            <!-- Tab Navigation -->
+            <div class="grid grid-cols-3 gap-2">
+                <button onclick="window.switchAdminTransView('feed')" id="tab-btn-feed" class="neo-button active-tab text-slate-600 font-black py-2.5 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 text-[10px] uppercase tracking-widest">
+                    <i class="fa-solid fa-rss"></i> Feed
+                </button>
+                <button onclick="window.switchAdminTransView('logs')" id="tab-btn-logs" class="neo-button text-slate-600 font-black py-2.5 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 text-[10px] uppercase tracking-widest">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Logs
+                </button>
+                <button onclick="window.switchAdminTransView('dispatch')" id="tab-btn-dispatch" class="neo-button text-slate-600 font-black py-2.5 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 text-[10px] uppercase tracking-widest">
+                    <i class="fa-solid fa-walkie-talkie"></i> Dispatch
+                </button>
+            </div>
         </div>
 
-        <!-- The Comm Panel Wrapper -->
-        <div class="flex-1 flex flex-col min-h-0 bg-white/70 backdrop-blur-md rounded-[24px] border border-white shadow-lg overflow-hidden transition-all duration-300 nav-text" id="trans-comm-panel">
+        <!-- Dynamic Content Panel -->
+        <div class="glass-panel p-6 lg:p-7 flex flex-col flex-1 min-h-0 relative">
             
-            <!-- Segmented Control -->
-            <div class="p-3 border-b border-slate-200/50 shrink-0 bg-white/50">
-                <div class="glass-segmented w-full">
-                    <button onclick="window.toggleTransportView('feed')" id="btn-trans-feed" class="glass-seg-btn active accent-blue flex-1 text-[8px]"><i class="fa-solid fa-rss"></i> Live Feed</button>
-                    <button onclick="window.toggleTransportView('logs')" id="btn-trans-logs" class="glass-seg-btn accent-emerald flex-1 text-[8px]"><i class="fa-solid fa-clipboard-list"></i> Trip Logs</button>
-                    <button onclick="window.toggleTransportView('dispatch')" id="btn-trans-dispatch" class="glass-seg-btn accent-indigo flex-1 text-[8px]"><i class="fa-solid fa-walkie-talkie"></i> Dispatch</button>
-                </div>
-            </div>
-
-            <!-- VIEW 1: Live Feed (Read-Only Student Requests) -->
-            <div id="transport-view-feed" class="flex-1 flex flex-col min-h-0">
-                <div class="px-4 py-3 border-b border-slate-200/50 flex justify-between items-center bg-white/80 shrink-0">
-                    <div>
-                        <h3 class="text-[9px] font-black text-slate-800 uppercase tracking-widest">Student Requests</h3>
-                        <p class="text-[7px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Read-Only Monitor</p>
-                    </div>
-                    <button onclick="window.fetchStudentFeed(this)" class="w-6 h-6 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors">
-                        <i class="fa-solid fa-rotate text-[8px]"></i>
-                    </button>
-                </div>
-                
-                <div class="flex-1 overflow-y-auto custom-scroll p-3 space-y-3" id="transport-feed-container">
-                    <div class="flex flex-col items-center justify-center h-full text-slate-400 opacity-60 space-y-2">
-                        <i class="fa-solid fa-satellite-dish text-2xl animate-pulse"></i>
-                        <span class="text-[9px] font-bold uppercase tracking-widest">Syncing Feed...</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- VIEW 2: Trip Logs (History) -->
-            <div id="transport-view-logs" class="hidden flex-1 flex-col min-h-0 bg-slate-50/50">
-                <div class="px-4 py-3 border-b border-slate-200/50 flex justify-between items-center bg-white/80 shrink-0">
-                    <h3 class="text-[9px] font-black text-slate-800 uppercase tracking-widest">Shuttle Event Log</h3>
-                    <span class="bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded text-[7px] font-bold uppercase tracking-widest border border-emerald-100">Today</span>
-                </div>
-                <div class="flex-1 overflow-y-auto custom-scroll p-4 relative" id="trip-logs-container">
-                    <!-- Timeline Line -->
-                    <div class="absolute left-[27px] top-4 bottom-4 w-px bg-slate-200"></div>
-                    
-                    <div class="flex flex-col items-center justify-center h-full text-slate-400 opacity-60 space-y-2" id="logs-loading">
-                        <i class="fa-solid fa-clock-rotate-left text-2xl"></i>
-                        <span class="text-[9px] font-bold uppercase tracking-widest">Awaiting Logs...</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- VIEW 3: Direct Dispatch (Admin to Driver) -->
-            <div id="transport-view-dispatch" class="hidden flex-1 flex-col min-h-0 p-4 overflow-y-auto custom-scroll bg-white/40">
-                <form class="space-y-4 flex-1 flex flex-col" onsubmit="window.sendDispatchToDriver(event)">
-                    <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
-                        <label class="block text-[8px] font-bold text-slate-500 uppercase tracking-widest mb-2 pl-1">Priority Override</label>
-                        <div class="glass-segmented w-full">
-                            <button type="button" onclick="window.setDispatchPriority('normal')" id="btn-pri-normal" class="glass-seg-btn active accent-blue flex-1 py-1.5 text-[9px]">Standard</button>
-                            <button type="button" onclick="window.setDispatchPriority('urgent')" id="btn-pri-urgent" class="glass-seg-btn accent-rose flex-1 py-1.5 text-[9px]">Urgent</button>
+            <!-- VIEW 1: Live Feed (Read-Only) -->
+            <div id="admin-view-feed" class="flex flex-col h-full w-full">
+                <div class="flex items-center justify-between mb-4 pb-3 border-b border-white flex-shrink-0">
+                    <h3 class="font-black text-slate-800 text-sm uppercase tracking-widest flex items-center gap-2">
+                        <i class="fa-solid fa-inbox text-blue-500"></i> Live Monitor
+                    </h3>
+                    <div class="flex items-center gap-3">
+                        <button onclick="window.fetchAdminFeed(this)" class="w-7 h-7 rounded-full bg-white/60 hover:bg-white text-slate-600 shadow-sm flex items-center justify-center transition-colors border border-white/80" title="Refresh Inbox">
+                            <i class="fa-solid fa-rotate text-[10px]"></i>
+                        </button>
+                        <div class="px-2.5 py-1 bg-slate-50 border border-slate-200 text-slate-600 rounded-lg text-[9px] uppercase tracking-widest font-bold shadow-sm flex items-center gap-1.5">
+                            Read-Only
                         </div>
                     </div>
-                    
-                    <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
-                        <label class="block text-[8px] font-bold text-slate-500 uppercase tracking-widest mb-2 pl-1">Route Assignment</label>
-                        <select id="dispatch-route" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-2 text-[10px] font-bold text-slate-700 outline-none focus:border-indigo-400 shadow-inner">
+                </div>
+                
+                <div id="admin-message-feed" class="flex-1 overflow-y-auto custom-scroll space-y-4 pr-2 pb-2">
+                    <div class="flex flex-col items-center justify-center h-full text-slate-400 opacity-60 space-y-3" id="admin-empty-state">
+                        <i class="fa-solid fa-circle-notch fa-spin text-2xl"></i>
+                        <span class="text-[10px] font-bold uppercase tracking-widest">Syncing Pipeline...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 2: Trip Logs -->
+            <div id="admin-view-logs" class="hidden flex-col h-full w-full">
+                <div class="flex items-center justify-between mb-4 pb-3 border-b border-white flex-shrink-0">
+                    <h3 class="font-black text-slate-800 text-sm uppercase tracking-widest flex items-center gap-2">
+                        <i class="fa-solid fa-clipboard-list text-emerald-500"></i> Event Logs
+                    </h3>
+                    <span class="px-2.5 py-1 bg-white border border-slate-200 text-slate-600 rounded-lg text-[9px] uppercase tracking-widest font-bold shadow-sm">Today</span>
+                </div>
+                
+                <div id="admin-trip-logs" class="flex-1 overflow-y-auto custom-scroll space-y-3 pr-2 pb-2 relative">
+                    <div class="absolute left-[23px] top-2 bottom-2 w-px bg-slate-300"></div>
+                    <div class="text-center text-slate-400 font-bold text-xs py-10 tracking-wide uppercase" id="logs-empty-state">
+                        Awaiting Telemetry Events...
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 3: Dispatch -->
+            <div id="admin-view-dispatch" class="hidden flex-col h-full w-full">
+                <div class="flex items-center justify-between mb-4 pb-3 border-b border-white flex-shrink-0">
+                    <h3 class="font-black text-slate-800 text-sm uppercase tracking-widest flex items-center gap-2">
+                        <i class="fa-solid fa-satellite-dish text-indigo-500"></i> Command Uplink
+                    </h3>
+                </div>
+                
+                <form class="space-y-4 flex-1 flex flex-col" onsubmit="window.sendDispatchFromAdmin(event)">
+                    <div class="neo-inset p-3 rounded-2xl">
+                        <label class="block text-[9px] font-black text-slate-600 uppercase tracking-widest mb-2 pl-1">Route Assignment</label>
+                        <select id="admin-dispatch-route" class="w-full bg-white/70 border border-white rounded-xl py-2.5 px-3 text-xs font-bold text-slate-800 outline-none focus:border-indigo-400 shadow-sm">
                             <option value="Standard Campus Run">Standard Campus Run</option>
                             <option value="Mall Trip (Weekend)">Mall Trip (Weekend)</option>
                             <option value="Emergency Pickup">Emergency Pickup</option>
                             <option value="Custom Route">Custom Route</option>
                         </select>
                     </div>
-
-                    <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex-1 flex flex-col">
-                        <label class="block text-[8px] font-bold text-slate-500 uppercase tracking-widest mb-2 pl-1">Command Payload</label>
-                        <textarea id="dispatch-message" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-[10px] font-medium text-slate-700 outline-none focus:border-indigo-400 shadow-inner resize-none h-full min-h-[100px] flex-1" placeholder="Type direct instructions to the driver console..."></textarea>
+                    
+                    <div class="neo-inset p-3 rounded-2xl flex-1 flex flex-col">
+                        <label class="block text-[9px] font-black text-slate-600 uppercase tracking-widest mb-2 pl-1">Direct Message</label>
+                        <textarea id="admin-dispatch-msg" class="w-full bg-white/70 border border-white rounded-xl py-3 px-3 text-xs font-medium text-slate-700 outline-none focus:border-indigo-400 shadow-sm resize-none h-full min-h-[100px] flex-1" placeholder="Type instructions to driver console..." required></textarea>
                     </div>
 
-                    <button type="submit" id="btn-send-dispatch" class="w-full mt-2 bg-[#1d1d1f] hover:bg-indigo-600 text-white font-black text-[10px] uppercase tracking-widest rounded-xl py-3.5 shadow-lg transition-all flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-satellite-dish"></i> Transmit to Console
+                    <button type="submit" id="btn-admin-dispatch" class="neo-button-primary w-full font-black py-4 rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 text-sm uppercase tracking-wider mt-2">
+                        <i class="fa-solid fa-paper-plane text-lg"></i> Transmit
                     </button>
                 </form>
             </div>
+
         </div>
     </div>
 </div>
 
-<!-- LEAFLET JS FOR MAPS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<!-- Hidden Toast Notification -->
+<div id="toast-container" class="fixed top-6 left-1/2 transform -translate-x-1/2 z-[5000] flex justify-center px-4 pointer-events-none transition-transform duration-300 -translate-y-[150%]">
+    <div id="toast-message" class="bg-slate-900 border border-slate-700 text-white px-6 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 font-medium text-sm whitespace-nowrap">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toast-text">Action completed.</span>
+    </div>
+</div>
 
 <script>
-    // ----------------------------------------------------
-    // LOCAL CONFIGURATION VARS
-    // ----------------------------------------------------
-    window.currentTransView = 'feed';
-    window.currentDispatchPriority = 'normal';
-    window.fleetMap = null;
-    window.shuttleMarker = null;
+    // --- UI Toast ---
+    window.showToast = function(message, type = 'success') { 
+        const tc = document.getElementById('toast-container'); 
+        document.getElementById('toast-text').textContent = message; 
+        document.getElementById('toast-icon').className = type === 'success' ? 'fa-solid fa-circle-check text-emerald-400' : 'fa-solid fa-triangle-exclamation text-rose-400'; 
+        tc.classList.add('translate-y-0'); tc.classList.remove('-translate-y-[150%]');
+        setTimeout(() => { tc.classList.remove('translate-y-0'); tc.classList.add('-translate-y-[150%]'); }, 3000); 
+    };
+
+    // --- Clock ---
+    setInterval(() => {
+        const now = new Date();
+        const el = document.getElementById('system-clock-admin');
+        if(el) el.innerText = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+    }, 1000);
+
+    // --- Tab Switcher ---
+    window.switchAdminTransView = function(view) {
+        ['feed', 'logs', 'dispatch'].forEach(v => {
+            const btn = document.getElementById(`tab-btn-${v}`);
+            const panel = document.getElementById(`admin-view-${v}`);
+            if(btn) {
+                btn.classList.remove('active-tab', 'text-white');
+                btn.classList.add('text-slate-600');
+            }
+            if(panel) {
+                panel.classList.add('hidden');
+                panel.classList.remove('flex');
+            }
+        });
+        
+        const activeBtn = document.getElementById(`tab-btn-${view}`);
+        const activePanel = document.getElementById(`admin-view-${view}`);
+        
+        if(activeBtn) {
+            activeBtn.classList.add('active-tab', 'text-white');
+            activeBtn.classList.remove('text-slate-600');
+        }
+        if(activePanel) {
+            activePanel.classList.remove('hidden');
+            activePanel.classList.add('flex');
+        }
+    };
+
+    // --- Map & Telemetry ---
+    window.adminMap = null;
+    window.adminShuttleMarker = null;
     window.telemetryPoller = null;
     window.feedPoller = null;
+    window.lastStatus = null;
 
-    // ----------------------------------------------------
-    // UI CONTROLS
-    // ----------------------------------------------------
-    window.toggleTransSidebar = function() {
-        const sidebar = document.getElementById('trans-right-sidebar');
-        if(sidebar) {
-            sidebar.classList.toggle('collapsed');
-            const icon = document.getElementById('trans-sidebar-toggle-icon');
-            if(icon) {
-                if(sidebar.classList.contains('collapsed')) { 
-                    icon.classList.remove('fa-chevron-right'); icon.classList.add('fa-chevron-left'); 
-                } 
-                else { 
-                    icon.classList.remove('fa-chevron-left'); icon.classList.add('fa-chevron-right'); 
-                }
-            }
-        }
-    };
-    
-    if (window.innerWidth < 1024) { window.toggleTransSidebar(); }
-
-    window.toggleTransportView = function(view) {
-        window.currentTransView = view;
-        const views = ['feed', 'logs', 'dispatch'];
-        
-        views.forEach(v => {
-            const btn = document.getElementById(`btn-trans-${v}`);
-            const panel = document.getElementById(`transport-view-${v}`);
-            
-            if(btn) btn.classList.remove('active', 'bg-white', 'shadow-sm', 'text-blue-600', 'text-emerald-600', 'text-indigo-600');
-            if(panel) { panel.classList.remove('flex'); panel.classList.add('hidden'); }
-            
-            if(v === view) {
-                if(panel) { panel.classList.remove('hidden'); panel.classList.add('flex'); }
-                if(btn) {
-                    btn.classList.add('active', 'bg-white', 'shadow-sm');
-                    if(v === 'feed') btn.classList.add('text-blue-600');
-                    if(v === 'logs') btn.classList.add('text-emerald-600');
-                    if(v === 'dispatch') btn.classList.add('text-indigo-600');
-                }
-            }
-        });
-    };
-
-    window.setDispatchPriority = function(priority) {
-        window.currentDispatchPriority = priority;
-        const normBtn = document.getElementById('btn-pri-normal');
-        const urgBtn = document.getElementById('btn-pri-urgent');
-        
-        if(normBtn) normBtn.classList.remove('active', 'bg-white', 'shadow-sm', 'text-blue-600', 'text-rose-600');
-        if(urgBtn) urgBtn.classList.remove('active', 'bg-white', 'shadow-sm', 'text-blue-600', 'text-rose-600');
-
-        if(priority === 'normal') {
-            if(normBtn) normBtn.classList.add('active', 'bg-white', 'shadow-sm', 'text-blue-600');
-        } else {
-            if(urgBtn) urgBtn.classList.add('active', 'bg-white', 'shadow-sm', 'text-rose-600');
-        }
-    };
-
-    // ----------------------------------------------------
-    // MAP & LIVE TELEMETRY (Connecting to Driver GPS)
-    // ----------------------------------------------------
-    window.initFleetMap = function() {
+    window.initAdminMap = function() {
         const mapEl = document.getElementById('admin-fleet-map');
-        if(!mapEl || window.fleetMap) return;
+        if(!mapEl || window.adminMap) return;
 
-        window.fleetMap = L.map('admin-fleet-map', { zoomControl: false }).setView([-25.7479, 28.2293], 15);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-            maxZoom: 19
-        }).addTo(window.fleetMap);
+        window.adminMap = L.map('admin-fleet-map', { zoomControl: false }).setView([-25.7479, 28.2293], 15);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(window.adminMap);
         
-        L.control.zoom({ position: 'bottomleft' }).addTo(window.fleetMap);
-
-        const shuttleIcon = L.divIcon({
-            html: '<div class="shuttle-marker w-10 h-10 text-sm"><i class="fa-solid fa-van-shuttle"></i><div class="pulse-ring-map"></div></div>',
-            className: '', iconSize: [40, 40], iconAnchor: [20, 20]
+        L.control.zoom({ position: 'bottomleft' }).addTo(window.adminMap);
+        
+        const shuttleIcon = L.divIcon({ 
+            className: '', 
+            html: '<div class="driver-marker w-5 h-5 flex items-center justify-center relative"><div class="pulse-ring-map"></div></div>',
+            iconSize: [20, 20], iconAnchor: [10, 10] 
         });
+        
+        window.adminShuttleMarker = L.marker([-25.7479, 28.2293], {icon: shuttleIcon}).addTo(window.adminMap);
+        
+        // Critical Fix: Force map to recalculate layout size after container renders
+        setTimeout(() => { window.adminMap.invalidateSize(); }, 500);
 
-        window.shuttleMarker = L.marker([-25.7479, 28.2293], {icon: shuttleIcon}).addTo(window.fleetMap);
-        
-        // Initial Fetch
         window.fetchFleetLocation();
-        
-        // Polling loop to simulate a live command center reading from n8n
         if(window.telemetryPoller) clearInterval(window.telemetryPoller);
-        window.telemetryPoller = setInterval(window.fetchFleetLocation, 10000); 
+        window.telemetryPoller = setInterval(window.fetchFleetLocation, 10000);
     };
 
     window.fetchFleetLocation = async function() {
-        const overlay = document.getElementById('map-loading-overlay');
-        const statusBadge = document.getElementById('fleet-status-badge');
-        
-        if(statusBadge && statusBadge.innerHTML.includes('Failed')) {
-            statusBadge.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Polling';
-            statusBadge.className = "text-amber-500 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 mt-0.5";
-        }
+        const indicator = document.getElementById('admin-gps-indicator');
+        const statusText = document.getElementById('admin-gps-status');
 
         try {
-            // Attempt to fetch from n8n GET endpoint (assuming standard setup to read the POSTed GPS data)
-            // Note: Fallback simulation applied if endpoint isn't live yet to keep UI robust
-            let lat = -25.7479; let lng = 28.2293; let status = "Standing By"; let timeStr = new Date().toLocaleTimeString('en-US', {hour12: false});
+            let lat = -25.7479; let lng = 28.2293; let status = "Standing By";
             
             try {
                 const res = await fetch('https://n8n.automania.cloud/webhook/reziflow-get-gps');
@@ -359,194 +303,144 @@
                     if(payload && payload.Latitude && payload.Longitude) {
                         lat = parseFloat(payload.Latitude); lng = parseFloat(payload.Longitude);
                         status = payload.Status || status;
-                        if(payload.Timestamp) {
-                            const d = new Date(payload.Timestamp);
-                            timeStr = d.toLocaleTimeString('en-US', {hour12: false});
-                        }
                     }
-                } else { throw new Error("Endpoint not ready"); }
-            } catch (apiError) {
-                // Simulation Fallback for visual fidelity if API isn't built yet
+                }
+            } catch (e) {
+                // Simulation Fallback if endpoint not active
                 lat += (Math.random() - 0.5) * 0.005; lng += (Math.random() - 0.5) * 0.005;
                 status = Math.random() > 0.5 ? "En Route" : "Standing By";
             }
 
-            // Update UI
-            if(window.shuttleMarker && window.fleetMap) {
-                window.shuttleMarker.setLatLng([lat, lng]);
-                window.fleetMap.panTo([lat, lng]);
+            if(window.adminShuttleMarker && window.adminMap) {
+                window.adminShuttleMarker.setLatLng([lat, lng]);
+                window.adminMap.panTo([lat, lng]);
             }
 
-            document.getElementById('hud-lat').textContent = lat.toFixed(6);
-            document.getElementById('hud-lng').textContent = lng.toFixed(6);
-            document.getElementById('hud-time').textContent = timeStr;
-            
-            const hudStatus = document.getElementById('hud-status');
-            if(hudStatus) {
-                if(status.toLowerCase().includes('route')) {
-                    hudStatus.className = "bg-blue-100 text-blue-700 text-[8px] px-2 py-1 rounded-md font-bold uppercase tracking-wider border border-blue-200";
-                    hudStatus.textContent = status;
-                } else {
-                    hudStatus.className = "bg-slate-100 text-slate-600 text-[8px] px-2 py-1 rounded-md font-bold uppercase tracking-wider border border-slate-200";
-                    hudStatus.textContent = status;
-                }
+            if(indicator) {
+                indicator.className = "w-3 h-3 rounded-full shadow-inner bg-emerald-500 animate-pulse";
+                statusText.innerText = `Active: ${status}`;
+                statusText.className = "font-black text-emerald-600 tracking-widest text-xs uppercase";
             }
 
-            if(statusBadge) {
-                statusBadge.className = "text-emerald-500 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 mt-0.5";
-                statusBadge.innerHTML = '<i class="fa-solid fa-satellite-dish"></i> Active Link';
+            // Log event if status changes
+            if(window.lastStatus !== status) {
+                window.logTripEvent(status, lat, lng);
+                window.lastStatus = status;
             }
-
-            if(overlay && overlay.style.display !== 'none') {
-                overlay.style.opacity = '0';
-                setTimeout(() => { overlay.style.display = 'none'; }, 300);
-            }
-
-            // Log event if status changed (simple simulation for the Logs tab)
-            window.logTripEvent(status, lat, lng);
 
         } catch(e) {
-            if(statusBadge) {
-                statusBadge.className = "text-rose-500 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 mt-0.5";
-                statusBadge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Link Lost';
+            if(indicator) {
+                indicator.className = "w-3 h-3 rounded-full shadow-inner bg-rose-500";
+                statusText.innerText = "Signal Lost";
+                statusText.className = "font-black text-rose-600 tracking-widest text-xs uppercase";
             }
         }
     };
 
-    // ----------------------------------------------------
-    // READ-ONLY STUDENT REQUEST FEED
-    // ----------------------------------------------------
-    window.fetchStudentFeed = async function(btnElement) {
-        if(btnElement) { const i = btnElement.querySelector('i'); if(i) i.classList.add('fa-spin'); }
-        const container = document.getElementById('transport-feed-container');
+    // --- Read-Only Feed (Matches Driver Sync) ---
+    window.fetchAdminFeed = async function(btn) {
+        if(btn) { const i = btn.querySelector('i'); if(i) i.classList.add('fa-spin', 'text-blue-500'); }
+        const feed = document.getElementById('admin-message-feed');
 
         try {
             const timeBuster = Date.now();
             const response = await fetch('https://n8n.automania.cloud/webhook/reziflow-get-driver-msgs?t=' + timeBuster, { cache: 'no-store' });
             
             if (!response.ok) throw new Error("Fetch failed");
-            
             const rawText = await response.text();
-            if (!rawText || rawText.trim() === "") throw new Error("Empty data");
+            if (!rawText || rawText.trim() === "") throw new Error("Empty");
             
             let rawData = JSON.parse(rawText);
-            let requests = [];
-            
-            if (Array.isArray(rawData)) requests = rawData.map(item => item.json ? item.json : item);
-            else if (rawData && rawData.data && Array.isArray(rawData.data)) requests = rawData.data.map(item => item.json ? item.json : item);
-            else requests = rawData.json ? [rawData.json] : [rawData];
+            let requests = Array.isArray(rawData) ? rawData.map(item => item.json ? item.json : item) : 
+                           (rawData.data && Array.isArray(rawData.data) ? rawData.data.map(item => item.json ? item.json : item) : 
+                           (rawData.json ? [rawData.json] : [rawData]));
 
             const validRequests = requests.filter(req => req && req.Message_ID && String(req.Message_ID).includes('REQ'));
 
-            if(validRequests.length === 0) {
-                container.innerHTML = `<div class="flex flex-col items-center justify-center h-full text-slate-400 opacity-60 space-y-2"><i class="fa-solid fa-check-double text-2xl"></i><span class="text-[9px] font-bold uppercase tracking-widest">Feed Empty</span></div>`;
+            if (validRequests.length === 0) {
+                feed.innerHTML = `<div class="text-center text-slate-400 font-bold text-xs py-10 tracking-wide uppercase">No active dispatch requests.</div>`;
             } else {
                 let html = '';
                 validRequests.forEach(req => {
-                    const status = String(req.Status).trim();
-                    let statusBadge = '';
-                    let borderColor = 'border-slate-200';
-                    let accentColor = 'bg-slate-400';
+                    const reqStatus = String(req.Status || 'Pending').trim();
                     let iconHtml = '<i class="fa-solid fa-message text-blue-500"></i>';
-
                     if (String(req.Type).includes('Stop')) iconHtml = '<i class="fa-solid fa-map-pin text-rose-500"></i>';
                     if (String(req.Type).includes('Delay')) iconHtml = '<i class="fa-solid fa-hourglass-half text-amber-500"></i>';
 
-                    if(status === 'Pending') { 
-                        statusBadge = `<span class="text-amber-500 bg-amber-50 px-1.5 py-0.5 rounded text-[7px] border border-amber-100 font-bold uppercase tracking-widest"><i class="fa-solid fa-clock mr-1"></i>Pending Driver</span>`; 
-                        accentColor = 'bg-amber-400';
-                    }
-                    else if(status === 'Approved') { 
-                        statusBadge = `<span class="text-emerald-500 bg-emerald-50 px-1.5 py-0.5 rounded text-[7px] border border-emerald-100 font-bold uppercase tracking-widest"><i class="fa-solid fa-check mr-1"></i>Approved</span>`; 
-                        borderColor = 'border-emerald-100'; accentColor = 'bg-emerald-400';
-                    }
-                    else if(status === 'Rejected') { 
-                        statusBadge = `<span class="text-rose-500 bg-rose-50 px-1.5 py-0.5 rounded text-[7px] border border-rose-100 font-bold uppercase tracking-widest"><i class="fa-solid fa-xmark mr-1"></i>Rejected</span>`; 
-                        borderColor = 'border-rose-100'; accentColor = 'bg-rose-400';
-                    }
+                    let badgeHtml = '';
+                    if(reqStatus === 'Pending') badgeHtml = `<span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest"><i class="fa-solid fa-clock mr-1"></i>Pending</span>`;
+                    else if(reqStatus === 'Approved') badgeHtml = `<span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest"><i class="fa-solid fa-check mr-1"></i>Approved</span>`;
+                    else if(reqStatus === 'Rejected') badgeHtml = `<span class="bg-rose-100 text-rose-700 px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest"><i class="fa-solid fa-xmark mr-1"></i>Rejected</span>`;
 
                     html += `
-                        <div class="feed-card relative overflow-hidden ${borderColor}">
-                            <div class="absolute left-0 top-0 bottom-0 w-1 ${accentColor}"></div>
-                            <div class="flex justify-between items-start mb-2">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-6 h-6 rounded-lg bg-slate-50 flex items-center justify-center text-[10px] shadow-sm border border-slate-100">${iconHtml}</div>
-                                    <div class="flex flex-col">
-                                        <span class="text-[10px] font-black text-slate-800 leading-none">${req.Student_Name || 'Resident'}</span>
-                                        <span class="text-[7px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">${req.Type || 'Dispatch Note'}</span>
+                        <div class="msg-card neo-inset rounded-[24px] p-5 flex flex-col gap-4 shadow-sm bg-white/40">
+                            <div class="flex justify-between items-start">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-sm shadow-sm border border-white">
+                                        ${iconHtml}
+                                    </div>
+                                    <div>
+                                        <p class="font-black text-slate-800 text-sm leading-tight">${req.Type || 'Dispatch Note'}</p>
+                                        <p class="text-[9px] text-slate-500 uppercase tracking-widest font-bold mt-1">From: <span class="text-slate-700">${req.Student_Name || 'Resident'}</span></p>
                                     </div>
                                 </div>
-                                <span class="text-[8px] font-mono font-bold text-slate-500">${req.Time || '--:--'}</span>
+                                <div class="flex flex-col items-end gap-1.5">
+                                    <span class="text-[10px] font-mono text-slate-600 font-bold bg-white border border-white px-2.5 py-1 rounded-lg shadow-sm">${req.Time || '--:--'}</span>
+                                    ${badgeHtml}
+                                </div>
                             </div>
-                            <p class="text-[9px] text-slate-700 font-medium my-2 bg-white/60 p-2 rounded-lg border border-white">"${req.Message || ''}"</p>
-                            <div class="flex justify-end">${statusBadge}</div>
+                            <div class="bg-white/80 border border-white rounded-xl p-4 shadow-sm relative overflow-hidden">
+                                <div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-400"></div>
+                                <p class="text-slate-700 text-xs font-semibold italic">"${req.Message || ''}"</p>
+                            </div>
                         </div>
                     `;
                 });
-                container.innerHTML = html;
+                feed.innerHTML = html;
             }
-
         } catch (e) {
-            container.innerHTML = `<div class="flex flex-col items-center justify-center h-full text-rose-400 opacity-60 space-y-2"><i class="fa-solid fa-triangle-exclamation text-2xl"></i><span class="text-[9px] font-bold uppercase tracking-widest">Feed Error</span></div>`;
+            feed.innerHTML = `<div class="text-center text-rose-400 font-bold text-xs py-10 tracking-wide uppercase">Feed offline.</div>`;
         } finally {
-            if(btnElement) { const i = btnElement.querySelector('i'); if(i) i.classList.remove('fa-spin'); }
+            if(btn) { const i = btn.querySelector('i'); if(i) i.classList.remove('fa-spin', 'text-blue-500'); }
         }
     };
 
-    // ----------------------------------------------------
-    // TRIP LOGS GENERATOR
-    // ----------------------------------------------------
-    window.lastLoggedStatus = null;
+    // --- Trip Logs ---
     window.logTripEvent = function(status, lat, lng) {
-        if(window.lastLoggedStatus === status) return; // Only log state changes
-        window.lastLoggedStatus = status;
-
-        const container = document.getElementById('trip-logs-container');
-        const loader = document.getElementById('logs-loading');
-        if(loader) loader.remove();
+        const container = document.getElementById('admin-trip-logs');
+        const emptyState = document.getElementById('logs-empty-state');
+        if(emptyState) emptyState.remove();
 
         const timeStr = new Date().toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: false});
         
-        let iconHtml = ''; let colorClass = '';
-        if(status.toLowerCase().includes('route')) {
-            iconHtml = '<i class="fa-solid fa-route"></i>'; colorClass = 'bg-blue-100 text-blue-600 border-blue-200';
-        } else {
-            iconHtml = '<i class="fa-solid fa-power-off"></i>'; colorClass = 'bg-slate-100 text-slate-500 border-slate-200';
-        }
+        let icon = status.toLowerCase().includes('route') ? '<i class="fa-solid fa-route"></i>' : '<i class="fa-solid fa-power-off"></i>';
+        let color = status.toLowerCase().includes('route') ? 'bg-blue-500' : 'bg-slate-400';
 
-        const logHtml = `
-            <div class="relative flex items-start gap-4 mb-4 group">
-                <div class="w-6 h-6 rounded-full ${colorClass} border flex items-center justify-center text-[10px] z-10 shadow-sm shrink-0">
-                    ${iconHtml}
+        const html = `
+            <div class="relative flex items-start gap-4 mb-2 group z-10">
+                <div class="w-8 h-8 rounded-full ${color} text-white border-2 border-white shadow-md flex items-center justify-center text-[10px] shrink-0 z-10">
+                    ${icon}
                 </div>
-                <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex-1 group-hover:shadow-md transition-shadow">
+                <div class="neo-inset p-3 rounded-2xl flex-1 group-hover:bg-white/60 transition-colors">
                     <div class="flex justify-between items-center mb-1">
                         <span class="text-[10px] font-black text-slate-800 uppercase tracking-widest">${status}</span>
-                        <span class="text-[8px] font-mono font-bold text-slate-400">${timeStr}</span>
+                        <span class="text-[9px] font-mono font-bold text-slate-500 bg-white px-1.5 py-0.5 rounded shadow-sm">${timeStr}</span>
                     </div>
-                    <p class="text-[8px] text-slate-500 font-mono">Location Data: ${lat.toFixed(4)}, ${lng.toFixed(4)}</p>
+                    <p class="text-[8px] text-slate-500 font-mono mt-1">COORD: ${lat.toFixed(5)}, ${lng.toFixed(5)}</p>
                 </div>
             </div>
         `;
-        
-        container.insertAdjacentHTML('afterbegin', logHtml);
+        container.insertAdjacentHTML('afterbegin', html);
     };
 
-    // ----------------------------------------------------
-    // DISPATCH (Admin to Driver)
-    // ----------------------------------------------------
-    window.sendDispatchToDriver = async function(e) {
+    // --- Dispatch to Driver ---
+    window.sendDispatchFromAdmin = async function(e) {
         e.preventDefault();
-        const btn = document.getElementById('btn-send-dispatch'); const ogText = btn.innerHTML;
-        const route = document.getElementById('dispatch-route').value;
-        const msg = document.getElementById('dispatch-message').value;
+        const btn = document.getElementById('btn-admin-dispatch'); const ogText = btn.innerHTML;
+        const route = document.getElementById('admin-dispatch-route').value;
+        const msg = document.getElementById('admin-dispatch-msg').value;
 
-        const payload = {
-            Target: "Shuttle_01_Console",
-            Route: route,
-            Message: msg,
-            Priority: window.currentDispatchPriority
-        };
+        const payload = { Target: "Shuttle_01_Console", Route: route, Message: msg, Priority: 'Admin Override' };
 
         btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Transmitting...'; btn.disabled = true;
         try {
@@ -554,24 +448,20 @@
                 method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) 
             });
             e.target.reset();
-            if(typeof window.showToast === 'function') window.showToast("Dispatch transmitted.");
-            else alert("Dispatch successfully transmitted to driver console.");
+            window.showToast("Command transmitted to driver console.");
         } catch(error) { 
-            if(typeof window.showToast === 'function') window.showToast("Transmission failed.", "error");
-            else alert("Failed to transmit dispatch.");
+            window.showToast("Transmission failed.", "error"); 
         } finally { 
             btn.innerHTML = ogText; btn.disabled = false; 
         }
     };
 
-    // Initialize map and feed on load
+    // --- Init ---
     setTimeout(() => { 
-        window.initFleetMap(); 
-        window.fetchStudentFeed();
-        
-        // Auto-refresh feed every 30 seconds
+        window.initAdminMap(); 
+        window.fetchAdminFeed();
         if(window.feedPoller) clearInterval(window.feedPoller);
-        window.feedPoller = setInterval(() => { window.fetchStudentFeed(); }, 30000);
-    }, 200);
+        window.feedPoller = setInterval(() => { window.fetchAdminFeed(); }, 15000);
+    }, 300);
 
 </script>
