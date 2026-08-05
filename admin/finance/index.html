@@ -218,7 +218,7 @@
     <div class="modal-content w-full max-w-sm relative">
         <button onclick="document.getElementById('singleCommModal').classList.remove('active')" class="absolute top-4 right-4 w-6 h-6 bg-slate-50 border border-slate-200 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 z-20"><i class="fa-solid fa-xmark text-[10px]"></i></button>
         <div class="flex items-center gap-3 mb-4">
-            <div class="w-8 h-8 bg-indigo-50 text-indigo-600 border border-indigo-100 rounded-xl flex items-center justify-center text-sm"><i class="fa-solid fa-paper-plane"></i></div>
+            <div class="w-8 h-8 bg-indigo-50 text-indigo-600 border border-indigo-100 rounded-xl flex items-center justify-center text-sm"><i class="fa-solid fa-envelope"></i></div>
             <div><h2 class="text-base font-black text-slate-900 tracking-tight leading-none">Direct Message</h2><p class="text-[8px] font-bold text-slate-400 mt-1 uppercase tracking-widest">To: <span id="comm-target-name" class="text-slate-700"></span></p></div>
         </div>
         <form onsubmit="window.sendSingleComm(event)">
@@ -227,7 +227,7 @@
                 <label class="block text-[7px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Message Payload</label>
                 <textarea id="comm-target-msg" rows="4" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 text-[10px] outline-none focus:border-indigo-400 shadow-sm resize-none" placeholder="Type message..." required></textarea>
             </div>
-            <button type="submit" id="btn-send-single" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-[10px] py-2 shadow-md flex justify-center items-center gap-2 text-[10px]"><i class="fa-brands fa-whatsapp"></i> Dispatch</button>
+            <button type="submit" id="btn-send-single" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-[10px] py-2 shadow-md flex justify-center items-center gap-2 text-[10px]"><i class="fa-solid fa-envelope"></i> Send</button>
         </form>
     </div>
 </div>
@@ -445,7 +445,7 @@
                         </div>
                     </td>
                     <td class="text-right">${badgeHtml}</td>
-                    <td class="text-right"><button onclick="window.openSingleCommModal('${safeId}', '${safeName}')" class="bg-white border border-slate-200 text-slate-500 hover:text-indigo-600 hover:border-indigo-300 text-[8px] font-bold px-2 py-1.5 rounded transition-all shadow-sm"><i class="fa-solid fa-paper-plane mr-1"></i> Contact</button></td>
+                    <td class="text-right"><button onclick="window.openSingleCommModal('${safeId}', '${safeName}')" class="bg-white border border-slate-200 text-slate-500 hover:text-indigo-600 hover:border-indigo-300 text-[8px] font-bold px-2 py-1.5 rounded transition-all shadow-sm"><i class="fa-solid fa-envelope mr-1"></i> Contact</button></td>
                 </tr>`;
         });
         body.innerHTML = htmlStr;
@@ -532,7 +532,7 @@
         
         btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sending...'; btn.disabled = true;
         try {
-            await fetch('https://n8n.automania.cloud/webhook/reziflow-send-communication', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ Target: target, Message: msg }) });
+            await fetch('https://n8n.automania.cloud/webhook-test/finance-contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ Student_Number: target, Message: msg }) });
             document.getElementById('singleCommModal').classList.remove('active');
             window.showToast("Message dispatched to student via n8n.");
         } catch(err) { window.showToast("Network Error", "error"); } finally { btn.innerHTML = ogHtml; btn.disabled = false; }
