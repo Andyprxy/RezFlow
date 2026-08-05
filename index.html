@@ -12,18 +12,16 @@
         body { 
             font-family: 'Inter', sans-serif; 
             scroll-behavior: smooth; 
-            background-color: #fbfbfd; /* Apple's signature light gray/white */
-            color: #1d1d1f; /* High contrast dark gray for text */
+            background-color: #fbfbfd; 
+            color: #1d1d1f; 
         }
         
-        /* Vibrant gradient extracted perfectly from the RezFlow Logo (Navy to Cyan) */
         .gradient-text { 
             background: linear-gradient(90deg, #1e3a8a, #06b6d4); 
             -webkit-background-clip: text; 
             -webkit-text-fill-color: transparent; 
         }
         
-        /* Apple-Style Liquid Glass Navbar */
         .apple-glass-nav {
             background: rgba(255, 255, 255, 0.72);
             backdrop-filter: blur(24px) saturate(180%);
@@ -31,7 +29,6 @@
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
 
-        /* Standard Liquid Glass for Light Elements */
         .liquid-glass {
             background: rgba(255, 255, 255, 0.5);
             backdrop-filter: blur(20px) saturate(180%);
@@ -40,7 +37,6 @@
             box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
         }
 
-        /* Modern Skeuomorphism (Soft Tactile Panels) */
         .skeuo-panel {
             background: linear-gradient(145deg, #ffffff, #f5f5f7);
             border: 1px solid #ffffff;
@@ -78,7 +74,6 @@
             border: 1px solid rgba(255,255,255,0.5);
         }
 
-        /* Ambient Orbs & Floating Icons Animation */
         @keyframes float {
             0% { transform: translateY(0px) scale(1); }
             50% { transform: translateY(-15px) scale(1.05); }
@@ -88,7 +83,6 @@
             animation: float 6s ease-in-out infinite;
         }
 
-        /* Modals & Utilities */
         .modal-overlay {
             background: rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(16px);
@@ -133,8 +127,8 @@
                 
                 <!-- Links & Reservation Button -->
                 <div class="hidden md:flex space-x-8 items-center">
-                    <a href="#ecosystem" class="text-slate-500 hover:text-[#1e3a8a] font-medium transition-colors">Ecosystem</a>
-                    <a href="#solutions" class="text-slate-500 hover:text-[#1e3a8a] font-medium transition-colors">Pain Points Solved</a>
+                    <a href="#ecosystem" class="text-slate-500 hover:text-[#1e3a8a] font-medium transition-colors">Platform</a>
+                    <a href="#serve" class="text-slate-500 hover:text-[#1e3a8a] font-medium transition-colors">Who We Serve</a>
                     <a href="#roi" class="text-slate-500 hover:text-[#1e3a8a] font-medium transition-colors">Owner ROI</a>
                     <button onclick="openRegisterModal()" class="bg-gradient-to-r from-[#1e3a8a] to-[#06b6d4] hover:from-[#172e6e] hover:to-[#059ab5] text-white px-6 py-2.5 rounded-full font-semibold transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 border border-white/20 flex items-center gap-2 cursor-pointer">
                         Register with us (2027)
@@ -147,16 +141,12 @@
     <!-- HERO SECTION -->
     <section class="pt-32 pb-24 lg:pt-40 lg:pb-32 px-4 relative overflow-hidden flex flex-col items-center min-h-[90vh] justify-center">
         
-        <!-- Low Opacity Ambient Highlights -->
         <div class="absolute top-1/4 left-1/4 w-[40rem] h-[40rem] bg-blue-400/10 rounded-full blur-[100px] pointer-events-none ambient-orb"></div>
         <div class="absolute bottom-1/4 right-1/4 w-[35rem] h-[35rem] bg-cyan-400/10 rounded-full blur-[100px] pointer-events-none ambient-orb" style="animation-delay: -4s;"></div>
         
         <div class="max-w-7xl mx-auto text-center relative z-10 w-full">
             
-            <!-- Logo Container with Floating Ecosystem Icons -->
             <div class="w-full flex justify-center mb-6 relative min-h-[16rem] md:min-h-[24rem]">
-                
-                <!-- Scattered Floating Icons (Left Side) -->
                 <div class="absolute inset-0 max-w-4xl mx-auto w-full h-full pointer-events-none z-0 hidden md:block">
                     <i class="fa-solid fa-lightbulb absolute top-[10%] left-[10%] text-3xl text-slate-300 ambient-orb" style="animation-delay: 0s;"></i>
                     <i class="fa-solid fa-screwdriver-wrench absolute top-[45%] left-[2%] text-2xl text-slate-300 ambient-orb" style="animation-delay: 1.5s;"></i>
@@ -164,10 +154,8 @@
                     <i class="fa-solid fa-bus absolute top-[30%] left-[18%] text-4xl text-slate-200 ambient-orb" style="animation-delay: 2s;"></i>
                 </div>
 
-                <!-- Enlarged Transparent Logo -->
                 <img src="RezFlow_Logo-removebg-preview.png" alt="RezFlow System" class="h-64 md:h-80 lg:h-[28rem] object-contain drop-shadow-xl transform hover:scale-105 transition-transform duration-700 relative z-10">
 
-                <!-- Scattered Floating Icons (Right Side) -->
                 <div class="absolute inset-0 max-w-4xl mx-auto w-full h-full pointer-events-none z-0 hidden md:block">
                     <i class="fa-solid fa-book absolute top-[15%] right-[10%] text-3xl text-slate-300 ambient-orb" style="animation-delay: 0.5s;"></i>
                     <i class="fa-solid fa-chart-line absolute top-[50%] right-[4%] text-2xl text-slate-300 ambient-orb" style="animation-delay: 2.5s;"></i>
@@ -176,10 +164,9 @@
                 </div>
             </div>
 
-            <!-- Subtle Badge -->
             <div class="liquid-glass inline-flex items-center gap-2 px-5 py-2 rounded-full mb-8 text-sm font-medium text-[#1d1d1f] transition-all cursor-default">
                 <i class="fa-solid fa-sparkles text-[#06b6d4]"></i>
-                <span class="tracking-wide">The Next Generation PropTech Ecosystem</span>
+                <span class="tracking-wide">The Unified Platform for Thriving Student Communities</span>
             </div>
             
             <h1 class="text-5xl lg:text-7xl font-extrabold tracking-tight mb-6 leading-tight text-[#1d1d1f]">
@@ -187,28 +174,57 @@
                 <span class="gradient-text">Automated Living.</span>
             </h1>
             <p class="text-xl lg:text-2xl text-[#86868b] mb-10 max-w-3xl mx-auto font-medium leading-relaxed">
-                Property management shouldn't be chaotic. We designed RezFlow to eliminate fragmented spreadsheets, lost maintenance tickets, and onboarding friction. One secure platform to connect your students, staff, and financial data in real-time.
+                We empower student housing providers to connect every aspect of living, both on- and off-campus, through a single platform that fosters engagement and drives lasting impact.
             </p>
             <div class="flex flex-col sm:flex-row justify-center items-center gap-4 flex-wrap">
                 <button onclick="openModal()" class="bg-[#1d1d1f] hover:bg-[#333336] text-white px-8 py-4 rounded-full font-semibold text-lg transition-all flex items-center justify-center gap-3 transform hover:-translate-y-1 w-full sm:w-auto shadow-lg hover:shadow-xl">
-                    <i class="fa-solid fa-fingerprint"></i> Experience the Platform
+                    <i class="fa-solid fa-fingerprint"></i> Select a Demo Environment
                 </button>
-                <a href="https://reziflow.online/phumelela/signup" target="_blank" class="liquid-glass text-[#1d1d1f] hover:bg-white px-8 py-4 rounded-full font-semibold text-lg transition-all flex items-center justify-center w-full sm:w-auto transform hover:-translate-y-1">
-                    Student Demo <i class="fa-solid fa-arrow-up-right-from-square ml-2 text-sm text-[#1e3a8a]"></i>
-                </a>
             </div>
         </div>
-
-        <!-- Section Break Indicator (Thickened line, Center moving to the Right end) -->
         <div class="absolute bottom-0 left-1/2 right-0 h-[4px] bg-gradient-to-r from-[#1e3a8a] via-[#06b6d4] to-transparent opacity-30 rounded-l-full"></div>
     </section>
 
-    <!-- THE PAIN POINTS / ECOSYSTEM SECTION -->
+    <!-- WHO WE SERVE SECTION (Inspired by Enterprise layouts) -->
+    <section id="serve" class="py-24 px-4 bg-[#f5f5f7] relative z-20">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-extrabold text-[#1d1d1f] mb-4 tracking-tight">Who We Serve</h2>
+                <p class="text-xl text-[#86868b] max-w-2xl mx-auto font-medium">We deliver a scalable, enterprise-ready solution that adapts to your unique operational needs—helping you simplify processes and foster thriving communities.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="skeuo-panel p-8 flex flex-col items-center text-center bg-white">
+                    <div class="w-16 h-16 rounded-full skeuo-inset flex items-center justify-center text-[#1e3a8a] text-2xl mb-6">
+                        <i class="fa-solid fa-building-columns"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-[#1d1d1f] mb-3">Higher Education</h3>
+                    <p class="text-sm text-[#86868b] font-medium leading-relaxed">Deliver the ultimate on-campus experience with tools that enhance resident satisfaction and operational efficiency.</p>
+                </div>
+                <div class="skeuo-panel p-8 flex flex-col items-center text-center bg-white border-2 border-transparent hover:border-[#06b6d4] transition-colors">
+                    <div class="w-16 h-16 rounded-full skeuo-inset flex items-center justify-center text-[#06b6d4] text-2xl mb-6">
+                        <i class="fa-solid fa-city"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-[#1d1d1f] mb-3">PBSA & Property Management</h3>
+                    <p class="text-sm text-[#86868b] font-medium leading-relaxed">Elevate resident experience with a scalable, bespoke solution designed for modern purpose-built student accommodations.</p>
+                </div>
+                <div class="skeuo-panel p-8 flex flex-col items-center text-center bg-white">
+                    <div class="w-16 h-16 rounded-full skeuo-inset flex items-center justify-center text-indigo-600 text-2xl mb-6">
+                        <i class="fa-solid fa-house-user"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-[#1d1d1f] mb-3">Build to Rent & Co-Living</h3>
+                    <p class="text-sm text-[#86868b] font-medium leading-relaxed">Build a thriving community and empower your residents with flexible lifestyle tools and frictionless onboarding.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- THE PLATFORM / ECOSYSTEM SECTION -->
     <section id="ecosystem" class="py-24 bg-transparent px-4 relative z-20">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
-                <h2 class="text-4xl font-extrabold text-[#1d1d1f] mb-4 tracking-tight">Solving Real Property Pain Points</h2>
-                <p class="text-xl text-[#86868b] max-w-2xl mx-auto font-medium">We audited how student accommodations run and engineered targeted portals to make everyone's life vastly easier.</p>
+                <h2 class="text-4xl font-extrabold text-[#1d1d1f] mb-4 tracking-tight">The Platform Promise</h2>
+                <p class="text-xl text-[#86868b] max-w-2xl mx-auto font-medium">We audited how accommodations run and engineered targeted portals to make everyone's life vastly easier, wrapped in bank-grade security.</p>
             </div>
 
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -220,9 +236,6 @@
                     <h3 class="text-2xl font-bold text-[#1d1d1f] mb-2">Frictionless Onboarding</h3>
                     <p class="text-sm font-semibold text-blue-500 mb-4 uppercase tracking-wide">The Pain: Paperwork Delays</p>
                     <p class="text-[#86868b] font-medium leading-relaxed mb-6">Students and parents hate manual forms. Our portal digitizes vetting, lease signing, and instant room allocation before they even arrive.</p>
-                    <a href="https://reziflow.online/phumelela/signup" class="skeuo-button inline-flex items-center px-4 py-2 rounded-xl text-sm font-semibold text-[#1d1d1f]">
-                        View Signup Flow <i class="fa-solid fa-arrow-right ml-2 text-blue-500"></i>
-                    </a>
                 </div>
 
                 <!-- Maintenance & Stock -->
@@ -233,9 +246,6 @@
                     <h3 class="text-2xl font-bold text-[#1d1d1f] mb-2">RezOps &amp; Inventory</h3>
                     <p class="text-sm font-semibold text-indigo-500 mb-4 uppercase tracking-wide">The Pain: Lost Tickets &amp; Stock</p>
                     <p class="text-[#86868b] font-medium leading-relaxed mb-6">Stop losing track of lightbulbs and plumbing parts. Students log snags via the app, which auto-routes to maintenance and deducts from live stock.</p>
-                    <a href="https://rezflow.co.za/maintenance/" class="skeuo-button inline-flex items-center px-4 py-2 rounded-xl text-sm font-semibold text-[#1d1d1f]">
-                        Enter RezOps <i class="fa-solid fa-arrow-right ml-2 text-indigo-500"></i>
-                    </a>
                 </div>
 
                 <!-- Security -->
@@ -246,50 +256,31 @@
                     <h3 class="text-2xl font-bold text-[#1d1d1f] mb-2">RezGuard Security</h3>
                     <p class="text-sm font-semibold text-rose-500 mb-4 uppercase tracking-wide">The Pain: Unauthorized Access</p>
                     <p class="text-[#86868b] font-medium leading-relaxed mb-6">Manual sign-in books are a liability. Implement biometric turnstile sync, digital visitor PINs, and real-time SOS alerts straight to the tactical desk.</p>
-                    <a href="https://rezflow.co.za/security/" class="skeuo-button inline-flex items-center px-4 py-2 rounded-xl text-sm font-semibold text-[#1d1d1f]">
-                        Enter RezGuard <i class="fa-solid fa-arrow-right ml-2 text-rose-500"></i>
-                    </a>
-                </div>
-
-                <!-- Transport -->
-                <div class="skeuo-panel p-8 relative overflow-hidden group bg-white">
-                    <div class="w-14 h-14 bg-[#f5f5f7] rounded-2xl shadow-sm flex items-center justify-center text-2xl mb-6 text-emerald-600 group-hover:scale-110 transition-transform duration-500">
-                        <i class="fa-solid fa-bus"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-[#1d1d1f] mb-2">Live Transport Tracking</h3>
-                    <p class="text-sm font-semibold text-emerald-500 mb-4 uppercase tracking-wide">The Pain: Missing the Shuttle</p>
-                    <p class="text-[#86868b] font-medium leading-relaxed mb-6">Students constantly stress about campus shuttle times. Our GPS integration gives them live tracking and ETA directly on their mobile app.</p>
-                    <div class="skeuo-inset inline-flex items-center px-4 py-2 rounded-xl text-sm font-medium text-[#86868b] cursor-not-allowed">
-                        <i class="fa-solid fa-satellite-dish mr-2 text-emerald-500"></i> Live Telemetry Active
-                    </div>
                 </div>
 
                 <!-- Admin & Data -->
-                <div class="skeuo-panel p-8 relative overflow-hidden group md:col-span-2 bg-white">
-                    <div class="flex flex-col md:flex-row gap-6 items-center">
+                <div class="skeuo-panel p-8 relative overflow-hidden group md:col-span-3 bg-white">
+                    <div class="flex flex-col md:flex-row gap-8 items-center">
                         <div class="flex-1">
                             <div class="w-14 h-14 bg-[#f5f5f7] rounded-2xl shadow-sm flex items-center justify-center text-2xl mb-6 text-[#06b6d4] group-hover:scale-110 transition-transform duration-500">
-                                <i class="fa-solid fa-server"></i>
+                                <i class="fa-solid fa-chart-pie"></i>
                             </div>
-                            <h3 class="text-2xl font-bold text-[#1d1d1f] mb-2">Master Admin Command</h3>
-                            <p class="text-sm font-semibold text-[#06b6d4] mb-4 uppercase tracking-wide">The Pain: Fragmented Data</p>
-                            <p class="text-[#86868b] font-medium leading-relaxed mb-6">Data living in isolated spreadsheets leads to financial errors. Our master hub aggregates leasing, stock, and security data into one unified, secure dashboard.</p>
-                            <a href="https://rezflow.co.za/admin/" class="skeuo-button inline-flex items-center px-4 py-2 rounded-xl text-sm font-semibold text-[#1d1d1f]">
-                                Access Master Hub <i class="fa-solid fa-arrow-right ml-2 text-[#06b6d4]"></i>
-                            </a>
+                            <h3 class="text-2xl font-bold text-[#1d1d1f] mb-2">Actionable Reporting & Analytics</h3>
+                            <p class="text-sm font-semibold text-[#06b6d4] mb-4 uppercase tracking-wide">Master Admin Command</p>
+                            <p class="text-[#86868b] font-medium leading-relaxed mb-6">Our complete range of reporting solutions is built to suit any user. Whether it’s real-time dashboards or in-depth custom analytics, we aggregate leasing, stock, and security data into one unified, secure hub.</p>
                         </div>
-                        <div class="w-full md:w-1/2 skeuo-inset rounded-2xl p-4 flex flex-col gap-3">
-                            <div class="flex justify-between items-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 border-b border-slate-200 pb-2">
+                        <div class="w-full md:w-1/3 skeuo-inset rounded-2xl p-6 flex flex-col gap-4">
+                            <div class="flex justify-between items-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 border-b border-slate-200 pb-3">
                                 <span>System Sync</span> <span>Status</span>
                             </div>
                             <div class="flex items-center justify-between text-sm text-[#1d1d1f] font-medium">
-                                <span class="flex items-center gap-2"><i class="fa-solid fa-check-circle text-green-500"></i> Financial Ledger</span> <span>Live</span>
+                                <span class="flex items-center gap-3"><i class="fa-solid fa-check-circle text-green-500 text-lg"></i> Financial Ledger</span> <span>Live</span>
                             </div>
                             <div class="flex items-center justify-between text-sm text-[#1d1d1f] font-medium">
-                                <span class="flex items-center gap-2"><i class="fa-solid fa-check-circle text-green-500"></i> Biometric Gates</span> <span>Live</span>
+                                <span class="flex items-center gap-3"><i class="fa-solid fa-check-circle text-green-500 text-lg"></i> Biometric Gates</span> <span>Live</span>
                             </div>
                             <div class="flex items-center justify-between text-sm text-[#1d1d1f] font-medium">
-                                <span class="flex items-center gap-2"><i class="fa-solid fa-check-circle text-green-500"></i> Maintenance Stock</span> <span>Live</span>
+                                <span class="flex items-center gap-3"><i class="fa-solid fa-check-circle text-green-500 text-lg"></i> Maintenance Stock</span> <span>Live</span>
                             </div>
                         </div>
                     </div>
@@ -297,8 +288,6 @@
 
             </div>
         </div>
-
-        <!-- Section Break Indicator (Thickened line, Left end moving to the Center) -->
         <div class="absolute bottom-0 left-0 w-1/2 h-[4px] bg-gradient-to-r from-[#1e3a8a] via-[#06b6d4] to-transparent opacity-30 rounded-r-full"></div>
     </section>
 
@@ -339,7 +328,7 @@
         </div>
     </section>
 
-    <!-- CLEAN, LIGHT FOOTER -->
+    <!-- FOOTER -->
     <footer id="contact" class="bg-white text-[#1d1d1f] pt-24 pb-8 px-4 relative overflow-hidden">
         <div class="max-w-4xl mx-auto text-center mb-20 relative z-10">
             <h2 class="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight">Ready to simplify your property?</h2>
@@ -379,9 +368,8 @@
             <div class="md:col-span-4 lg:col-span-3">
                 <h4 class="text-[#1d1d1f] font-semibold mb-6 tracking-wide">Secure Portals</h4>
                 <ul class="space-y-3 text-[#86868b] text-sm font-medium">
-                    <li><a href="https://reziflow.online/phumelela/signup" target="_blank" class="hover:text-[#1e3a8a] transition-colors inline-block transform hover:translate-x-1 duration-200">Student Sign Up</a></li>
-                    <li><a href="https://reziflow.online/phumelela/signin" target="_blank" class="hover:text-[#1e3a8a] transition-colors inline-block transform hover:translate-x-1 duration-200">Student Sign In</a></li>
-                    <li><a href="https://rezflow.co.za/admin/" class="hover:text-[#1e3a8a] transition-colors inline-block transform hover:translate-x-1 duration-200">Admin Dashboard</a></li>
+                    <li><button onclick="openModal()" class="hover:text-[#1e3a8a] transition-colors inline-block transform hover:translate-x-1 duration-200 cursor-pointer">Explore Demo Portals</button></li>
+                    <li><a href="https://rezflow.co.za/admin/" class="hover:text-[#1e3a8a] transition-colors inline-block transform hover:translate-x-1 duration-200">Global Admin Dashboard</a></li>
                 </ul>
             </div>
         </div>
@@ -397,14 +385,13 @@
         </div>
     </footer>
 
-    <!-- REGISTRATION MODAL (New) -->
+    <!-- REGISTRATION MODAL -->
     <div id="registerModal" class="fixed inset-0 z-[100] modal-overlay flex items-center justify-center p-4">
         <div class="modal-content w-full max-w-2xl rounded-[2rem] skeuo-panel bg-white relative overflow-hidden flex flex-col max-h-[95vh]">
             <button onclick="closeRegisterModal()" class="absolute top-6 right-6 w-12 h-12 skeuo-button rounded-full flex items-center justify-center text-slate-500 hover:text-[#1d1d1f] z-30 transform hover:scale-105">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
 
-            <!-- Header -->
             <div class="pt-10 px-8 text-center relative z-20 flex-shrink-0">
                 <div class="w-16 h-16 bg-[#f5f5f7] rounded-full flex items-center justify-center mx-auto mb-4 text-[#1e3a8a] text-2xl shadow-inner border border-white">
                     <i class="fa-solid fa-calendar-check"></i>
@@ -413,7 +400,6 @@
                 <p class="text-[#86868b] text-sm font-medium">Provide your property details below to secure early access and deployment priority.</p>
             </div>
 
-            <!-- Form Area -->
             <div class="px-8 pb-10 pt-6 overflow-y-auto custom-scroll relative z-20">
                 <form class="space-y-5">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -448,76 +434,84 @@
         </div>
     </div>
 
-    <!-- REZFLOW DEPLOYMENT MODAL (Existing) -->
+    <!-- HIGH-END DEMO SELECTION MODAL -->
     <div id="demoModal" class="fixed inset-0 z-[100] modal-overlay flex items-center justify-center p-4">
-        <div class="modal-content w-full max-w-5xl rounded-[2rem] skeuo-panel bg-white relative overflow-hidden flex flex-col max-h-[95vh]">
+        <div class="modal-content w-full max-w-6xl rounded-[2rem] skeuo-panel bg-white relative overflow-hidden flex flex-col max-h-[95vh]">
             <button onclick="closeModal()" class="absolute top-6 right-6 w-12 h-12 skeuo-button rounded-full flex items-center justify-center text-slate-500 hover:text-[#1d1d1f] z-30 transform hover:scale-105">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
 
             <!-- Header -->
             <div class="pt-12 px-8 md:px-12 text-center relative z-20 flex-shrink-0">
-                <h2 class="text-4xl font-extrabold text-[#1d1d1f] mb-3 tracking-tight">Enter the Ecosystem</h2>
-                <p class="text-[#86868b] max-w-xl mx-auto text-base mb-8 font-medium">Select a portal below to experience how we make property management entirely frictionless.</p>
+                <h2 class="text-4xl font-extrabold text-[#1d1d1f] mb-3 tracking-tight">Select Demo Environment</h2>
+                <p class="text-[#86868b] max-w-2xl mx-auto text-base mb-8 font-medium">Choose a client sandbox below to experience how RezFlow seamlessly manages distinct properties and tailored operational needs.</p>
             </div>
 
-            <!-- Scrollable Portals Area -->
+            <!-- Client Demo Cards Grid -->
             <div class="px-8 pb-12 md:px-12 overflow-y-auto custom-scroll relative z-20">
                 
-                <!-- Main Student & Admin Split -->
-                <div class="grid md:grid-cols-2 gap-6 mb-6">
-                    <div class="skeuo-inset rounded-[2rem] p-8 border border-white flex flex-col justify-center relative overflow-hidden group">
-                        <div class="absolute -right-10 -bottom-10 opacity-5 group-hover:scale-125 transition-transform duration-700 text-[#1d1d1f]">
-                            <i class="fa-solid fa-mobile-screen text-9xl"></i>
+                <div class="grid lg:grid-cols-3 gap-6">
+                    
+                    <!-- Property 1: Phumelela -->
+                    <div class="skeuo-inset rounded-[2rem] p-8 border border-white flex flex-col justify-between relative overflow-hidden group hover:shadow-lg transition-all duration-300">
+                        <div class="mb-6 flex flex-col items-center text-center">
+                            <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-sm mb-4 border border-slate-100 p-2 overflow-hidden">
+                                <!-- Ensure phumelela.png is saved in the root folder -->
+                                <img src="phumelela.png" alt="Phumelela Residence" class="w-full h-full object-contain" onerror="this.src='https://via.placeholder.com/150?text=Logo'">
+                            </div>
+                            <h3 class="text-2xl font-bold text-[#1d1d1f] mb-2">Phumelela Residence</h3>
+                            <p class="text-xs text-[#86868b] font-medium px-2">High-volume student accommodation ecosystem.</p>
                         </div>
-                        <h3 class="text-2xl font-bold text-[#1d1d1f] mb-2 relative z-10">Student App</h3>
-                        <p class="text-sm text-[#86868b] mb-6 font-medium relative z-10">The front-end experience. Vetting, transport tracking, maintenance logging, and utility balance.</p>
-                        <div class="flex gap-3 relative z-10">
-                            <a href="https://reziflow.online/phumelela/signup" target="_blank" class="skeuo-button px-5 py-2.5 rounded-full text-xs font-bold text-[#1e3a8a] flex-1 text-center">
-                                Sign Up Demo
+                        <div class="flex flex-col gap-3 relative z-10 w-full">
+                            <a href="https://rezflow.co.za/phumelela/signup" target="_blank" class="skeuo-button px-5 py-3 rounded-xl text-sm font-bold text-[#1e3a8a] text-center w-full flex justify-center items-center gap-2 hover:bg-white">
+                                <i class="fa-solid fa-mobile-screen"></i> Student App
                             </a>
-                            <a href="https://reziflow.online/phumelela/signin" target="_blank" class="skeuo-button px-5 py-2.5 rounded-full text-xs font-bold text-[#1d1d1f] flex-1 text-center">
-                                Sign In
+                            <a href="https://rezflow.co.za/admin/phumelela" target="_blank" class="skeuo-button px-5 py-3 rounded-xl text-sm font-bold text-[#06b6d4] text-center w-full flex justify-center items-center gap-2 hover:bg-white">
+                                <i class="fa-solid fa-server"></i> Command Center
                             </a>
                         </div>
                     </div>
 
-                    <!-- Master Admin -->
-                    <a href="https://rezflow.co.za/admin/" class="skeuo-panel rounded-[2rem] p-8 border border-white flex flex-col justify-center relative overflow-hidden group hover:border-[#06b6d4]">
-                        <div class="absolute -right-10 -bottom-10 opacity-5 group-hover:scale-125 transition-transform duration-700 text-[#1d1d1f]">
-                            <i class="fa-solid fa-server text-9xl"></i>
+                    <!-- Property 2: Adowa Living -->
+                    <div class="skeuo-inset rounded-[2rem] p-8 border border-white flex flex-col justify-between relative overflow-hidden group hover:shadow-lg transition-all duration-300">
+                        <div class="mb-6 flex flex-col items-center text-center">
+                            <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-sm mb-4 border border-slate-100 p-2 overflow-hidden">
+                                <!-- Ensure adowa.png is saved in the root folder -->
+                                <img src="adowa.png" alt="Adowa Living" class="w-full h-full object-contain" onerror="this.src='https://via.placeholder.com/150?text=Logo'">
+                            </div>
+                            <h3 class="text-2xl font-bold text-[#1d1d1f] mb-2">Adowa Living</h3>
+                            <p class="text-xs text-[#86868b] font-medium px-2">Premium lifestyle and bespoke tenant management.</p>
                         </div>
-                        <h3 class="text-2xl font-bold text-[#1d1d1f] mb-2 relative z-10">Command Center</h3>
-                        <p class="text-sm text-[#86868b] mb-6 font-medium relative z-10">The property owner's hub. Oversee live occupancy, maintenance trends, stock levels, and automated leasing.</p>
-                        <span class="inline-block skeuo-button px-5 py-2.5 rounded-full text-xs font-bold text-[#06b6d4] text-center relative z-10">
-                            Access Admin Hub <i class="fa-solid fa-arrow-right ml-1"></i>
-                        </span>
-                    </a>
-                </div>
+                        <div class="flex flex-col gap-3 relative z-10 w-full">
+                            <a href="https://rezflow.co.za/adowa/signup" target="_blank" class="skeuo-button px-5 py-3 rounded-xl text-sm font-bold text-[#1e3a8a] text-center w-full flex justify-center items-center gap-2 hover:bg-white">
+                                <i class="fa-solid fa-mobile-screen"></i> Student App
+                            </a>
+                            <a href="https://rezflow.co.za/admin/adowa" target="_blank" class="skeuo-button px-5 py-3 rounded-xl text-sm font-bold text-[#06b6d4] text-center w-full flex justify-center items-center gap-2 hover:bg-white">
+                                <i class="fa-solid fa-server"></i> Command Center
+                            </a>
+                        </div>
+                    </div>
 
-                <!-- Operations Spoke -->
-                <div class="grid md:grid-cols-2 gap-6">
-                    <a href="https://rezflow.co.za/maintenance/" class="skeuo-panel rounded-[2rem] p-6 group flex items-center gap-5 hover:border-indigo-200">
-                        <div class="w-16 h-16 rounded-2xl skeuo-inset flex items-center justify-center text-indigo-500 text-2xl flex-shrink-0 group-hover:scale-110 transition-transform">
-                            <i class="fa-solid fa-screwdriver-wrench"></i>
+                    <!-- Property 3: TKC Properties -->
+                    <div class="skeuo-inset rounded-[2rem] p-8 border border-white flex flex-col justify-between relative overflow-hidden group hover:shadow-lg transition-all duration-300">
+                        <div class="mb-6 flex flex-col items-center text-center">
+                            <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-sm mb-4 border border-slate-100 p-2 overflow-hidden">
+                                <!-- Ensure tkc.png is saved in the root folder -->
+                                <img src="tkc.png" alt="TKC Properties" class="w-full h-full object-contain" onerror="this.src='https://via.placeholder.com/150?text=Logo'">
+                            </div>
+                            <h3 class="text-2xl font-bold text-[#1d1d1f] mb-2">TKC Properties</h3>
+                            <p class="text-xs text-[#86868b] font-medium px-2">Multi-tenant portfolio ops and live maintenance sync.</p>
                         </div>
-                        <div>
-                            <h4 class="text-lg font-bold text-[#1d1d1f] mb-1">RezOps &amp; Stock</h4>
-                            <p class="text-xs text-[#86868b] font-medium mb-2">Live snag routing and digital inventory control.</p>
-                            <span class="text-[10px] font-bold text-indigo-600 uppercase tracking-widest">Enter Ops <i class="fa-solid fa-arrow-right ml-1"></i></span>
+                        <div class="flex flex-col gap-3 relative z-10 w-full">
+                            <a href="https://rezflow.co.za/tkc/signup" target="_blank" class="skeuo-button px-5 py-3 rounded-xl text-sm font-bold text-[#1e3a8a] text-center w-full flex justify-center items-center gap-2 hover:bg-white">
+                                <i class="fa-solid fa-mobile-screen"></i> Student App
+                            </a>
+                            <a href="https://rezflow.co.za/admin/tkc" target="_blank" class="skeuo-button px-5 py-3 rounded-xl text-sm font-bold text-[#06b6d4] text-center w-full flex justify-center items-center gap-2 hover:bg-white">
+                                <i class="fa-solid fa-server"></i> Command Center
+                            </a>
                         </div>
-                    </a>
+                    </div>
 
-                    <a href="https://rezflow.co.za/security/" class="skeuo-panel rounded-[2rem] p-6 group flex items-center gap-5 hover:border-rose-200">
-                        <div class="w-16 h-16 rounded-2xl skeuo-inset flex items-center justify-center text-rose-500 text-2xl flex-shrink-0 group-hover:scale-110 transition-transform">
-                            <i class="fa-solid fa-shield-halved"></i>
-                        </div>
-                        <div>
-                            <h4 class="text-lg font-bold text-[#1d1d1f] mb-1">RezGuard</h4>
-                            <p class="text-xs text-[#86868b] font-medium mb-2">Biometric sync, visitor PINs, and emergency SOS desk.</p>
-                            <span class="text-[10px] font-bold text-rose-600 uppercase tracking-widest">Enter Guard <i class="fa-solid fa-arrow-right ml-1"></i></span>
-                        </div>
-                    </a>
                 </div>
                 
             </div>
@@ -528,7 +522,6 @@
         const demoModal = document.getElementById('demoModal');
         const registerModal = document.getElementById('registerModal');
         
-        /* Demo Ecosystem Modal Functions */
         function openModal() {
             demoModal.classList.add('active');
             document.body.style.overflow = 'hidden'; 
@@ -538,7 +531,6 @@
             document.body.style.overflow = 'auto';
         }
 
-        /* Registration Modal Functions */
         function openRegisterModal() {
             registerModal.classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -548,7 +540,6 @@
             document.body.style.overflow = 'auto';
         }
 
-        /* Click outside to close for both modals */
         [demoModal, registerModal].forEach(modal => {
             modal.addEventListener('click', function(e) {
                 if (e.target === this) {
@@ -558,7 +549,6 @@
             });
         });
 
-        /* Escape key to close */
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 if (demoModal.classList.contains('active')) closeModal();
