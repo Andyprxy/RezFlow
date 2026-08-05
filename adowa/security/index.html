@@ -1702,21 +1702,34 @@
                     const room = data.Room || data.room || 'General';
                     const visitorName = data.Visitor_Name || data.name || 'Approved Guest';
 
-                    responseBox.classList.add('bg-emerald-50', 'border-emerald-200');
-                    responseBox.innerHTML = `
-                        <div class="flex items-start gap-4">
-                            <div class="w-14 h-14 bg-emerald-500 text-white rounded-full flex items-center justify-center text-2xl shadow-lg shadow-emerald-500/40 flex-shrink-0"><i class="fa-solid fa-check"></i></div>
-                            <div class="flex-1">
-                                <p class="text-emerald-700 font-black text-lg mb-1 uppercase tracking-widest leading-none mt-1">Access Granted</p>
-                                <div class="text-xs font-bold text-slate-800 bg-white/80 px-4 py-3 rounded-[14px] border border-emerald-100 shadow-sm mt-3 w-full">
-                                    <div class="flex justify-between border-b border-slate-200 pb-2 mb-2"><span class="text-slate-500 font-medium">Host Room</span><span class="font-black">${room}</span></div>
-                                    <div class="flex justify-between"><span class="text-slate-500 font-medium">Surname</span><span class="font-black">${visitorName}</span></div>
+                    if (room === 'General' || visitorName === 'Approved Guest') {
+                        responseBox.classList.add('bg-rose-50', 'border-rose-200');
+                        responseBox.innerHTML = `
+                            <div class="flex items-start gap-4">
+                                <div class="w-14 h-14 bg-rose-500 text-white rounded-full flex items-center justify-center text-2xl shadow-lg shadow-rose-500/40 flex-shrink-0"><i class="fa-solid fa-xmark"></i></div>
+                                <div>
+                                    <p class="text-rose-700 font-black text-lg mb-1 uppercase tracking-widest leading-none mt-1">Access Denied</p>
+                                    <p class="text-xs font-bold text-rose-600 bg-white/80 px-4 py-2.5 rounded-xl border border-rose-100 shadow-sm inline-block mt-2">Unrecognized or invalid credentials.</p>
                                 </div>
                             </div>
-                        </div>
-                    `;
-                    // Refresh Live Scans automatically on success
-                    setTimeout(window.fetchLiveScans, 1500);
+                        `;
+                    } else {
+                        responseBox.classList.add('bg-emerald-50', 'border-emerald-200');
+                        responseBox.innerHTML = `
+                            <div class="flex items-start gap-4">
+                                <div class="w-14 h-14 bg-emerald-500 text-white rounded-full flex items-center justify-center text-2xl shadow-lg shadow-emerald-500/40 flex-shrink-0"><i class="fa-solid fa-check"></i></div>
+                                <div class="flex-1">
+                                    <p class="text-emerald-700 font-black text-lg mb-1 uppercase tracking-widest leading-none mt-1">Access Granted</p>
+                                    <div class="text-xs font-bold text-slate-800 bg-white/80 px-4 py-3 rounded-[14px] border border-emerald-100 shadow-sm mt-3 w-full">
+                                        <div class="flex justify-between border-b border-slate-200 pb-2 mb-2"><span class="text-slate-500 font-medium">Host Room</span><span class="font-black">${room}</span></div>
+                                        <div class="flex justify-between"><span class="text-slate-500 font-medium">Surname</span><span class="font-black">${visitorName}</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        // Refresh Live Scans automatically on success
+                        setTimeout(window.fetchLiveScans, 1500);
+                    }
                 } else {
                     responseBox.classList.add('bg-rose-50', 'border-rose-200');
                     responseBox.innerHTML = `
