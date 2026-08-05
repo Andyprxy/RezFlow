@@ -532,7 +532,7 @@
         
         btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sending...'; btn.disabled = true;
         try {
-            await fetch('https://n8n.automania.cloud/webhook-test/finance-contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ Student_Number: target, Message: msg }) });
+            await fetch('https://n8n.automania.cloud/webhook/finance-contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ Student_Number: target, Message: msg }) });
             document.getElementById('singleCommModal').classList.remove('active');
             window.showToast("Message dispatched to student via n8n.");
         } catch(err) { window.showToast("Network Error", "error"); } finally { btn.innerHTML = ogHtml; btn.disabled = false; }
