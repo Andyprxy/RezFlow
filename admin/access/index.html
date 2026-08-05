@@ -316,7 +316,7 @@
         btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Dispatching...'; btn.disabled = true;
         
         try {
-            await fetch('https://n8n.automania.cloud/webhook-test/contact-visitor', { 
+            await fetch('https://n8n.automania.cloud/webhook/contact-visitor', { 
                 method: 'POST', 
                 headers: { 'Content-Type': 'application/json' }, 
                 body: JSON.stringify({ Visitor_Email: email, Visitor_Name: name, Message: msg }) 
