@@ -42,7 +42,7 @@
     /* Modals */
     .modal-overlay { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; background: rgba(29, 29, 31, 0.4); backdrop-filter: blur(12px); z-index: 3000; display: flex; align-items: center; justify-content: center; position: fixed; inset: 0; padding: 1rem; }
     .modal-overlay.active { opacity: 1; pointer-events: auto; }
-    .modal-content { transform: scale(0.95) translateY(20px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1); background: #ffffff; border-radius: 24px; padding: 1.25rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); max-height: 90vh; overflow-y: auto; }
+    .modal-content { transform: scale(0.95) translateY(20px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1); background: #ffffff; border-radius: 24px; padding: 1.25rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); max-height: 90vh; overflow-y: auto; overflow-x: visible; }
     .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
 
     /* Custom CSS Pie Chart Animation */
@@ -64,7 +64,7 @@
         <div class="flex justify-start sm:justify-center w-full mb-3 z-10 relative shrink-0">
             <div class="glass-segmented shadow-sm bg-white/50 backdrop-blur-md">
                 <button onclick="window.toggleOccupancyView('allocated_students')" id="btn-occ-allocated_students" class="glass-seg-btn active accent-blue text-[10px] sm:text-xs">
-                    <i class="fa-solid fa-bed"></i> Allocated Students
+                    <i class="fa-solid fa-door-open"></i> Allocation
                     <span id="stat-available-beds" class="bg-blue-50 border border-blue-100 text-blue-600 px-2 py-0.5 rounded-full text-[8px] shadow-sm ml-1">-</span>
                 </button>
                 <div class="w-px h-4 bg-slate-300/50 mx-1"></div>
@@ -83,8 +83,8 @@
             
             <div class="px-3 py-3 border-b border-white/60 flex flex-col xl:flex-row gap-3 justify-between xl:items-center bg-white/50 backdrop-blur-md z-20 relative">
                 <div class="flex items-center gap-2 shrink-0">
-                    <div class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm"><i id="occ-icon" class="fa-solid fa-bed text-xs"></i></div>
-                    <h3 id="occupancy-title" class="font-black text-slate-800 text-xs sm:text-sm whitespace-nowrap">Allocated Students</h3>
+                    <div class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm"><i id="occ-icon" class="fa-solid fa-door-open text-xs"></i></div>
+                    <h3 id="occupancy-title" class="font-black text-slate-800 text-xs sm:text-sm whitespace-nowrap">Allocation</h3>
                 </div>
                 
                 <div class="flex items-center gap-2 flex-wrap xl:flex-nowrap justify-end w-full xl:w-auto">
@@ -230,21 +230,25 @@
 </div>
 
 <div id="roomSwapModal" class="modal-overlay">
-    <div class="modal-content magic-border-container w-full max-w-sm">
-        <div class="magic-border-inner flex flex-col relative">
+    <div class="modal-content magic-border-container w-full max-w-sm overflow-visible">
+        <div class="magic-border-inner flex flex-col relative overflow-visible">
             <button onclick="document.getElementById('roomSwapModal').classList.remove('active')" class="absolute top-0 right-0 w-6 h-6 bg-slate-50 border border-slate-200 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100"><i class="fa-solid fa-xmark text-[10px]"></i></button>
             <div class="flex items-center gap-3 mb-4">
                 <div class="w-8 h-8 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-lg flex items-center justify-center text-sm"><i class="fa-solid fa-right-left"></i></div>
                 <div><h2 class="text-base font-black text-slate-900 tracking-tight leading-none">Room Transfer</h2><p class="text-[8px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Update Allocation Ledger</p></div>
             </div>
             <form onsubmit="window.processRoomSwap(event)">
-                <div class="mb-3">
-                    <label class="block text-[7px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Student Number</label>
-                    <input type="text" id="swap-student-id" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 text-[9px] font-mono outline-none focus:border-emerald-400 shadow-sm" required>
+                <div class="mb-3 relative">
+                    <label class="block text-[7px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Student / ID</label>
+                    <input type="text" id="swap-student-id" oninput="window.filterSwapStudents()" onfocus="window.filterSwapStudents()" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 text-[9px] font-mono outline-none focus:border-emerald-400 shadow-sm" placeholder="Start typing name or ID..." autocomplete="off" required>
+                    <!-- Poka-Yoke Student Dropdown -->
+                    <div id="swap-student-list" class="hidden absolute z-50 w-full bg-white border border-slate-200 rounded-lg shadow-xl mt-1 max-h-36 overflow-y-auto custom-scroll top-full left-0"></div>
                 </div>
-                <div class="mb-4">
+                <div class="mb-4 relative">
                     <label class="block text-[7px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Target Room ID</label>
-                    <input type="text" id="swap-new-room" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 text-[9px] font-mono outline-none focus:border-emerald-400 shadow-sm" placeholder="e.g. A-102" required>
+                    <input type="text" id="swap-new-room" oninput="window.filterSwapRooms()" onfocus="window.filterSwapRooms()" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 text-[9px] font-mono outline-none focus:border-emerald-400 shadow-sm" placeholder="e.g. A-102" autocomplete="off" required>
+                    <!-- Poka-Yoke Room Dropdown -->
+                    <div id="swap-room-list" class="hidden absolute z-50 w-full bg-white border border-slate-200 rounded-lg shadow-xl mt-1 max-h-36 overflow-y-auto custom-scroll top-full left-0"></div>
                 </div>
                 <button type="submit" id="btn-submit-swap" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-[10px] py-2 shadow-md flex justify-center items-center gap-2 text-[9px]">Execute Transfer <i class="fa-solid fa-check"></i></button>
             </form>
@@ -266,6 +270,16 @@
 
     window.globalRoomData = window.globalRoomData || [];
     window.globalStudentData = window.globalStudentData || [];
+
+    // Global Click Handler to close Poka-Yoke Dropdowns
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('#swap-student-id') && !e.target.closest('#swap-student-list')) {
+            document.getElementById('swap-student-list')?.classList.add('hidden');
+        }
+        if (!e.target.closest('#swap-new-room') && !e.target.closest('#swap-room-list')) {
+            document.getElementById('swap-room-list')?.classList.add('hidden');
+        }
+    });
 
     // ----------------------------------------------------
     // N8N API PIPELINE
@@ -329,9 +343,9 @@
         if(searchInput) searchInput.value = '';
         
         if(view === 'allocated_students') { 
-            if(title) title.textContent = 'Allocated Students'; 
+            if(title) title.textContent = 'Allocation'; 
             if(filters) { filters.classList.remove('hidden'); filters.classList.add('flex'); }
-            if(icon) { icon.className = "fa-solid fa-bed text-xs"; icon.parentElement.className = "w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm"; }
+            if(icon) { icon.className = "fa-solid fa-door-open text-xs"; icon.parentElement.className = "w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm"; }
         } else { 
             if(title) title.textContent = 'Student Info'; 
             if(filters) { filters.classList.remove('flex'); filters.classList.add('hidden'); } 
@@ -379,8 +393,8 @@
                 <div class="flex items-center justify-center gap-6 bg-white/70 p-6 rounded-2xl border border-white shadow-sm w-full max-w-md mx-auto">
                     <div class="relative w-24 h-24 shrink-0 rounded-full pie-chart-anim" style="background: conic-gradient(#3b82f6 0deg, #3b82f6 ${allocDeg}deg, #10b981 ${allocDeg}deg, #10b981 360deg); box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
                         <div class="absolute inset-2 bg-white rounded-full flex items-center justify-center flex-col shadow-inner">
-                            <span class="text-base font-black text-slate-800 leading-none">${allocated}</span>
-                            <span class="text-[6px] text-slate-400 uppercase font-bold tracking-widest mt-0.5">Allocated</span>
+                            <span class="text-base font-black text-slate-800 leading-none">${totalBeds}</span>
+                            <span class="text-[6px] text-slate-400 uppercase font-bold tracking-widest mt-0.5">Total Beds</span>
                         </div>
                     </div>
                     <div class="flex flex-col gap-2 w-full max-w-[150px]">
@@ -668,6 +682,59 @@
             btnElement.innerHTML = originalHtml;
             btnElement.disabled = false;
         }
+    };
+
+    // ----------------------------------------------------
+    // POKA-YOKE: ROOM SWAP AUTOCOMPLETE
+    // ----------------------------------------------------
+    window.filterSwapStudents = function() {
+        const val = document.getElementById('swap-student-id').value.toLowerCase().trim();
+        const list = document.getElementById('swap-student-list');
+        if (!val) { list.classList.add('hidden'); return; }
+        
+        const matches = window.globalStudentData.filter(s => {
+            if(!s || !s.Student_Number) return false;
+            return String(s.Student_Number).toLowerCase().includes(val) || 
+                   (s.First_Name && String(s.First_Name).toLowerCase().includes(val)) ||
+                   (s.Surname && String(s.Surname).toLowerCase().includes(val));
+        });
+        
+        if (matches.length === 0) { list.classList.add('hidden'); return; }
+        list.innerHTML = matches.slice(0, 6).map(s => `
+            <div class="px-3 py-2 text-[9px] hover:bg-emerald-50 cursor-pointer border-b border-slate-100 last:border-none transition-colors" onclick="window.selectSwapStudent('${s.Student_Number}')">
+                <span class="font-bold text-slate-800">${s.Student_Number}</span> - ${s.First_Name || ''} ${s.Surname || ''} 
+                <span class="text-[7px] text-slate-400 bg-slate-50 px-1 py-0.5 rounded ml-1 border border-slate-200">Room: ${s.Room_Allocation || 'Unassigned'}</span>
+            </div>`).join('');
+        list.classList.remove('hidden');
+    };
+
+    window.selectSwapStudent = function(id) {
+        document.getElementById('swap-student-id').value = id;
+        document.getElementById('swap-student-list').classList.add('hidden');
+    };
+
+    window.filterSwapRooms = function() {
+        const val = document.getElementById('swap-new-room').value.toLowerCase().trim();
+        const list = document.getElementById('swap-room-list');
+        if (!val) { list.classList.add('hidden'); return; }
+        
+        const matches = window.globalRoomData.filter(r => r && r.Room_ID && String(r.Room_ID).toLowerCase().includes(val));
+        
+        if (matches.length === 0) { list.classList.add('hidden'); return; }
+        list.innerHTML = matches.slice(0, 6).map(r => {
+            const avail = (parseInt(r.Total_Beds||r.Capacity)||0) - (parseInt(r.Occupied_Beds||r.Occupied)||0);
+            return `
+            <div class="px-3 py-2 text-[9px] hover:bg-emerald-50 cursor-pointer border-b border-slate-100 last:border-none transition-colors flex justify-between items-center" onclick="window.selectSwapRoom('${r.Room_ID}')">
+                <div><span class="font-bold text-slate-800">${r.Room_ID}</span> <span class="text-slate-500 ml-1">(Blk ${r.Block})</span></div>
+                <span class="${avail > 0 ? 'text-emerald-500 bg-emerald-50 border-emerald-100' : 'text-rose-500 bg-rose-50 border-rose-100'} font-bold px-1.5 py-0.5 rounded border text-[8px]">${avail} Open</span>
+            </div>`;
+        }).join('');
+        list.classList.remove('hidden');
+    };
+
+    window.selectSwapRoom = function(id) {
+        document.getElementById('swap-new-room').value = id;
+        document.getElementById('swap-room-list').classList.add('hidden');
     };
 
     window.processRoomSwap = async function(e) {
