@@ -427,6 +427,7 @@
         const unallocatedStudents = totalApproved - allocatedStudents;
         const studentDeg = totalApproved ? (allocatedStudents / totalApproved) * 360 : 0;
 
+        // Keep polling n8n here primarily to keep the Inventory Modal stocked for selection
         if (!window.globalRoomData || window.globalRoomData.length === 0) {
             dash.innerHTML = `<div class="flex items-center justify-center py-6 text-slate-400 text-xs gap-2"><i class="fa-solid fa-circle-notch fa-spin"></i> Polling Inventory Sensors...</div>`;
             try {
@@ -441,11 +442,9 @@
             }
         }
 
-        let totalBeds = 0; let occupiedBeds = 0;
-        if(window.globalRoomData && window.globalRoomData.length > 0) {
-            totalBeds = window.globalRoomData.reduce((sum, r) => sum + (parseInt(r.Total_Beds) || parseInt(r.Capacity) || 1), 0);
-            occupiedBeds = window.globalRoomData.reduce((sum, r) => sum + (parseInt(r.Occupied_Beds) || parseInt(r.Occupied) || 0), 0);
-        }
+        // Data strictly reflecting exact allocations
+        const totalBeds = 241; 
+        const occupiedBeds = allocatedStudents; 
         const unOccupiedBeds = totalBeds - occupiedBeds;
         const roomDeg = totalBeds ? (occupiedBeds / totalBeds) * 360 : 0;
 
