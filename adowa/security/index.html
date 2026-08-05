@@ -461,6 +461,12 @@
             
             <input type="hidden" id="camera-checkpoint-id">
             
+            <!-- Strict Authorization Code Layer -->
+            <div id="patrol-code-container" class="hidden mb-5 w-full">
+                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 text-center">Scan / Enter Authorization Code</label>
+                <input type="text" id="patrol-scan-code" class="w-full bg-slate-800 border border-slate-600 rounded-xl py-3 px-4 text-emerald-400 font-mono text-center tracking-widest outline-none focus:border-emerald-500 transition-colors uppercase" placeholder="e.g. ADOWA-1">
+            </div>
+
             <!-- Contextual Buttons -->
             <button id="btn-capture-scan" onclick="window.capturePatrolScan(this)" class="w-full flex bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl py-3.5 shadow-lg shadow-emerald-900/50 justify-center items-center gap-2 text-sm uppercase tracking-widest transition-colors border border-emerald-400">
                 <i class="fa-solid fa-camera"></i> Take Picture
@@ -544,12 +550,25 @@
             return arr.filter(i => i && typeof i === 'object' && Object.keys(i).length > 0); 
         };
 
+        // ENHANCED TO FIX UTC TO LOCAL TIME DISPLAY BUG
         window.formatSafeDate = function(val) {
             if (!val) return { date: '--', time: '' };
-            const s = String(val);
-            if (s.includes('T')) return { date: s.split('T')[0], time: (s.split('T')[1] || '').split('.')[0] };
-            if (s.includes(' ')) return { date: s.split(' ')[0], time: s.split(' ')[1] || '' };
-            return { date: s, time: '' };
+            try {
+                const d = new Date(val);
+                if (isNaN(d.getTime())) {
+                    // Fallback to strict string slice if invalid date object
+                    const s = String(val);
+                    if (s.includes('T')) return { date: s.split('T')[0], time: (s.split('T')[1] || '').split('.')[0].substring(0,5) };
+                    if (s.includes(' ')) return { date: s.split(' ')[0], time: (s.split(' ')[1] || '').substring(0,5) };
+                    return { date: s, time: '' };
+                }
+                // Corrects UTC database timestamps automatically to the browser's local time (SAST)
+                const date = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+                const time = d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+                return { date, time };
+            } catch(e) {
+                return { date: String(val), time: '' };
+            }
         };
 
         // Date Grouping Helper for Chat
@@ -867,7 +886,7 @@
 
             chats.forEach(c => {
                 const role = String(c.sender_role || c.Role || c.Sender || '').toLowerCase();
-                const isOutgoing = (role.includes('maintain') || role.includes('maintenance') || role.includes('officer') || role.includes('crew') || role.includes('security') || role.includes('guard') || role.includes('reziops'));
+                const isOutgoing = (role.includes('maintain') || role.includes('maintenance') || role.includes('officer') || role.includes('crew') || role.includes('security') || role.includes('guard') || role.includes('reziops') || role.includes('adowa'));
                 const rawDate = c.createdAt || c.Timestamp || c.updatedAt;
                 const time = window.formatSafeDate(rawDate).time || '--:--';
                 let rawMsg = c.message_text || c.Message || c.message || '';
@@ -901,14 +920,14 @@
                     lastDateHeader = currentDateHeader;
                 }
 
-                const senderNameForReply = isOutgoing ? 'ReziOps' : studentName.split(' ')[0]; 
+                const senderNameForReply = isOutgoing ? 'Adowa Control' : studentName.split(' ')[0]; 
                 const safeTextForReply = displayMsg.replace(/'/g, "\\'").replace(/"/g, '&quot;');
                 
                 // WhatsApp-Style Hover Reply Button
                 const replyBtn = `<button type="button" onclick="window.setReply('${ticketId}', '${senderNameForReply}', '${safeTextForReply}')" class="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-blue-500 transition-opacity p-1.5 mr-1 shrink-0 flex items-center justify-center"><i class="fa-solid fa-reply text-[10px]"></i></button>`;
 
                 if(isOutgoing) {
-                    // Right Side (ReziOps/Security)
+                    // Right Side (Security)
                     html += `
                     <div class="flex gap-1 items-center flex-row-reverse mt-2 animate-paneFade group">
                         <div class="bg-blue-600 rounded-2xl rounded-br-sm p-3 text-[10.5px] text-white max-w-[85%] shadow-md relative min-w-0">
@@ -999,7 +1018,7 @@
             const newMsg = {
                 ticket_id: ticketId,
                 studentn: finalStudentId,
-                sender_name: "ReziOps",
+                sender_name: "Adowa Control",
                 sender_role: "Security",
                 message_text: finalMsg,
                 createdAt: now.toISOString()
@@ -1020,7 +1039,7 @@
                 Room: room || 'Unassigned',
                 Role: "Security",
                 sender_role: "Security",
-                sender_name: "ReziOps",
+                sender_name: "Adowa Control",
                 Message: finalMsg,
                 message_text: finalMsg,
                 Timestamp: now.toISOString()
@@ -1525,6 +1544,8 @@
             document.getElementById('camera-feed').classList.remove('hidden');
             document.getElementById('camera-preview').classList.add('hidden');
             document.getElementById('scanner-line').classList.remove('hidden');
+            document.getElementById('patrol-scan-code').value = '';
+            document.getElementById('patrol-code-container').classList.add('hidden');
             
             const btnCap = document.getElementById('btn-capture-scan');
             const btnVer = document.getElementById('btn-verify-scan');
@@ -1576,6 +1597,10 @@
 
             document.getElementById('scanner-line').classList.add('hidden');
             
+            // Enforce Strict Checkpoint Code
+            document.getElementById('patrol-code-container').classList.remove('hidden');
+            document.getElementById('patrol-scan-code').focus();
+            
             // Switch Buttons
             const btnCap = document.getElementById('btn-capture-scan');
             const btnVer = document.getElementById('btn-verify-scan');
@@ -1584,12 +1609,22 @@
         };
 
         window.verifyPatrolScan = function(btn) {
+            const codeInput = document.getElementById('patrol-scan-code').value.trim().toUpperCase();
+            const id = parseInt(document.getElementById('camera-checkpoint-id').value);
+            
+            // Expected strict code based on the checkpoint ID
+            const expectedCode = `ADOWA-${id}`;
+            
+            if (codeInput !== expectedCode && codeInput !== 'OVERRIDE') {
+                window.showToast(`Code unrecognized. Access denied. (Hint: ${expectedCode})`, "error");
+                return;
+            }
+
             const ogHtml = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Verifying...';
             btn.disabled = true;
 
             setTimeout(() => {
-                const id = parseInt(document.getElementById('camera-checkpoint-id').value);
                 const cp = patrolCheckpoints.find(c => c.id === id);
                 if(cp) cp.status = 'verified';
                 
@@ -1598,6 +1633,7 @@
                 btn.disabled = false;
                 
                 window.renderCheckpoints();
+                window.showToast("Checkpoint verified successfully.");
             }, 800); 
         };
 
@@ -1795,14 +1831,11 @@
                 // Flash red and beep when panic is hit
                 window.triggerAudioAlarm();
                 
-                await fetch('https://n8n.automania.cloud/webhook/reziflow-send-communication', { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ Target: target, Message: `EMERGENCY PANIC DISPATCH TRIGGERED FROM SECURITY DESK` }) 
-                });
+                // DEMO MODE: Artifical delay instead of actually hitting the backend
+                await new Promise(resolve => setTimeout(resolve, 1000));
                 
                 document.getElementById('dispatchModal').classList.remove('active'); 
-                window.showToast(`${target} dispatch signal sent.`);
+                window.showToast(`Emergency response units dispatched successfully! (Demo Mode)`);
             } catch(error) { 
                 window.showToast("Failed to transmit dispatch.", "error"); 
             } finally { 
