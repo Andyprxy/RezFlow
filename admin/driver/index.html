@@ -72,58 +72,31 @@
 </style>
 
 <!-- Main Component Wrapper -->
-<div class="flex-1 flex flex-col lg:flex-row w-full h-full min-h-0 gap-4 lg:gap-6 relative p-2 lg:p-4 bg-[#f0f2f5] overflow-hidden rounded-[32px]">
+<div class="flex-1 flex flex-col lg:flex-row w-full h-full min-h-[600px] gap-4 lg:gap-6 relative p-2 lg:p-4 bg-[#f0f2f5] overflow-hidden rounded-[32px]">
     
-    <!-- Background Ambience -->
+    <!-- Background Ambience[cite: 3] -->
     <div class="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-blue-300 rounded-full mix-blend-multiply filter blur-[140px] opacity-[0.25] z-0 pointer-events-none"></div>
     <div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-emerald-200 rounded-full mix-blend-multiply filter blur-[120px] opacity-[0.2] z-0 pointer-events-none"></div>
 
-    <!-- Map Section (Left) -->
+    <!-- Map Section (Left)[cite: 3] -->
     <div class="flex-1 relative rounded-[32px] overflow-hidden shadow-[10px_10px_30px_rgba(166,175,195,0.2),-10px_-10px_30px_rgba(255,255,255,0.9)] border border-white flex flex-col z-10 bg-[#f0f2f5]">
         
-        <!-- Live GPS Indicator overlay -->
-        <div class="absolute top-6 left-6 z-[400] bg-white/70 backdrop-blur-xl px-5 py-3 rounded-2xl flex items-center gap-3 shadow-[5px_5px_15px_rgba(166,175,195,0.2)] border border-white">
-            <div id="admin-gps-indicator" class="w-3 h-3 bg-amber-400 rounded-full shadow-inner animate-pulse"></div>
-            <span id="admin-gps-status" class="font-black text-slate-800 tracking-widest text-xs uppercase">Fetching Signal...</span>
+        <!-- Live GPS Indicator & Manual Refresh overlay[cite: 3] -->
+        <div class="absolute top-6 left-6 z-[400] bg-white/70 backdrop-blur-xl px-5 py-3 rounded-2xl flex items-center gap-4 shadow-[5px_5px_15px_rgba(166,175,195,0.2)] border border-white">
+            <div class="flex items-center gap-3">
+                <div id="admin-gps-indicator" class="w-3 h-3 bg-slate-300 rounded-full shadow-inner"></div>
+                <span id="admin-gps-status" class="font-black text-slate-800 tracking-widest text-xs uppercase">GPS Offline</span>
+            </div>
+            <div class="w-px h-4 bg-slate-300 mx-1"></div>
+            <button onclick="window.fetchFleetLocation(this)" class="text-slate-600 hover:text-blue-600 transition-colors" title="Sync Map">
+                <i class="fa-solid fa-rotate"></i>
+            </button>
         </div>
 
-        <div id="admin-fleet-map" class="w-full h-full flex-1 z-10 absolute inset-0"></div>
-        
-        <!-- Robust Loading Overlay -->
-        <div id="map-loading-overlay" class="absolute inset-0 bg-white/80 backdrop-blur-md z-20 flex flex-col items-center justify-center transition-opacity duration-300">
-            <div class="w-14 h-14 rounded-full bg-slate-900 text-white flex items-center justify-center text-2xl shadow-xl mb-4 border border-slate-700">
-                <i class="fa-solid fa-satellite-dish animate-pulse"></i>
-            </div>
-            <span class="text-[10px] font-black text-slate-800 tracking-widest uppercase">Establishing Uplink...</span>
-        </div>
-
-        <!-- Floating Live Telemetry HUD -->
-        <div class="absolute bottom-4 right-4 z-[400] bg-white/90 backdrop-blur-xl p-4 rounded-[20px] shadow-2xl border border-white min-w-[220px]">
-            <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2">
-                <div class="flex items-center gap-2">
-                    <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                    <span class="text-[9px] font-black text-slate-800 uppercase tracking-widest">Shuttle 01</span>
-                </div>
-                <span id="hud-status" class="bg-slate-100 text-slate-600 text-[8px] px-2 py-1 rounded-md font-bold uppercase tracking-wider border border-slate-200">Standby</span>
-            </div>
-            <div class="space-y-2">
-                <div class="flex justify-between items-center">
-                    <span class="text-[8px] font-bold text-slate-400 uppercase tracking-widest"><i class="fa-solid fa-location-crosshairs mr-1"></i> Lat</span>
-                    <span id="hud-lat" class="text-[10px] font-mono font-bold text-slate-700">--.------</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-[8px] font-bold text-slate-400 uppercase tracking-widest"><i class="fa-solid fa-location-crosshairs mr-1"></i> Lng</span>
-                    <span id="hud-lng" class="text-[10px] font-mono font-bold text-slate-700">--.------</span>
-                </div>
-                <div class="flex justify-between items-center pt-2 border-t border-slate-100">
-                    <span class="text-[8px] font-bold text-slate-400 uppercase tracking-widest"><i class="fa-regular fa-clock mr-1"></i> Last Ping</span>
-                    <span id="hud-time" class="text-[10px] font-mono font-bold text-indigo-600">--:--:--</span>
-                </div>
-            </div>
-        </div>
+        <div id="admin-fleet-map" class="w-full h-full z-10"></div>
     </div>
 
-    <!-- Control Panel (Right) -->
+    <!-- Control Panel (Right)[cite: 3] -->
     <div class="w-full lg:w-[420px] flex flex-col gap-4 lg:gap-5 z-20 flex-shrink-0 h-full">
         
         <!-- Header & View Switcher -->
@@ -144,7 +117,7 @@
                 </div>
             </div>
 
-            <!-- Tab Navigation -->
+            <!-- Tab Navigation[cite: 4] -->
             <div class="grid grid-cols-3 gap-2">
                 <button onclick="window.switchAdminTransView('feed')" id="tab-btn-feed" class="neo-button active-tab text-slate-600 font-black py-2.5 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 text-[10px] uppercase tracking-widest">
                     <i class="fa-solid fa-rss"></i> Feed
@@ -161,42 +134,36 @@
         <!-- Dynamic Content Panel -->
         <div class="glass-panel p-6 lg:p-7 flex flex-col flex-1 min-h-0 relative">
             
-            <!-- VIEW 1: Live Feed (Read-Only) -->
+            <!-- VIEW 1: Live Feed (Read-Only)[cite: 3, 4] -->
             <div id="admin-view-feed" class="flex flex-col h-full w-full">
                 <div class="flex items-center justify-between mb-4 pb-3 border-b border-white flex-shrink-0">
                     <h3 class="font-black text-slate-800 text-sm uppercase tracking-widest flex items-center gap-2">
-                        <i class="fa-solid fa-inbox text-blue-500"></i> Live Monitor
+                        <i class="fa-solid fa-inbox text-blue-500"></i> Dispatch Queue
                     </h3>
                     <div class="flex items-center gap-3">
                         <button onclick="window.fetchAdminFeed(this)" class="w-7 h-7 rounded-full bg-white/60 hover:bg-white text-slate-600 shadow-sm flex items-center justify-center transition-colors border border-white/80" title="Manual Sync Inbox">
                             <i class="fa-solid fa-rotate text-[10px]"></i>
                         </button>
                         <div class="px-2.5 py-1 bg-slate-50 border border-slate-200 text-slate-600 rounded-lg text-[9px] uppercase tracking-widest font-bold shadow-sm flex items-center gap-1.5">
-                            Manual Sync
+                            Read-Only
                         </div>
                     </div>
                 </div>
                 
                 <div id="admin-message-feed" class="flex-1 overflow-y-auto custom-scroll space-y-4 pr-2 pb-2">
-                    <div class="flex flex-col items-center justify-center h-full text-slate-400 opacity-60 space-y-3" id="admin-empty-state">
-                        <i class="fa-solid fa-inbox text-2xl"></i>
-                        <span class="text-[10px] font-bold uppercase tracking-widest">Click refresh to sync feed</span>
+                    <div class="text-center text-slate-400 font-bold text-xs py-10 tracking-wide uppercase">
+                        Click refresh to sync feed
                     </div>
                 </div>
             </div>
 
-            <!-- VIEW 2: Trip Logs -->
+            <!-- VIEW 2: Trip Logs[cite: 4] -->
             <div id="admin-view-logs" class="hidden flex-col h-full w-full">
                 <div class="flex items-center justify-between mb-4 pb-3 border-b border-white flex-shrink-0">
                     <h3 class="font-black text-slate-800 text-sm uppercase tracking-widest flex items-center gap-2">
                         <i class="fa-solid fa-clipboard-list text-emerald-500"></i> Event Logs
                     </h3>
-                    <div class="flex items-center gap-2">
-                        <button onclick="window.fetchFleetLocation(this)" class="w-7 h-7 rounded-full bg-white/60 hover:bg-white text-slate-600 shadow-sm flex items-center justify-center transition-colors border border-white/80" title="Manual Sync GPS">
-                            <i class="fa-solid fa-rotate text-[10px]"></i>
-                        </button>
-                        <span class="px-2.5 py-1 bg-white border border-slate-200 text-slate-600 rounded-lg text-[9px] uppercase tracking-widest font-bold shadow-sm">Today</span>
-                    </div>
+                    <span class="px-2.5 py-1 bg-white border border-slate-200 text-slate-600 rounded-lg text-[9px] uppercase tracking-widest font-bold shadow-sm">Today</span>
                 </div>
                 
                 <div id="admin-trip-logs" class="flex-1 overflow-y-auto custom-scroll space-y-3 pr-2 pb-2 relative">
@@ -207,7 +174,7 @@
                 </div>
             </div>
 
-            <!-- VIEW 3: Dispatch -->
+            <!-- VIEW 3: Dispatch[cite: 4] -->
             <div id="admin-view-dispatch" class="hidden flex-col h-full w-full">
                 <div class="flex items-center justify-between mb-4 pb-3 border-b border-white flex-shrink-0">
                     <h3 class="font-black text-slate-800 text-sm uppercase tracking-widest flex items-center gap-2">
@@ -241,7 +208,7 @@
     </div>
 </div>
 
-<!-- Hidden Toast Notification -->
+<!-- Hidden Toast Notification[cite: 3] -->
 <div id="toast-container" class="fixed top-6 left-1/2 transform -translate-x-1/2 z-[5000] flex justify-center px-4 pointer-events-none transition-transform duration-300 -translate-y-[150%]">
     <div id="toast-message" class="bg-slate-900 border border-slate-700 text-white px-6 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 font-medium text-sm whitespace-nowrap">
         <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400"></i>
@@ -294,15 +261,24 @@
         }
     };
 
-    // --- Map & Telemetry (MANUAL SYNC TO PREVENT GOOGLE RATE LIMITS) ---
+    // --- Map & Telemetry (Manual Sync Only)[cite: 4] ---
     window.adminMap = null;
     window.adminShuttleMarker = null;
     window.lastStatus = null;
 
     window.initAdminMap = function() {
         const mapEl = document.getElementById('admin-fleet-map');
-        if(!mapEl || window.adminMap) return;
+        if(!mapEl) return;
+        
+        // Wait until Leaflet library is successfully loaded into the DOM before initializing
+        if (typeof L === 'undefined') {
+            setTimeout(window.initAdminMap, 200);
+            return;
+        }
 
+        if(window.adminMap) return;
+
+        // Initialize Map
         window.adminMap = L.map('admin-fleet-map', { zoomControl: false }).setView([-25.7479, 28.2293], 15);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(window.adminMap);
         
@@ -316,21 +292,17 @@
         
         window.adminShuttleMarker = L.marker([-25.7479, 28.2293], {icon: shuttleIcon}).addTo(window.adminMap);
         
-        // Single initial fetch
+        // Force Leaflet to recalculate container dimensions to fix grey tiles
+        setTimeout(() => { window.adminMap.invalidateSize(); }, 300);
+
         window.fetchFleetLocation();
     };
 
     window.fetchFleetLocation = async function(btn) {
         const indicator = document.getElementById('admin-gps-indicator');
         const statusText = document.getElementById('admin-gps-status');
-        const overlay = document.getElementById('map-loading-overlay');
         
-        if(btn) { const i = btn.querySelector('i'); if(i) i.classList.add('fa-spin'); }
-
-        if(overlay) {
-            overlay.style.display = 'flex';
-            setTimeout(() => { overlay.style.opacity = '1'; }, 10);
-        }
+        if(btn) { const i = btn.querySelector('i'); if(i) i.classList.add('fa-spin', 'text-blue-600'); }
 
         try {
             let lat = -25.7479; let lng = 28.2293; let status = "Standing By";
@@ -348,7 +320,8 @@
                     throw new Error("Sheets 429 / Endpoint blocked");
                 }
             } catch (e) {
-                // Simulation Fallback if endpoint is rate limited by Google
+                // Rate Limit Fallback
+                statusText.innerText = "Simulated Location";
                 lat += (Math.random() - 0.5) * 0.005; lng += (Math.random() - 0.5) * 0.005;
                 status = Math.random() > 0.5 ? "En Route" : "Standing By";
             }
@@ -356,21 +329,6 @@
             if(window.adminShuttleMarker && window.adminMap) {
                 window.adminShuttleMarker.setLatLng([lat, lng]);
                 window.adminMap.panTo([lat, lng]);
-            }
-
-            document.getElementById('hud-lat').textContent = lat.toFixed(6);
-            document.getElementById('hud-lng').textContent = lng.toFixed(6);
-            document.getElementById('hud-time').textContent = new Date().toLocaleTimeString('en-US', {hour12: false});
-            
-            const hudStatus = document.getElementById('hud-status');
-            if(hudStatus) {
-                if(status.toLowerCase().includes('route')) {
-                    hudStatus.className = "bg-blue-100 text-blue-700 text-[8px] px-2 py-1 rounded-md font-bold uppercase tracking-wider border border-blue-200";
-                    hudStatus.textContent = status;
-                } else {
-                    hudStatus.className = "bg-slate-100 text-slate-600 text-[8px] px-2 py-1 rounded-md font-bold uppercase tracking-wider border border-slate-200";
-                    hudStatus.textContent = status;
-                }
             }
 
             if(indicator) {
@@ -391,20 +349,12 @@
                 statusText.className = "font-black text-rose-600 tracking-widest text-xs uppercase";
             }
         } finally {
-            if(btn) { const i = btn.querySelector('i'); if(i) i.classList.remove('fa-spin'); }
-            
-            // Critical Fix: Explicitly remove loading overlay no matter what happens, and trigger tile paint
-            if(overlay) {
-                overlay.style.opacity = '0';
-                setTimeout(() => { 
-                    overlay.style.display = 'none'; 
-                    if(window.adminMap) window.adminMap.invalidateSize();
-                }, 300);
-            }
+            if(btn) { const i = btn.querySelector('i'); if(i) i.classList.remove('fa-spin', 'text-blue-600'); }
+            if(window.adminMap) window.adminMap.invalidateSize();
         }
     };
 
-    // --- Read-Only Feed (Manual Sync) ---
+    // --- Read-Only Feed (Manual Sync Only)[cite: 3] ---
     window.fetchAdminFeed = async function(btn) {
         if(btn) { const i = btn.querySelector('i'); if(i) i.classList.add('fa-spin', 'text-blue-500'); }
         const feed = document.getElementById('admin-message-feed');
@@ -500,7 +450,7 @@
         container.insertAdjacentHTML('afterbegin', html);
     };
 
-    // --- Dispatch to Driver ---
+    // --- Dispatch to Driver[cite: 4] ---
     window.sendDispatchFromAdmin = async function(e) {
         e.preventDefault();
         const btn = document.getElementById('btn-admin-dispatch'); const ogText = btn.innerHTML;
@@ -527,6 +477,6 @@
     setTimeout(() => { 
         window.initAdminMap(); 
         window.fetchAdminFeed();
-    }, 300);
+    }, 500);
 
 </script>
