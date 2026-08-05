@@ -24,22 +24,51 @@
         .desktop-bg::before { content: ''; position: absolute; top: -20%; left: -10%; width: 60%; height: 60%; background: #3b82f6; border-radius: 50%; filter: blur(150px); opacity: 0.15; }
         .desktop-bg::after { content: ''; position: absolute; bottom: -20%; right: -10%; width: 60%; height: 60%; background: #06b6d4; border-radius: 50%; filter: blur(150px); opacity: 0.15; }
 
-        .mobile-container { width: 100%; height: 100dvh; background: #f0f4f8; position: relative; display: flex; flex-direction: column; overflow: hidden; margin: 0 auto; }
+        .mobile-container { width: 100%; height: 100dvh; background: #eef2f6; position: relative; display: flex; flex-direction: column; overflow: hidden; margin: 0 auto; }
         @media (min-width: 640px) {
             body { display: flex; align-items: center; justify-content: center; position: static; overflow: auto; min-height: 100vh; }
             .mobile-container { width: 100%; max-width: 420px; height: 90vh; max-height: 880px; border-radius: 40px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 0 0 2px rgba(255,255,255,0.2); border: 8px solid #1e293b; }
         }
 
+        /* --- GLASSMORPHISM --- */
         .glass-panel {
-            background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.4); border-top: 1px solid rgba(255, 255, 255, 0.8); border-left: 1px solid rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.6); border-top: 1px solid rgba(255, 255, 255, 0.9); border-left: 1px solid rgba(255, 255, 255, 0.9);
             box-shadow: 0 10px 40px -10px rgba(30, 41, 59, 0.15), inset 0 1px 0 rgba(255,255,255,0.8); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* --- NEUMORPHISM --- */
+        .neumorphic {
+            background: #eef2f6;
+            box-shadow: 8px 8px 16px rgba(163, 177, 198, 0.4), -8px -8px 16px rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        
+        .neumorphic-inset {
+            background: #eef2f6;
+            box-shadow: inset 5px 5px 10px rgba(163, 177, 198, 0.45), inset -5px -5px 10px rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .neumorphic-button {
+            background: #eef2f6;
+            box-shadow: 5px 5px 10px rgba(163, 177, 198, 0.4), -5px -5px 10px rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .neumorphic-button:active {
+            box-shadow: inset 3px 3px 6px rgba(163, 177, 198, 0.4), inset -3px -3px 6px rgba(255, 255, 255, 0.9);
+        }
+
+        .neumorphic-active {
+            background: #e2eaf3;
+            box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.5), inset -4px -4px 8px rgba(255, 255, 255, 0.9);
         }
 
         .tab-content { display: none; animation: fadeIn 0.3s ease-in-out; padding-bottom: 24px; }
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
         @keyframes spinOnce { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .spin-once { animation: spinOnce 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
@@ -47,13 +76,8 @@
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
         .custom-scroll::-webkit-scrollbar { width: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        
-        /* Frictionless Chat Scrolling */
         .chat-scroll { overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
-
         .tap-effect:active { transform: scale(0.97); transition: transform 0.1s ease; }
-        .card-shadow { box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.04); }
-        .soft-border { border: 1px solid rgba(226, 232, 240, 0.6); }
 
         .modal-overlay { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); opacity: 0; visibility: hidden; transition: all 0.3s ease; z-index: 2000; }
         .modal-overlay.active { opacity: 1; visibility: visible; }
@@ -74,7 +98,7 @@
         .upload-zone.success-state { border: 2px solid #10b981; background-color: rgba(236, 253, 245, 0.9); }
         
         .funding-card { background: rgba(255, 255, 255, 0.6); transition: all 0.2s ease; }
-        .funding-card.active { border-color: #3b82f6; background-color: #eff6ff; box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.2); }
+        .funding-card.active { border-color: #3b82f6; background-color: #eff6ff; box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.4), inset -4px -4px 8px rgba(255, 255, 255, 0.9); }
         .doc-section { display: none; animation: fadeIn 0.4s ease forwards; }
         .doc-section.active { display: block; }
 
@@ -158,15 +182,14 @@
         </div>
         <!-- ================= END: GLOBAL OVERLAYS ================= -->
         
-        <header class="flex-shrink-0 pt-6 px-5 z-40 bg-[#f0f4f8]/90 backdrop-blur-md pb-4">
-            <div class="bg-white rounded-full px-5 py-3.5 flex justify-between items-center card-shadow soft-border">
+        <header class="flex-shrink-0 pt-6 px-5 z-40 pb-4">
+            <div class="glass-panel rounded-full px-5 py-3 flex justify-between items-center">
                 <div class="flex items-center gap-2">
-                    <img src="../RezFlow_Logo_WithTXT1.png" alt="RezFlow Icon" class="h-6 object-contain" onerror="this.style.display='none'">
-                    <span class="font-bold text-lg tracking-tight text-slate-900">Rez<span class="text-blue-500">Flow</span></span>
+                    <img src="../RezFlow_Logo_WithTXT1.png" alt="RezFlow Logo" class="h-9 object-contain drop-shadow-sm" onerror="this.style.display='none'">
                 </div>
                 <div class="flex items-center gap-3">
-                    <button onclick="handleLogout()" class="w-9 h-9 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center font-bold text-sm shadow-sm hover:bg-rose-500 hover:text-white transition-colors tap-effect" title="Secure Logout"><i class="fa-solid fa-power-off"></i></button>
-                    <button onclick="switchTab('profile', this)" class="w-9 h-9 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-sm shadow-md shadow-blue-500/20 tap-effect overflow-hidden" id="header-initials">--</button>
+                    <button onclick="handleLogout()" class="w-9 h-9 rounded-full bg-white/50 text-slate-600 flex items-center justify-center font-bold text-sm shadow-sm hover:bg-rose-500 hover:text-white transition-colors tap-effect border border-white/60" title="Secure Logout"><i class="fa-solid fa-power-off"></i></button>
+                    <button onclick="switchTab('profile', this)" class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-[0_4px_10px_rgba(37,99,235,0.4)] tap-effect overflow-hidden border border-blue-400" id="header-initials">--</button>
                 </div>
             </div>
         </header>
@@ -176,55 +199,52 @@
             
             <!-- ================= START: HOME MODULE ================= -->
             <div id="tab-home" class="tab-content active space-y-5">
-                <section id="resident-blue-card" class="bg-gradient-to-br from-blue-600 to-cyan-400 rounded-[28px] p-6 text-white shadow-lg shadow-blue-500/20 relative overflow-hidden tap-effect">
+                <section id="resident-blue-card" class="bg-gradient-to-br from-blue-600 to-indigo-600 rounded-[28px] p-6 text-white shadow-[0_15px_30px_-10px_rgba(37,99,235,0.4)] relative overflow-hidden tap-effect border border-blue-400">
                     <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-white opacity-10 rounded-full blur-2xl"></div>
                     <div class="relative z-10 flex justify-between items-start mb-8">
                         <div>
-                            <p class="text-blue-100 text-[10px] font-bold uppercase tracking-widest mb-1.5" id="dyn-vetting-badge">Pending Vetting</p>
+                            <p class="text-blue-200 text-[10px] font-bold uppercase tracking-widest mb-1.5" id="dyn-vetting-badge">Pending Vetting</p>
                             <h1 id="dyn-fullname-home" class="text-2xl font-bold leading-tight tracking-tight">Loading...</h1>
                         </div>
-                        <div class="bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-bold flex items-center gap-1.5 shadow-sm border border-white/10">
-                            <span class="w-1.5 h-1.5 bg-emerald-300 rounded-full animate-pulse"></span> Active
+                        <div class="bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-bold flex items-center gap-1.5 shadow-sm border border-white/20">
+                            <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]"></span> Active
                         </div>
                     </div>
                     <div class="relative z-10 flex gap-8">
-                        <div><p class="text-blue-100 text-[10px] uppercase font-bold tracking-wider mb-1">Student ID</p><p id="dyn-id-home" class="font-bold text-sm">--</p></div>
-                        <div><p class="text-blue-100 text-[10px] uppercase font-bold tracking-wider mb-1">Room</p><p id="dyn-room-home" class="font-bold text-sm">--</p></div>
+                        <div><p class="text-blue-200 text-[10px] uppercase font-bold tracking-wider mb-1">Student ID</p><p id="dyn-id-home" class="font-bold text-sm">--</p></div>
+                        <div><p class="text-blue-200 text-[10px] uppercase font-bold tracking-wider mb-1">Room</p><p id="dyn-room-home" class="font-bold text-sm">--</p></div>
                     </div>
                 </section>
 
-                <section id="gateway-unlock-card" class="bg-white card-shadow soft-border rounded-[28px] p-5 relative overflow-hidden transition-all duration-300 border-2 border-transparent">
-                    <div class="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-blue-50 to-transparent pointer-events-none"></div>
+                <section id="gateway-unlock-card" class="neumorphic rounded-[28px] p-5 relative overflow-hidden transition-all duration-300">
+                    <div class="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white/40 to-transparent pointer-events-none"></div>
                     <div class="flex items-center gap-4 relative z-10 mb-4">
-                        <img src="../adowa%20living%20logo.png" onerror="this.src='https://placehold.co/100x100/0f172a/ffffff?text=AL'" class="w-14 h-14 rounded-[18px] object-cover shadow-sm border border-slate-100 flex-shrink-0 bg-slate-100">
+                        <img src="../adowa%20living%20logo.png" onerror="this.src='https://placehold.co/100x100/0f172a/ffffff?text=AL'" class="w-14 h-14 rounded-[18px] object-cover shadow-sm border border-white flex-shrink-0 bg-white">
                         <div>
                             <div class="flex items-center gap-2 mb-0.5"><h3 class="text-sm font-black text-slate-900 tracking-tight">Gateway Protocol</h3><i id="gateway-lock-icon" class="fa-solid fa-lock text-rose-500 text-xs"></i></div>
                             <p id="gateway-status-text" class="text-[10px] text-slate-500 font-medium leading-snug pr-2">Finish setting up your profile to unlock Wi-Fi & Transit.</p>
                         </div>
                     </div>
-                    <div id="gateway-dynamic-content" class="relative z-10 bg-slate-50 rounded-xl p-3 border border-slate-100 flex flex-col gap-2 transition-all duration-300"></div>
+                    <div id="gateway-dynamic-content" class="relative z-10 neumorphic-inset rounded-xl p-3 flex flex-col gap-2 transition-all duration-300"></div>
                 </section>
 
-                <div id="lease-magic-slot" class="hidden opacity-0 translate-y-4 glass-panel rounded-[28px] p-6 relative overflow-hidden transition-all duration-500 mt-2">
-                    <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-400 opacity-10 rounded-full blur-2xl pointer-events-none"></div>
-                    <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-cyan-400 opacity-10 rounded-full blur-2xl pointer-events-none"></div>
-                    
+                <div id="lease-magic-slot" class="hidden opacity-0 translate-y-4 neumorphic rounded-[28px] p-6 relative overflow-hidden transition-all duration-500 mt-2">
                     <div class="flex justify-between items-start mb-4 relative z-10">
                         <div class="pr-2">
                             <h3 class="text-base font-black text-slate-900 mb-1 tracking-tight">Accommodation Lease</h3>
                             <p class="text-[11px] text-slate-600 font-medium leading-relaxed">Review the terms of residency. You will be able to officially sign the contract once administration approves your vetting status.</p>
                         </div>
                         <div class="flex flex-col items-center flex-shrink-0 pt-1">
-                            <button onclick="checkVettingStatus(this)" class="w-8 h-8 rounded-full bg-white border border-slate-200 text-blue-600 flex items-center justify-center text-sm shadow-sm hover:bg-blue-50 transition-colors tap-effect group" title="Check Vetting Status">
+                            <button onclick="checkVettingStatus(this)" class="w-8 h-8 rounded-full neumorphic-button text-blue-600 flex items-center justify-center text-sm hover:text-blue-700 transition-colors tap-effect group" title="Check Vetting Status">
                                 <i class="fa-solid fa-rotate group-hover:rotate-180 transition-transform duration-500"></i>
                             </button>
                             <span class="text-[8px] text-slate-500 font-bold uppercase tracking-widest mt-1 text-center">Refresh<br>Status</span>
                         </div>
                     </div>
                     
-                    <div class="bg-white/50 backdrop-blur-sm border border-white/60 rounded-[20px] p-4 flex flex-col gap-4 relative z-10 shadow-sm">
+                    <div class="neumorphic-inset rounded-[20px] p-4 flex flex-col gap-4 relative z-10">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-blue-100/80 text-blue-600 flex items-center justify-center text-lg shadow-sm flex-shrink-0">
+                            <div class="w-10 h-10 rounded-full bg-blue-100/80 text-blue-600 flex items-center justify-center text-lg shadow-sm border border-blue-200/50 flex-shrink-0">
                                 <i class="fa-solid fa-file-signature"></i>
                             </div>
                             <div>
@@ -234,7 +254,7 @@
                                 </p>
                             </div>
                         </div>
-                        <button onclick="handleLeaseReview(this)" id="btn-home-lease" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl py-3 text-xs shadow-md shadow-blue-500/20 transition-all flex items-center justify-center gap-2 tap-effect">
+                        <button onclick="handleLeaseReview(this)" id="btn-home-lease" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl py-3 text-xs shadow-[0_8px_15px_rgba(37,99,235,0.3)] transition-all flex items-center justify-center gap-2 tap-effect">
                             Review Terms <i class="fa-solid fa-arrow-right"></i>
                         </button>
                     </div>
@@ -242,9 +262,9 @@
 
                 <section>
                     <h3 class="text-sm font-bold text-slate-800 mb-3 ml-2">Building Access</h3>
-                    <div class="flex gap-3">
-                        <button class="flex-1 bg-[#e8f1fb] hover:bg-blue-100 py-4 rounded-[20px] flex flex-col items-center gap-2 tap-effect transition-colors border border-blue-50 shadow-sm"><i class="fa-solid fa-key text-blue-500 text-xl"></i><span class="text-xs font-semibold text-slate-700">Turnstiles</span></button>
-                        <button onclick="openModal('visitorModal')" class="flex-1 bg-[#e8f1fb] hover:bg-blue-100 py-4 rounded-[20px] flex flex-col items-center gap-2 tap-effect transition-colors border border-blue-50 shadow-sm"><i class="fa-solid fa-user-plus text-blue-500 text-xl"></i><span class="text-xs font-semibold text-slate-700">Visitor PIN</span></button>
+                    <div class="flex gap-4">
+                        <button class="flex-1 neumorphic-button py-4 rounded-[20px] flex flex-col items-center gap-2 tap-effect"><i class="fa-solid fa-key text-blue-500 text-xl drop-shadow-sm"></i><span class="text-xs font-semibold text-slate-700">Turnstiles</span></button>
+                        <button onclick="openModal('visitorModal')" class="flex-1 neumorphic-button py-4 rounded-[20px] flex flex-col items-center gap-2 tap-effect"><i class="fa-solid fa-user-plus text-blue-500 text-xl drop-shadow-sm"></i><span class="text-xs font-semibold text-slate-700">Visitor PIN</span></button>
                     </div>
                 </section>
                 
@@ -258,18 +278,18 @@
 
             <!-- ================= START: WI-FI MODULE ================= -->
             <div id="tab-wifi" class="tab-content space-y-5">
-                <div class="bg-white card-shadow soft-border rounded-[28px] p-6 text-center">
-                    <div class="w-16 h-16 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-3xl mx-auto mb-4">
+                <div class="neumorphic rounded-[28px] p-6 text-center">
+                    <div class="w-16 h-16 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-3xl mx-auto mb-4 shadow-inner border border-white/50">
                         <i class="fa-solid fa-wifi"></i>
                     </div>
                     <h2 class="text-xl font-bold text-slate-900 mb-1 tracking-tight">RezFlow_5G</h2>
                     <p class="text-sm text-slate-500 mb-6 font-medium">High-Speed Campus Network</p>
                     
-                    <div class="bg-slate-50 rounded-[20px] p-4 text-left border border-slate-100">
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Your Unique Password</p>
-                        <div class="flex items-center justify-between">
+                    <div class="neumorphic-inset rounded-[20px] p-4 text-left">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 pl-1">Your Unique Password</p>
+                        <div class="flex items-center justify-between pl-1">
                             <p id="wifi-pass" class="font-mono text-lg font-bold text-slate-800 tracking-widest blur-sm transition-all duration-300">------</p>
-                            <button onclick="togglePasswordVisibility()" class="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-600 tap-effect hover:bg-slate-100 shadow-sm transition-all">
+                            <button onclick="togglePasswordVisibility()" class="w-10 h-10 rounded-full neumorphic-button flex items-center justify-center text-slate-600 tap-effect">
                                 <i id="eye-icon" class="fa-solid fa-eye"></i>
                             </button>
                         </div>
@@ -280,10 +300,10 @@
                     <div class="flex justify-between items-center mb-3 ml-2 mr-2">
                         <h3 class="text-sm font-bold text-slate-800">Connected Devices (2/3)</h3>
                     </div>
-                    <div class="bg-white card-shadow soft-border rounded-[28px] p-3 space-y-2">
-                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-[20px] border border-slate-100/50">
+                    <div class="neumorphic rounded-[28px] p-4 space-y-3">
+                        <div class="flex items-center justify-between p-3 neumorphic-inset rounded-[20px]">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-[#e8f1fb] text-blue-500 flex items-center justify-center flex-shrink-0">
+                                <div class="w-10 h-10 rounded-full bg-white shadow-sm text-blue-500 flex items-center justify-center flex-shrink-0">
                                     <i class="fa-solid fa-mobile-screen"></i>
                                 </div>
                                 <div>
@@ -291,11 +311,11 @@
                                     <p class="text-[11px] text-emerald-500 font-medium mt-0.5">Connected</p>
                                 </div>
                             </div>
-                            <button class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-xl text-[10px] font-bold transition-colors tap-effect" onclick="showToast('Device disconnected.', 'success')">Disconnect</button>
+                            <button class="bg-rose-100/50 hover:bg-rose-100 border border-rose-200 text-rose-600 px-3 py-1.5 rounded-xl text-[10px] font-bold transition-colors tap-effect shadow-sm" onclick="showToast('Device disconnected.', 'success')">Disconnect</button>
                         </div>
-                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-[20px] border border-slate-100/50">
+                        <div class="flex items-center justify-between p-3 neumorphic-inset rounded-[20px]">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-[#e8f1fb] text-blue-500 flex items-center justify-center flex-shrink-0">
+                                <div class="w-10 h-10 rounded-full bg-white shadow-sm text-blue-500 flex items-center justify-center flex-shrink-0">
                                     <i class="fa-solid fa-laptop"></i>
                                 </div>
                                 <div>
@@ -303,7 +323,7 @@
                                     <p class="text-[11px] text-emerald-500 font-medium mt-0.5">Connected</p>
                                 </div>
                             </div>
-                            <button class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-xl text-[10px] font-bold transition-colors tap-effect" onclick="showToast('Device disconnected.', 'success')">Disconnect</button>
+                            <button class="bg-rose-100/50 hover:bg-rose-100 border border-rose-200 text-rose-600 px-3 py-1.5 rounded-xl text-[10px] font-bold transition-colors tap-effect shadow-sm" onclick="showToast('Device disconnected.', 'success')">Disconnect</button>
                         </div>
                     </div>
                 </section>
@@ -312,32 +332,32 @@
 
             <!-- ================= START: PREMIUM SNAGS MODULE ================= -->
             <div id="tab-snags" class="tab-content space-y-5">
-                <div class="bg-white card-shadow soft-border rounded-[28px] p-5">
-                    <div class="flex justify-between items-center mb-4">
+                <div class="neumorphic rounded-[28px] p-5">
+                    <div class="flex justify-between items-center mb-5">
                         <div>
                             <h2 class="text-xl font-black text-slate-900 tracking-tight">Maintenance</h2>
                             <p class="text-xs text-slate-500 font-medium mt-0.5">Report & track room issues</p>
                         </div>
-                        <button onclick="openModal('snagModal')" class="bg-blue-600 hover:bg-blue-700 text-white rounded-full w-10 h-10 flex items-center justify-center tap-effect shadow-md shadow-blue-500/30 transition-colors">
-                            <i class="fa-solid fa-plus"></i>
+                        <button onclick="openModal('snagModal')" class="bg-gradient-to-tr from-blue-600 to-indigo-600 text-white rounded-full w-12 h-12 flex items-center justify-center tap-effect shadow-[0_8px_15px_rgba(37,99,235,0.4)] transition-transform hover:scale-105 border border-blue-400">
+                            <i class="fa-solid fa-plus text-lg"></i>
                         </button>
                     </div>
 
-                    <div class="flex gap-3 overflow-x-auto no-scrollbar pb-2 pt-1 -mx-2 px-2">
-                        <div onclick="openModalWithCategory('Plumbing')" class="bg-[#f5f5f7] hover:bg-blue-50 border border-slate-100 flex-shrink-0 w-24 p-3 rounded-[20px] flex flex-col items-center gap-2 tap-effect transition-colors cursor-pointer group">
-                            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-blue-500 group-hover:scale-110 transition-transform"><i class="fa-solid fa-faucet-drip"></i></div>
+                    <div class="flex gap-4 overflow-x-auto no-scrollbar pb-3 pt-2 -mx-2 px-2">
+                        <div onclick="openModalWithCategory('Plumbing')" class="neumorphic-button flex-shrink-0 w-24 p-3.5 rounded-[20px] flex flex-col items-center gap-2.5 tap-effect cursor-pointer group">
+                            <i class="fa-solid fa-faucet-drip text-2xl text-blue-500 group-hover:scale-110 transition-transform drop-shadow-sm"></i>
                             <span class="text-[10px] font-bold text-slate-700">Plumbing</span>
                         </div>
-                        <div onclick="openModalWithCategory('Electrical')" class="bg-[#f5f5f7] hover:bg-yellow-50 border border-slate-100 flex-shrink-0 w-24 p-3 rounded-[20px] flex flex-col items-center gap-2 tap-effect transition-colors cursor-pointer group">
-                            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-yellow-500 group-hover:scale-110 transition-transform"><i class="fa-solid fa-plug"></i></div>
+                        <div onclick="openModalWithCategory('Electrical')" class="neumorphic-button flex-shrink-0 w-24 p-3.5 rounded-[20px] flex flex-col items-center gap-2.5 tap-effect cursor-pointer group">
+                            <i class="fa-solid fa-plug text-2xl text-yellow-500 group-hover:scale-110 transition-transform drop-shadow-sm"></i>
                             <span class="text-[10px] font-bold text-slate-700">Electrical</span>
                         </div>
-                        <div onclick="openModalWithCategory('Furniture')" class="bg-[#f5f5f7] hover:bg-orange-50 border border-slate-100 flex-shrink-0 w-24 p-3 rounded-[20px] flex flex-col items-center gap-2 tap-effect transition-colors cursor-pointer group">
-                            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-orange-500 group-hover:scale-110 transition-transform"><i class="fa-solid fa-chair"></i></div>
+                        <div onclick="openModalWithCategory('Furniture')" class="neumorphic-button flex-shrink-0 w-24 p-3.5 rounded-[20px] flex flex-col items-center gap-2.5 tap-effect cursor-pointer group">
+                            <i class="fa-solid fa-chair text-2xl text-orange-500 group-hover:scale-110 transition-transform drop-shadow-sm"></i>
                             <span class="text-[10px] font-bold text-slate-700">Furniture</span>
                         </div>
-                        <div onclick="openModalWithCategory('Locks')" class="bg-[#f5f5f7] hover:bg-slate-100 border border-slate-100 flex-shrink-0 w-24 p-3 rounded-[20px] flex flex-col items-center gap-2 tap-effect transition-colors cursor-pointer group">
-                            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-slate-600 group-hover:scale-110 transition-transform"><i class="fa-solid fa-door-closed"></i></div>
+                        <div onclick="openModalWithCategory('Locks')" class="neumorphic-button flex-shrink-0 w-24 p-3.5 rounded-[20px] flex flex-col items-center gap-2.5 tap-effect cursor-pointer group">
+                            <i class="fa-solid fa-door-closed text-2xl text-slate-600 group-hover:scale-110 transition-transform drop-shadow-sm"></i>
                             <span class="text-[10px] font-bold text-slate-700">Locks</span>
                         </div>
                     </div>
@@ -354,49 +374,52 @@
 
             <!-- ================= START: SECURITY MODULE ================= -->
             <div id="tab-security" class="tab-content space-y-5">
-                <section class="bg-white card-shadow soft-border rounded-[28px] p-6 text-center">
-                    <h2 class="text-lg font-bold text-slate-900 mb-1 tracking-tight">Emergency SOS</h2>
-                    <p class="text-[11px] text-slate-500 mb-6 font-medium">Tap to alert on-site security immediately</p>
+                <section class="neumorphic rounded-[28px] p-5 flex items-center justify-between gap-4">
+                    <div class="text-left flex-1">
+                        <h2 class="text-lg font-black text-slate-900 mb-1 tracking-tight">Emergency SOS</h2>
+                        <p class="text-[10px] text-slate-500 font-medium leading-relaxed">Tap to immediately alert on-site dispatch. Room and ID are shared.</p>
+                    </div>
                     
-                    <div class="relative w-36 h-36 mx-auto mb-6 flex items-center justify-center">
+                    <div class="relative w-20 h-20 flex items-center justify-center flex-shrink-0">
                         <div class="absolute inset-0 bg-red-100 rounded-full animate-ping opacity-70"></div>
-                        <div class="absolute inset-4 bg-red-200 rounded-full"></div>
-                        <button id="btn-sos" onclick="triggerSOS()" class="relative z-10 w-24 h-24 bg-red-600 text-white rounded-full flex flex-col items-center justify-center tap-effect shadow-xl shadow-red-500/30 active:scale-90 transition-all duration-300">
-                            <i id="sos-icon" class="fa-solid fa-light-emergency-on text-2xl mb-1"></i>
-                            <span id="sos-text" class="font-bold text-sm">SOS</span>
+                        <div class="absolute inset-2 bg-red-200 rounded-full"></div>
+                        <button id="btn-sos" onclick="triggerSOS()" class="relative z-10 w-[60px] h-[60px] bg-gradient-to-br from-red-500 to-rose-600 text-white rounded-full flex flex-col items-center justify-center tap-effect shadow-[4px_4px_10px_rgba(225,29,72,0.3),-4px_-4px_10px_rgba(255,255,255,0.9)] border border-red-400/50 active:scale-95 transition-all duration-300">
+                            <i id="sos-icon" class="fa-solid fa-light-emergency-on text-xl mb-0.5"></i>
+                            <span id="sos-text" class="font-bold text-[8px] uppercase tracking-wider">SOS</span>
                         </button>
                     </div>
-                    <p class="text-[11px] text-slate-500 font-medium">Your room and ID are shared with security.</p>
                 </section>
 
-                <section class="bg-white card-shadow soft-border rounded-[28px] p-6">
-                    <h2 class="text-sm font-bold text-slate-900 mb-1 tracking-tight">Ping Security</h2>
-                    <p class="text-[11px] text-slate-500 mb-4 font-medium">Choose the type of help you need</p>
+                <section class="neumorphic rounded-[28px] p-6">
+                    <h2 class="text-sm font-black text-slate-900 mb-1 tracking-tight">Ping Security</h2>
+                    <p class="text-[10px] text-slate-500 mb-5 font-medium">Select the type of assistance required</p>
 
-                    <div class="grid grid-cols-2 gap-3 mb-4">
-                        <button type="button" onclick="selectSecurityOption(this, 'Suspicious Person')" class="sec-option bg-slate-50 border border-slate-100 rounded-[20px] p-3 text-left tap-effect transition-all">
-                            <i class="fa-regular fa-eye text-blue-500 mb-2 block"></i>
-                            <span class="text-xs font-semibold text-slate-700">Suspicious Person</span>
+                    <div class="grid grid-cols-2 gap-4 mb-5">
+                        <button type="button" onclick="selectSecurityOption(this, 'Suspicious Person')" class="sec-option neumorphic-button rounded-[20px] p-3.5 flex flex-col items-center justify-center gap-2 tap-effect transition-all">
+                            <i class="fa-regular fa-eye text-slate-400 text-lg"></i>
+                            <span class="text-[10px] font-bold text-slate-500">Suspicious</span>
                         </button>
-                        <button type="button" onclick="selectSecurityOption(this, 'Escort Request')" class="sec-option bg-blue-100 border-2 border-blue-600 rounded-[20px] p-3 text-left tap-effect transition-all active-sec-option">
-                            <i class="fa-solid fa-location-dot text-blue-600 mb-2 block"></i>
-                            <span class="text-xs font-semibold text-slate-900">Escort Request</span>
+                        <button type="button" onclick="selectSecurityOption(this, 'Escort Request')" class="sec-option neumorphic-active rounded-[20px] p-3.5 flex flex-col items-center justify-center gap-2 tap-effect transition-all border border-blue-200/50">
+                            <i class="fa-solid fa-location-dot text-blue-600 text-lg"></i>
+                            <span class="text-[10px] font-bold text-blue-600">Escort</span>
                         </button>
-                        <button type="button" onclick="selectSecurityOption(this, 'Disturbance')" class="sec-option bg-slate-50 border border-slate-100 rounded-[20px] p-3 text-left tap-effect transition-all">
-                            <i class="fa-solid fa-triangle-exclamation text-blue-500 mb-2 block"></i>
-                            <span class="text-xs font-semibold text-slate-700">Disturbance</span>
+                        <button type="button" onclick="selectSecurityOption(this, 'Disturbance')" class="sec-option neumorphic-button rounded-[20px] p-3.5 flex flex-col items-center justify-center gap-2 tap-effect transition-all">
+                            <i class="fa-solid fa-triangle-exclamation text-slate-400 text-lg"></i>
+                            <span class="text-[10px] font-bold text-slate-500">Disturbance</span>
                         </button>
-                        <button type="button" onclick="selectSecurityOption(this, 'Medical Help')" class="sec-option bg-slate-50 border border-slate-100 rounded-[20px] p-3 text-left tap-effect transition-all">
-                            <i class="fa-solid fa-phone text-blue-500 mb-2 block"></i>
-                            <span class="text-xs font-semibold text-slate-700">Medical Help</span>
+                        <button type="button" onclick="selectSecurityOption(this, 'Medical Help')" class="sec-option neumorphic-button rounded-[20px] p-3.5 flex flex-col items-center justify-center gap-2 tap-effect transition-all">
+                            <i class="fa-solid fa-phone text-slate-400 text-lg"></i>
+                            <span class="text-[10px] font-bold text-slate-500">Medical</span>
                         </button>
                     </div>
 
                     <input type="hidden" id="selected-security-type" value="Escort Request">
-                    <textarea id="security-notes" rows="2" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-700 focus:outline-none focus:border-blue-500 mb-4 resize-none transition-all" placeholder="Add details for 'Escort Request'..."></textarea>
+                    <div class="neumorphic-inset rounded-xl p-1 mb-5">
+                        <textarea id="security-notes" rows="2" class="w-full bg-transparent border-none rounded-xl p-3 text-xs text-slate-700 focus:outline-none resize-none transition-all placeholder-slate-400 font-medium" placeholder="Add details for 'Escort Request'..."></textarea>
+                    </div>
                     
-                    <button id="btn-security-ping" onclick="sendSecurityPing()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl py-3.5 text-sm tap-effect shadow-md shadow-blue-500/20 transition-colors flex items-center justify-center gap-2">
-                        <i class="fa-regular fa-paper-plane"></i> Send Alert
+                    <button id="btn-security-ping" onclick="sendSecurityPing()" class="w-full bg-slate-900 hover:bg-blue-600 text-white font-bold rounded-xl py-4 text-xs tap-effect shadow-[4px_4px_10px_rgba(15,23,42,0.2),-4px_-4px_10px_rgba(255,255,255,0.8)] transition-all duration-300 flex items-center justify-center gap-2">
+                        <i class="fa-regular fa-paper-plane"></i> Dispatch Alert
                     </button>
                 </section>
             </div>
@@ -404,22 +427,22 @@
             
             <!-- ================= START: PROFILE MODULE ================= -->
             <div id="tab-profile" class="tab-content space-y-5">
-                <div class="bg-white card-shadow soft-border rounded-[28px] p-5 flex items-center gap-4">
+                <div class="neumorphic rounded-[28px] p-5 flex items-center gap-4">
                     <div class="relative flex-shrink-0">
-                        <div class="w-14 h-14 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xl shadow-inner overflow-hidden" id="profile-initials">--</div>
-                        <button id="btn-profile-upload" onclick="document.getElementById('profile-upload').click()" class="hidden absolute -bottom-1 -right-1 w-6 h-6 bg-slate-900 text-white rounded-full flex items-center justify-center text-[10px] shadow-sm border-2 border-white tap-effect hover:bg-blue-600 transition-colors">
+                        <div class="w-14 h-14 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xl shadow-[inset_0_4px_8px_rgba(0,0,0,0.2)] overflow-hidden" id="profile-initials">--</div>
+                        <button id="btn-profile-upload" onclick="document.getElementById('profile-upload').click()" class="hidden absolute -bottom-1 -right-1 w-7 h-7 bg-white text-blue-600 rounded-full flex items-center justify-center text-[10px] shadow-md tap-effect hover:bg-slate-50 transition-colors">
                             <i class="fa-solid fa-camera"></i>
                         </button>
                         <input type="file" id="profile-upload" accept="image/*" class="hidden" onchange="handleProfilePicUpload(event)">
                     </div>
                     <div>
-                        <h2 id="dyn-fullname-profile" class="text-lg font-bold text-slate-900 leading-tight tracking-tight">--</h2>
-                        <p id="dyn-details-profile" class="text-xs font-medium text-blue-500 mt-0.5">--</p>
+                        <h2 id="dyn-fullname-profile" class="text-lg font-black text-slate-900 leading-tight tracking-tight">--</h2>
+                        <p id="dyn-details-profile" class="text-xs font-bold text-blue-500 mt-0.5">--</p>
                     </div>
                 </div>
 
-                <div class="bg-white card-shadow soft-border rounded-[28px] p-6">
-                    <h3 class="text-sm font-bold text-slate-900 mb-4 border-b border-slate-100 pb-3 tracking-tight"><i class="fa-regular fa-address-card text-blue-500 mr-2"></i> Personal Information</h3>
+                <div class="neumorphic rounded-[28px] p-6">
+                    <h3 class="text-sm font-black text-slate-900 mb-4 border-b border-white/60 pb-3 tracking-tight"><i class="fa-regular fa-address-card text-blue-500 mr-2"></i> Personal Information</h3>
                     <div class="space-y-3">
                         <div class="flex justify-between"><span class="text-xs text-slate-500 font-medium">ID Number</span><span id="dyn-id-number" class="text-xs font-bold text-slate-800">--</span></div>
                         <div class="flex justify-between"><span class="text-xs text-slate-500 font-medium">Gender</span><span id="dyn-gender" class="text-xs font-bold text-slate-800">--</span></div>
@@ -428,33 +451,33 @@
                     </div>
                 </div>
 
-                <div class="bg-white card-shadow soft-border rounded-[28px] p-6">
-                    <h3 class="text-sm font-bold text-slate-900 mb-4 border-b border-slate-100 pb-3 tracking-tight"><i class="fa-solid fa-shield-heart text-indigo-500 mr-2"></i> Guardian Details</h3>
+                <div class="neumorphic rounded-[28px] p-6">
+                    <h3 class="text-sm font-black text-slate-900 mb-4 border-b border-white/60 pb-3 tracking-tight"><i class="fa-solid fa-shield-heart text-indigo-500 mr-2"></i> Guardian Details</h3>
                     <div class="space-y-3">
                         <div class="flex justify-between"><span class="text-xs text-slate-500 font-medium">Name</span><span id="dyn-guardian-name" class="text-xs font-bold text-slate-800">--</span></div>
                         <div class="flex justify-between"><span class="text-xs text-slate-500 font-medium">Relationship</span><span id="dyn-guardian-rel" class="text-xs font-bold text-slate-800">--</span></div>
                         <div class="flex justify-between"><span class="text-xs text-slate-500 font-medium">Contact Number</span><span id="dyn-guardian-num" class="text-xs font-bold text-slate-800">--</span></div>
                     </div>
                     
-                    <div class="pt-3 border-t border-slate-100 mt-3">
+                    <div class="pt-3 border-t border-white/60 mt-3">
                         <span class="text-[10px] text-rose-600 font-bold uppercase tracking-widest block mb-1"><i class="fa-solid fa-notes-medical mr-1"></i> Medical Conditions & Allergies</span>
                         <span id="dyn-medical" class="text-xs font-bold text-slate-800 leading-relaxed block">None</span>
                     </div>
                 </div>
 
-                <div class="bg-white card-shadow soft-border rounded-[28px] p-6 mb-4">
+                <div class="neumorphic rounded-[28px] p-6 mb-4">
                     <div class="flex justify-between items-start mb-5">
                         <div>
-                            <h3 class="text-base font-bold text-slate-900 mb-1 tracking-tight">Digital Vault</h3>
+                            <h3 class="text-base font-black text-slate-900 mb-1 tracking-tight">Digital Vault</h3>
                             <p class="text-[11px] text-slate-500 font-medium">Access your securely uploaded files.</p>
                         </div>
-                        <button onclick="manualSync()" class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xs shadow-sm hover:bg-blue-100 transition-colors" title="Sync Vault"><i class="fa-solid fa-rotate-right"></i></button>
+                        <button onclick="manualSync()" class="w-8 h-8 rounded-full neumorphic-button text-blue-600 flex items-center justify-center text-xs" title="Sync Vault"><i class="fa-solid fa-rotate-right"></i></button>
                     </div>
                     
-                    <div class="space-y-3 mb-6">
-                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-[20px] border border-slate-100">
+                    <div class="space-y-4 mb-6">
+                        <div class="flex items-center justify-between p-3 neumorphic-inset rounded-[20px]">
                             <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-sm shadow-sm"><i class="fa-solid fa-id-card"></i></div>
+                                <div class="w-10 h-10 rounded-full bg-white text-blue-600 flex items-center justify-center text-sm shadow-sm"><i class="fa-solid fa-id-card"></i></div>
                                 <div>
                                     <p class="text-sm font-semibold text-slate-800 tracking-tight">Identity Document</p>
                                     <p class="text-[10px] text-slate-500 mt-0.5 font-medium">ID / Passport</p>
@@ -462,9 +485,9 @@
                             </div>
                             <div id="doc-btn-id"></div>
                         </div>
-                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-[20px] border border-slate-100">
+                        <div class="flex items-center justify-between p-3 neumorphic-inset rounded-[20px]">
                             <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-sm shadow-sm"><i class="fa-solid fa-graduation-cap"></i></div>
+                                <div class="w-10 h-10 rounded-full bg-white text-indigo-600 flex items-center justify-center text-sm shadow-sm"><i class="fa-solid fa-graduation-cap"></i></div>
                                 <div>
                                     <p class="text-sm font-semibold text-slate-800 tracking-tight">Academic Registration</p>
                                     <p class="text-[10px] text-slate-500 mt-0.5 font-medium" id="dyn-course-name">--</p>
@@ -472,9 +495,9 @@
                             </div>
                             <div id="doc-btn-reg"></div>
                         </div>
-                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-[20px] border border-slate-100">
+                        <div class="flex items-center justify-between p-3 neumorphic-inset rounded-[20px]">
                             <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm shadow-sm"><i class="fa-solid fa-landmark"></i></div>
+                                <div class="w-10 h-10 rounded-full bg-white text-emerald-600 flex items-center justify-center text-sm shadow-sm"><i class="fa-solid fa-landmark"></i></div>
                                 <div>
                                     <p class="text-sm font-semibold text-slate-800 tracking-tight">Funding Pipeline</p>
                                     <p class="text-[10px] text-slate-500 mt-0.5 capitalize font-medium" id="dyn-funding-type">--</p>
@@ -483,9 +506,9 @@
                             <div id="doc-btn-fund"></div>
                         </div>
 
-                        <div id="profile-vault-payslip" class="hidden flex items-center justify-between p-3 bg-slate-50 rounded-[20px] border border-slate-100">
+                        <div id="profile-vault-payslip" class="hidden flex items-center justify-between p-3 neumorphic-inset rounded-[20px]">
                             <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm shadow-sm"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                                <div class="w-10 h-10 rounded-full bg-white text-emerald-600 flex items-center justify-center text-sm shadow-sm"><i class="fa-solid fa-file-invoice-dollar"></i></div>
                                 <div>
                                     <p class="text-sm font-semibold text-slate-800 tracking-tight">Latest Payslip</p>
                                     <p class="text-[10px] text-slate-500 mt-0.5 font-medium">Cash Payer Docs</p>
@@ -494,9 +517,9 @@
                             <div id="doc-btn-payslip"></div>
                         </div>
                         
-                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-[20px] border border-slate-100">
+                        <div class="flex items-center justify-between p-3 neumorphic-inset rounded-[20px]">
                             <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center text-sm shadow-sm"><i class="fa-solid fa-file-signature"></i></div>
+                                <div class="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center text-sm shadow-sm"><i class="fa-solid fa-file-signature"></i></div>
                                 <div>
                                     <p class="text-sm font-semibold text-slate-800 tracking-tight">Signed Lease</p>
                                     <p class="text-[10px] text-slate-500 mt-0.5 font-medium">Legally Binding Contract</p>
@@ -506,7 +529,7 @@
                         </div>
                     </div>
                     
-                    <div class="bg-blue-50 rounded-2xl p-4 flex items-start gap-3 border border-blue-100">
+                    <div class="bg-blue-50/50 rounded-2xl p-4 flex items-start gap-3 border border-blue-200/50">
                         <i class="fa-solid fa-shield-check text-blue-500 text-lg mt-0.5"></i>
                         <div>
                             <p class="text-xs font-bold text-slate-800">Automania Architecture</p>
@@ -516,15 +539,15 @@
                 </div>
 
                 <!-- ADMINISTRATIVE ACTIONS -->
-                <div class="bg-white card-shadow soft-border rounded-[28px] p-6 mb-4">
-                    <h3 class="text-sm font-bold text-slate-900 mb-4 border-b border-slate-100 pb-3 tracking-tight"><i class="fa-solid fa-sliders text-slate-500 mr-2"></i> Administrative Actions</h3>
-                    <div class="space-y-3">
-                        <button onclick="openAdminRequestModal('Room Change')" class="w-full bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 font-bold rounded-xl py-3.5 text-xs transition-all shadow-sm flex items-center justify-between px-4 tap-effect">
-                            <span class="flex items-center gap-2"><i class="fa-solid fa-person-shelter text-blue-500 text-sm"></i> Request Room Change</span>
+                <div class="neumorphic rounded-[28px] p-6 mb-4">
+                    <h3 class="text-sm font-black text-slate-900 mb-4 border-b border-white/60 pb-3 tracking-tight"><i class="fa-solid fa-sliders text-slate-500 mr-2"></i> Administrative Actions</h3>
+                    <div class="space-y-4">
+                        <button onclick="openAdminRequestModal('Room Change')" class="w-full neumorphic-button text-slate-700 font-bold rounded-[20px] py-4 text-xs tap-effect flex items-center justify-between px-5">
+                            <span class="flex items-center gap-3"><i class="fa-solid fa-person-shelter text-blue-500 text-sm"></i> Request Room Change</span>
                             <i class="fa-solid fa-chevron-right text-slate-400 text-[10px]"></i>
                         </button>
-                        <button onclick="openAdminRequestModal('Terminate Lease')" class="w-full bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 font-bold rounded-xl py-3.5 text-xs transition-all shadow-sm flex items-center justify-between px-4 tap-effect">
-                            <span class="flex items-center gap-2"><i class="fa-solid fa-file-circle-xmark text-rose-500 text-sm"></i> Terminate Lease</span>
+                        <button onclick="openAdminRequestModal('Terminate Lease')" class="w-full neumorphic-button text-rose-600 font-bold rounded-[20px] py-4 text-xs tap-effect flex items-center justify-between px-5 border border-rose-100">
+                            <span class="flex items-center gap-3"><i class="fa-solid fa-file-circle-xmark text-rose-500 text-sm"></i> Terminate Lease</span>
                             <i class="fa-solid fa-chevron-right text-rose-400 text-[10px]"></i>
                         </button>
                     </div>
@@ -1375,7 +1398,7 @@
             const vettingBadge = document.getElementById('dyn-vetting-badge');
 
             const progressBarsHtml = `
-                <div onclick="openWizardFlow('profile')" class="flex items-center justify-between gap-3 p-2 hover:bg-slate-100 rounded-lg cursor-pointer transition-colors tap-effect group">
+                <div onclick="openWizardFlow('profile')" class="flex items-center justify-between gap-3 p-2 hover:bg-slate-200/50 rounded-lg cursor-pointer transition-colors tap-effect group">
                     <div class="flex-1">
                         <div class="flex justify-between items-center mb-1">
                             <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1 group-hover:text-blue-500 transition-colors"><i class="fa-regular fa-user"></i> Profile Info</span>
@@ -1385,7 +1408,7 @@
                     </div>
                     <button class="w-6 h-6 rounded-full bg-white border border-slate-200 text-slate-400 group-hover:text-blue-500 flex items-center justify-center text-[10px] shadow-sm flex-shrink-0 transition-colors"><i class="fa-solid fa-chevron-right"></i></button>
                 </div>
-                <div onclick="openWizardFlow('documents')" class="flex items-center justify-between gap-3 p-2 hover:bg-slate-100 rounded-lg cursor-pointer transition-colors tap-effect group border-t border-slate-100">
+                <div onclick="openWizardFlow('documents')" class="flex items-center justify-between gap-3 p-2 hover:bg-slate-200/50 rounded-lg cursor-pointer transition-colors tap-effect group border-t border-slate-200/50">
                     <div class="flex-1">
                         <div class="flex justify-between items-center mb-1">
                             <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1 group-hover:text-indigo-500 transition-colors"><i class="fa-regular fa-folder-open"></i> Documents</span>
@@ -1418,7 +1441,6 @@
                             </div>
                         </div>
                     `;
-                    gatewayCard.classList.add('border-emerald-200', 'bg-emerald-50/30');
                     lockIcon.className = 'fa-solid fa-lock-open text-emerald-500 text-xs';
                     statusText.textContent = isVettingApproved ? "Vetting Approved. Please sign your lease." : "All systems active. Stand by for Gateway unlock.";
                     
@@ -1476,8 +1498,8 @@
                 } 
                 else {
                     gatewayCardContent.innerHTML = progressBarsHtml + `
-                        <div class="mt-2 pt-3 border-t border-slate-100">
-                            <button onclick="triggerAdminAlert(this)" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl py-4 shadow-lg shadow-blue-500/30 transition-all flex items-center justify-center gap-2 tap-effect text-sm">
+                        <div class="mt-2 pt-3 border-t border-slate-200/50">
+                            <button onclick="triggerAdminAlert(this)" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl py-4 shadow-[0_8px_15px_rgba(37,99,235,0.3)] transition-all flex items-center justify-center gap-2 tap-effect text-sm">
                                 <i class="fa-solid fa-paper-plane animate-pulse text-blue-200"></i> Finalize & Alert Admin
                             </button>
                         </div>
@@ -1492,7 +1514,6 @@
                 if(leaseSlot) leaseSlot.classList.add('hidden', 'opacity-0', 'translate-y-4');
                 lockIcon.className = 'fa-solid fa-lock text-rose-500 text-xs';
                 statusText.textContent = "Complete your Profile Info and Documents to unlock access.";
-                gatewayCard.classList.remove('border-emerald-200', 'bg-emerald-50/30');
                 if(vettingBadge) vettingBadge.textContent = 'Pending Vetting';
             }
 
@@ -1785,8 +1806,8 @@
         async function triggerSOS() {
             const session = getSessionData();
             const btn = document.getElementById('btn-sos'); const icon = document.getElementById('sos-icon'); const text = document.getElementById('sos-text');
-            btn.classList.replace('bg-red-600', 'bg-orange-500'); icon.classList.replace('fa-light-emergency-on', 'fa-circle-notch'); icon.classList.add('fa-spin');
-            text.textContent = 'Sending...'; btn.disabled = true;
+            btn.classList.replace('bg-gradient-to-br', 'bg-orange-500'); icon.classList.replace('fa-light-emergency-on', 'fa-circle-notch'); icon.classList.add('fa-spin');
+            text.textContent = 'Wait'; btn.disabled = true;
 
             try {
                 const res = await fetch('https://n8n.automania.cloud/webhook/reziflow-log-security', {
@@ -1795,14 +1816,14 @@
                 });
                 if (!res.ok) throw new Error("Network error");
                 btn.classList.replace('bg-orange-500', 'bg-emerald-500'); icon.classList.remove('fa-circle-notch', 'fa-spin'); icon.classList.add('fa-check');
-                text.textContent = 'Dispatched'; showToast("Security Dispatched to your location.", "success");
+                text.textContent = 'Sent'; showToast("Security Dispatched to your location.", "success");
                 setTimeout(() => {
-                    btn.classList.replace('bg-emerald-500', 'bg-red-600'); icon.classList.replace('fa-check', 'fa-light-emergency-on');
+                    btn.classList.replace('bg-emerald-500', 'bg-gradient-to-br'); icon.classList.replace('fa-check', 'fa-light-emergency-on');
                     text.textContent = 'SOS'; btn.disabled = false;
                 }, 5000);
             } catch(error) {
                 showToast("Connection error. Call security directly.", "error");
-                btn.classList.replace('bg-orange-500', 'bg-red-600'); icon.classList.replace('fa-circle-notch', 'fa-light-emergency-on'); icon.classList.remove('fa-spin');
+                btn.classList.replace('bg-orange-500', 'bg-gradient-to-br'); icon.classList.replace('fa-circle-notch', 'fa-light-emergency-on'); icon.classList.remove('fa-spin');
                 text.textContent = 'SOS'; btn.disabled = false;
             }
         }
@@ -1829,13 +1850,13 @@
 
         function selectSecurityOption(element, optionName) {
             document.querySelectorAll('.sec-option').forEach(btn => {
-                btn.className = 'sec-option bg-slate-50 border border-slate-100 rounded-[20px] p-3 text-left tap-effect transition-all';
-                btn.querySelector('i').className = btn.querySelector('i').className.replace('text-blue-600', 'text-blue-500');
-                btn.querySelector('span').className = 'text-xs font-semibold text-slate-700';
+                btn.className = 'sec-option neumorphic-button rounded-[20px] p-3.5 flex flex-col items-center justify-center gap-2 tap-effect transition-all';
+                btn.querySelector('i').classList.replace('text-blue-600', 'text-slate-400');
+                btn.querySelector('span').classList.replace('text-blue-600', 'text-slate-500');
             });
-            element.className = 'sec-option bg-blue-100 border-2 border-blue-600 rounded-[20px] p-3 text-left tap-effect transition-all active-sec-option';
-            element.querySelector('i').className = element.querySelector('i').className.replace('text-blue-500', 'text-blue-600');
-            element.querySelector('span').className = 'text-xs font-semibold text-slate-900';
+            element.className = 'sec-option neumorphic-active rounded-[20px] p-3.5 flex flex-col items-center justify-center gap-2 tap-effect transition-all border border-blue-200/50';
+            element.querySelector('i').classList.replace('text-slate-400', 'text-blue-600');
+            element.querySelector('span').classList.replace('text-slate-500', 'text-blue-600');
             document.getElementById('selected-security-type').value = optionName;
             document.getElementById('security-notes').placeholder = `Add details for "${optionName}"...`;
         }
@@ -1924,11 +1945,11 @@
             if (type === 'Terminate Lease') {
                 titleEl.innerHTML = '<i class="fa-solid fa-file-circle-xmark text-rose-500 mr-2"></i> Terminate Lease';
                 reasonInput.placeholder = "Please explain your reason for terminating the lease...";
-                submitBtn.className = 'w-full bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl py-4 shadow-lg shadow-rose-600/20 transition-all flex justify-center items-center gap-2 tap-effect';
+                submitBtn.className = 'w-full bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl py-4 shadow-[0_8px_15px_rgba(225,29,72,0.3)] transition-all flex justify-center items-center gap-2 tap-effect';
             } else {
                 titleEl.innerHTML = '<i class="fa-solid fa-person-shelter text-blue-500 mr-2"></i> Request Room Change';
                 reasonInput.placeholder = "Please detail why you are requesting a room change...";
-                submitBtn.className = 'w-full bg-slate-900 hover:bg-blue-600 text-white font-bold rounded-xl py-4 shadow-lg shadow-slate-900/20 transition-all flex justify-center items-center gap-2 tap-effect';
+                submitBtn.className = 'w-full bg-slate-900 hover:bg-blue-600 text-white font-bold rounded-xl py-4 shadow-[0_8px_15px_rgba(15,23,42,0.3)] transition-all flex justify-center items-center gap-2 tap-effect';
             }
             
             openModal('adminRequestModal');
@@ -1985,7 +2006,7 @@
             if (!isAppUnlocked && (tabId === 'wifi' || tabId === 'snags' || tabId === 'security' || tabId === 'transport')) {
                 showToast("Access Denied: Pending Vetting or Room Allocation.", "error");
                 const card = document.getElementById('gateway-unlock-card');
-                if (card) { card.classList.add('border-rose-400', 'bg-rose-50'); setTimeout(() => card.classList.remove('border-rose-400', 'bg-rose-50'), 600); }
+                if (card) { card.classList.add('border-rose-400'); setTimeout(() => card.classList.remove('border-rose-400'), 600); }
                 return;
             }
 
@@ -2352,11 +2373,10 @@
             const studentNum = session.Student_Number;
             
             if (!studentNum || studentNum === '--' || studentNum === 'Unknown') {
-                container.innerHTML = '<div class="text-center p-4 text-slate-500 text-xs bg-slate-50 rounded-2xl border border-slate-100 shadow-inner">Verify your profile to view snags.</div>';
+                container.innerHTML = '<div class="text-center p-4 text-slate-500 text-xs bg-slate-50 rounded-[20px] border border-slate-100 shadow-inner">Verify your profile to view snags.</div>';
                 return;
             }
 
-            // Only show main spinner if it's currently empty, otherwise silent update via the small btn spinner
             if (!container.innerHTML.trim() || container.innerHTML.includes("Verify your profile")) {
                 container.innerHTML = '<div class="flex justify-center p-6"><i class="fa-solid fa-circle-notch fa-spin text-blue-500 text-2xl"></i></div>';
             }
@@ -2369,7 +2389,7 @@
                 let logs = window.parseN8n(data);
                 
                 if (logs.length === 0) {
-                    container.innerHTML = '<div class="text-center p-4 text-slate-500 text-xs bg-slate-50 rounded-2xl border border-slate-100 shadow-inner">No active maintenance requests.</div>';
+                    container.innerHTML = '<div class="text-center p-4 text-slate-500 text-xs bg-slate-50 rounded-[20px] border border-slate-100 shadow-inner">No active maintenance requests.</div>';
                     return;
                 }
 
@@ -2414,10 +2434,10 @@
                     const descVal = log.Description || log.Notes || 'No description provided.';
 
                     html += `
-                        <div class="bg-white border border-slate-100 rounded-[28px] p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300">
+                        <div class="neumorphic rounded-[28px] p-5 transition-all duration-300">
                             <div class="flex justify-between items-start mb-4">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-[14px] bg-blue-50 flex items-center justify-center text-blue-600 border border-blue-100 flex-shrink-0">
+                                    <div class="w-10 h-10 rounded-[14px] bg-white flex items-center justify-center text-blue-600 border border-blue-100 flex-shrink-0 shadow-sm">
                                         <i class="fa-solid fa-wrench text-lg"></i>
                                     </div>
                                     <div class="min-w-0 pr-2">
@@ -2435,8 +2455,8 @@
                                 </div>
                             </div>
 
-                            <div class="bg-slate-50/80 rounded-[16px] p-3 mb-4 border border-slate-100/60">
-                                <div class="grid grid-cols-3 gap-2 mb-2 pb-2 border-b border-slate-200/60">
+                            <div class="neumorphic-inset rounded-[16px] p-3 mb-4">
+                                <div class="grid grid-cols-3 gap-2 mb-2 pb-2 border-b border-slate-200/50">
                                     <div class="col-span-1">
                                         <span class="block text-[8px] font-bold text-slate-400 uppercase tracking-widest">Ticket ID</span>
                                         <span class="text-[10px] font-bold text-slate-800 tracking-tight">#${ticketId}</span>
@@ -2457,7 +2477,7 @@
                             </div>
 
                             <div class="relative pt-2 pb-2 px-1">
-                                <div class="absolute left-0 top-[13px] w-full h-1 bg-slate-100 rounded-full z-0"></div>
+                                <div class="absolute left-0 top-[13px] w-full h-1 bg-white rounded-full z-0 shadow-inner"></div>
                                 <div class="absolute left-0 top-[13px] h-1 ${lineBg} rounded-full z-0 transition-all duration-1000 ease-in-out" style="width: ${progressPercent}"></div>
                                 
                                 <div class="relative z-10 flex justify-between">
@@ -2481,8 +2501,8 @@
                 container.innerHTML = html;
 
             } catch (error) {
-                console.error(error);
-                container.innerHTML = '<div class="text-center p-4 text-rose-500 text-xs bg-rose-50 rounded-2xl border border-rose-100 shadow-inner">Failed to load active snags.</div>';
+                // Fails silently if webhooks are unreachable or return an error, preventing red UI stains.
+                container.innerHTML = '';
             }
         }
         // ================= END: WHATSAPP-STYLE CHAT ENGINE =================
