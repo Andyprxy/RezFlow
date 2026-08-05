@@ -122,6 +122,16 @@
         .notepad-widget { animation: hover-float 8s ease-in-out infinite; }
         .notepad-widget.delay-1 { animation-delay: 2s; }
 
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.8; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+        .pulse-indicator::before {
+            content: ''; position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: inherit; border-radius: 50%; z-index: -1;
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+
         /* High Contrast Hero */
         .hero-gradient {
             background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #06b6d4 100%);
@@ -182,42 +192,38 @@
         <div class="absolute top-[5%] left-[10%] w-[50rem] h-[50rem] orb-blue rounded-full pointer-events-none ambient-orb"></div>
         <div class="absolute bottom-[5%] right-[10%] w-[55rem] h-[55rem] orb-indigo rounded-full pointer-events-none ambient-orb" style="animation-delay: -3s;"></div>
         
-        <!-- SIDE WIDGET 1: ROI Tracker (Dark Neumorphism) -->
-        <div class="hidden xl:flex absolute left-[5%] top-[25%] neu-panel-dark p-6 w-72 flex-col gap-5 notepad-widget z-20 transform -rotate-2">
+        <!-- SIDE WIDGET 1: User-Friendly Tracker -->
+        <div class="hidden xl:flex absolute left-[5%] top-[25%] neu-panel-dark p-6 w-72 flex-col gap-4 notepad-widget z-20 transform -rotate-2">
             <div class="flex justify-between items-center border-b border-white/10 pb-3">
                 <span class="text-xs font-bold text-slate-300 uppercase tracking-widest flex items-center gap-2">
-                    <i class="fa-solid fa-chart-line text-cyan-400"></i> Platform ROI
+                    <i class="fa-solid fa-face-smile text-cyan-400"></i> User-Friendly
                 </span>
+                <div class="relative w-3 h-3 bg-cyan-400 rounded-full pulse-indicator shadow-[0_0_10px_rgba(34,211,238,0.8)]"></div>
             </div>
-            <div class="flex flex-col gap-2">
-                <div class="flex justify-between items-end">
-                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Admin Time Saved</span>
-                    <span class="text-2xl font-black text-white">90%</span>
-                </div>
-                <div class="w-full bg-slate-800 rounded-full h-1.5 shadow-inner"><div class="bg-cyan-400 h-1.5 rounded-full shadow-[0_0_8px_rgba(34,211,238,0.6)]" style="width: 90%"></div></div>
-                
-                <div class="flex justify-between items-end mt-3">
-                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Data Accuracy</span>
-                    <span class="text-2xl font-black text-emerald-400">100%</span>
-                </div>
-                <div class="w-full bg-slate-800 rounded-full h-1.5 shadow-inner"><div class="bg-emerald-400 h-1.5 rounded-full shadow-[0_0_8px_rgba(52,211,153,0.6)]" style="width: 100%"></div></div>
+            <div class="bg-white/5 rounded-xl p-3 flex justify-between items-center border border-white/5 shadow-inner mt-1">
+                <span class="text-xs font-medium text-slate-300">Interface</span>
+                <span class="text-xs font-bold text-emerald-400">Intuitive</span>
+            </div>
+            <div class="bg-white/5 rounded-xl p-3 flex justify-between items-center border border-white/5 shadow-inner">
+                <span class="text-xs font-medium text-slate-300">Learning Curve</span>
+                <span class="text-xs font-bold text-cyan-400">Zero</span>
             </div>
         </div>
 
-        <!-- SIDE WIDGET 2: Operations Tracker (Dark Neumorphism) -->
+        <!-- SIDE WIDGET 2: Frictionless Tracker -->
         <div class="hidden xl:flex absolute right-[5%] bottom-[25%] neu-panel-dark p-6 w-72 flex-col gap-4 notepad-widget delay-1 z-20 transform rotate-2">
             <div class="flex justify-between items-center border-b border-white/10 pb-3">
                 <span class="text-xs font-bold text-slate-300 uppercase tracking-widest flex items-center gap-2">
-                    <i class="fa-solid fa-shield-halved text-rose-400"></i> Live Security
+                    <i class="fa-solid fa-bolt text-rose-400"></i> Frictionless
                 </span>
             </div>
-            <div class="bg-white/5 rounded-xl p-3 flex justify-between items-center border border-white/5 shadow-inner">
-                <span class="text-xs font-medium text-slate-300">Turnstile Sync</span>
-                <span class="text-xs font-bold text-emerald-400">Active</span>
+            <div class="bg-white/5 rounded-xl p-3 flex justify-between items-center border border-white/5 shadow-inner mt-1">
+                <span class="text-xs font-medium text-slate-300">Navigation</span>
+                <span class="text-xs font-bold text-emerald-400">Seamless</span>
             </div>
             <div class="bg-white/5 rounded-xl p-3 flex justify-between items-center border border-white/5 shadow-inner">
-                <span class="text-xs font-medium text-slate-300">Visitor Passes</span>
-                <span class="text-xs font-bold text-cyan-400">Automated</span>
+                <span class="text-xs font-medium text-slate-300">Accessibility</span>
+                <span class="text-xs font-bold text-cyan-400">24/7 Active</span>
             </div>
         </div>
 
@@ -284,8 +290,8 @@
                         Paperwork kills conversion. The RezFlow Student App digitizes vetting, automates lease signing, and guarantees instant room allocation. We engineered a premium, white-labeled experience that tenants love.
                     </p>
 
-                    <!-- Feature Graphic Notepad (Neumorphic iOS-Style Settings Block) -->
-                    <div class="neu-panel p-8 w-full border-l-4 border-l-[#1e3a8a] relative overflow-hidden">
+                    <!-- Feature Graphic Notepad (Clean Neumorphic Box without Ribbon) -->
+                    <div class="neu-panel p-8 w-full relative overflow-hidden bg-gradient-to-br from-white to-[#f5f5f7] shadow-[0_10px_40px_rgba(6,182,212,0.1)]">
                         <div class="absolute right-[-20px] top-[-20px] text-slate-200 text-8xl opacity-30 pointer-events-none"><i class="fa-solid fa-layer-group"></i></div>
                         <h4 class="text-xs font-black text-[#86868b] uppercase tracking-widest mb-6 relative z-10">Connected App Ecosystem</h4>
                         
@@ -349,8 +355,8 @@
         </div>
     </section>
 
-    <!-- WHO WE SERVE SECTION (Upgraded to Neumorphism) -->
-    <section id="serve" class="py-24 px-4 relative z-20">
+    <!-- WHO WE SERVE SECTION -->
+    <section id="serve" class="py-24 px-4 relative z-20 border-y border-slate-200/50">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
                 <h2 class="text-4xl font-extrabold text-[#1d1d1f] mb-4 tracking-tight" style="letter-spacing: -0.03em;">Who We Serve</h2>
@@ -482,7 +488,6 @@
         
         <div class="max-w-7xl mx-auto border-t border-slate-300 pt-16 pb-12 grid grid-cols-1 md:grid-cols-12 gap-10 relative z-10">
             <div class="md:col-span-4 flex flex-col gap-6">
-                <!-- Enlarged Logo, Text Removed -->
                 <div class="flex items-center">
                     <img src="RezFlow_Logo-removebg-preview.png" alt="RezFlow Logo" class="h-10 lg:h-12 w-auto drop-shadow-sm">
                 </div>
@@ -527,7 +532,7 @@
         </div>
     </footer>
 
-    <!-- CONTACT / REGISTRATION MODAL (Neumorphic) -->
+    <!-- CONTACT / REGISTRATION MODAL -->
     <div id="registerModal" class="fixed inset-0 z-[100] modal-overlay flex items-center justify-center p-4">
         <div class="modal-content w-full max-w-2xl neu-panel relative overflow-hidden flex flex-col max-h-[95vh]">
             <button onclick="closeRegisterModal()" class="absolute top-6 right-6 w-10 h-10 neu-button rounded-full flex items-center justify-center text-slate-500 hover:text-[#1d1d1f] z-30">
@@ -556,7 +561,7 @@
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-[#1d1d1f] uppercase tracking-widest mb-1.5 ml-1">Property Name</label>
-                        <input type="text" id="contactProperty" class="w-full neu-inset neu-input px-4 py-3.5 text-sm text-[#1d1d1f]" placeholder="e.g. Adowa" required>
+                        <input type="text" id="contactProperty" class="w-full neu-inset neu-input px-4 py-3.5 text-sm text-[#1d1d1f] placeholder-slate-400" placeholder="e.g. Adowa" required>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div>
@@ -576,7 +581,7 @@
         </div>
     </div>
 
-    <!-- HIGH-END DEMO SELECTION MODAL (Neumorphic) -->
+    <!-- HIGH-END DEMO SELECTION MODAL -->
     <div id="demoModal" class="fixed inset-0 z-[100] modal-overlay flex items-center justify-center p-4">
         <div class="modal-content w-full max-w-6xl neu-panel relative overflow-hidden flex flex-col max-h-[95vh]">
             <button onclick="closeModal()" class="absolute top-6 right-6 w-12 h-12 neu-button rounded-full flex items-center justify-center text-slate-500 hover:text-[#1d1d1f] z-30">
@@ -600,22 +605,23 @@
                             <h3 class="text-2xl font-bold text-[#1d1d1f] mb-2 tracking-tight">Phumelela Residence</h3>
                             <p class="text-xs text-[#86868b] font-medium px-2">High-volume student accommodation ecosystem.</p>
                         </div>
-                        <div class="flex flex-col gap-3 relative z-10 w-full mt-auto">
-                            <a href="https://rezflow.co.za/phumelela/signup" target="_blank" class="neu-button px-3 py-3 rounded-xl text-sm font-bold text-[#1e3a8a] text-center w-full flex justify-center items-center gap-2 hover:bg-white">
+                        <div class="flex flex-col gap-2 relative z-10 w-full mt-auto">
+                            <a href="https://rezflow.co.za/phumelela/signup" target="_blank" class="neu-button px-4 py-3.5 rounded-xl text-sm font-bold text-[#1e3a8a] flex justify-center items-center gap-2 hover:bg-white">
                                 <i class="fa-solid fa-mobile-screen"></i> Student App
                             </a>
-                            <div class="grid grid-cols-2 gap-3">
-                                <a href="https://rezflow.co.za/admin/phumelela" target="_blank" class="neu-button px-2 py-3 rounded-xl text-[10px] font-bold text-indigo-600 flex flex-col items-center justify-center gap-1.5 text-center hover:bg-white">
-                                    <i class="fa-solid fa-wrench text-sm"></i> Maintenance
+                            <a href="https://rezflow.co.za/admin/phumelela" target="_blank" class="neu-button px-4 py-3.5 rounded-xl text-sm font-bold text-[#06b6d4] flex justify-center items-center gap-2 hover:bg-white">
+                                <i class="fa-solid fa-server"></i> Command Center
+                            </a>
+                            <div class="w-10 h-px bg-slate-200/60 mx-auto my-1"></div>
+                            <div class="flex flex-col gap-2">
+                                <a href="https://rezflow.co.za/admin/phumelela" target="_blank" class="neu-button px-4 py-2.5 rounded-xl text-xs font-bold text-indigo-600 flex items-center gap-3 hover:bg-white">
+                                    <i class="fa-solid fa-wrench w-5 text-center"></i> Maintenance Portal
                                 </a>
-                                <a href="https://rezflow.co.za/admin/phumelela" target="_blank" class="neu-button px-2 py-3 rounded-xl text-[10px] font-bold text-rose-600 flex flex-col items-center justify-center gap-1.5 text-center hover:bg-white">
-                                    <i class="fa-solid fa-shield-halved text-sm"></i> Security
+                                <a href="https://rezflow.co.za/admin/phumelela" target="_blank" class="neu-button px-4 py-2.5 rounded-xl text-xs font-bold text-rose-600 flex items-center gap-3 hover:bg-white">
+                                    <i class="fa-solid fa-shield-halved w-5 text-center"></i> Security Portal
                                 </a>
-                                <a href="https://rezflow.co.za/admin/phumelela" target="_blank" class="neu-button px-2 py-3 rounded-xl text-[10px] font-bold text-emerald-600 flex flex-col items-center justify-center gap-1.5 text-center hover:bg-white">
-                                    <i class="fa-solid fa-bus text-sm"></i> Transport
-                                </a>
-                                <a href="https://rezflow.co.za/admin/phumelela" target="_blank" class="neu-button px-2 py-3 rounded-xl text-[10px] font-bold text-[#06b6d4] flex flex-col items-center justify-center gap-1.5 text-center hover:bg-white">
-                                    <i class="fa-solid fa-server text-sm"></i> Command
+                                <a href="https://rezflow.co.za/admin/phumelela" target="_blank" class="neu-button px-4 py-2.5 rounded-xl text-xs font-bold text-emerald-600 flex items-center gap-3 hover:bg-white">
+                                    <i class="fa-solid fa-bus w-5 text-center"></i> Transport Portal
                                 </a>
                             </div>
                         </div>
@@ -630,22 +636,23 @@
                             <h3 class="text-2xl font-bold text-[#1d1d1f] mb-2 tracking-tight">Adowa Living</h3>
                             <p class="text-xs text-[#86868b] font-medium px-2">Premium lifestyle and bespoke tenant management.</p>
                         </div>
-                        <div class="flex flex-col gap-3 relative z-10 w-full mt-auto">
-                            <a href="https://rezflow.co.za/adowa/signup" target="_blank" class="neu-button px-3 py-3 rounded-xl text-sm font-bold text-[#1e3a8a] text-center w-full flex justify-center items-center gap-2 hover:bg-white">
+                        <div class="flex flex-col gap-2 relative z-10 w-full mt-auto">
+                            <a href="https://rezflow.co.za/adowa/signup" target="_blank" class="neu-button px-4 py-3.5 rounded-xl text-sm font-bold text-[#1e3a8a] flex justify-center items-center gap-2 hover:bg-white">
                                 <i class="fa-solid fa-mobile-screen"></i> Student App
                             </a>
-                            <div class="grid grid-cols-2 gap-3">
-                                <a href="https://rezflow.co.za/admin/adowa" target="_blank" class="neu-button px-2 py-3 rounded-xl text-[10px] font-bold text-indigo-600 flex flex-col items-center justify-center gap-1.5 text-center hover:bg-white">
-                                    <i class="fa-solid fa-wrench text-sm"></i> Maintenance
+                            <a href="https://rezflow.co.za/admin/adowa" target="_blank" class="neu-button px-4 py-3.5 rounded-xl text-sm font-bold text-[#06b6d4] flex justify-center items-center gap-2 hover:bg-white">
+                                <i class="fa-solid fa-server"></i> Command Center
+                            </a>
+                            <div class="w-10 h-px bg-slate-200/60 mx-auto my-1"></div>
+                            <div class="flex flex-col gap-2">
+                                <a href="https://rezflow.co.za/admin/adowa" target="_blank" class="neu-button px-4 py-2.5 rounded-xl text-xs font-bold text-indigo-600 flex items-center gap-3 hover:bg-white">
+                                    <i class="fa-solid fa-wrench w-5 text-center"></i> Maintenance Portal
                                 </a>
-                                <a href="https://rezflow.co.za/admin/adowa" target="_blank" class="neu-button px-2 py-3 rounded-xl text-[10px] font-bold text-rose-600 flex flex-col items-center justify-center gap-1.5 text-center hover:bg-white">
-                                    <i class="fa-solid fa-shield-halved text-sm"></i> Security
+                                <a href="https://rezflow.co.za/admin/adowa" target="_blank" class="neu-button px-4 py-2.5 rounded-xl text-xs font-bold text-rose-600 flex items-center gap-3 hover:bg-white">
+                                    <i class="fa-solid fa-shield-halved w-5 text-center"></i> Security Portal
                                 </a>
-                                <a href="https://rezflow.co.za/admin/adowa" target="_blank" class="neu-button px-2 py-3 rounded-xl text-[10px] font-bold text-emerald-600 flex flex-col items-center justify-center gap-1.5 text-center hover:bg-white">
-                                    <i class="fa-solid fa-bus text-sm"></i> Transport
-                                </a>
-                                <a href="https://rezflow.co.za/admin/adowa" target="_blank" class="neu-button px-2 py-3 rounded-xl text-[10px] font-bold text-[#06b6d4] flex flex-col items-center justify-center gap-1.5 text-center hover:bg-white">
-                                    <i class="fa-solid fa-server text-sm"></i> Command
+                                <a href="https://rezflow.co.za/admin/adowa" target="_blank" class="neu-button px-4 py-2.5 rounded-xl text-xs font-bold text-emerald-600 flex items-center gap-3 hover:bg-white">
+                                    <i class="fa-solid fa-bus w-5 text-center"></i> Transport Portal
                                 </a>
                             </div>
                         </div>
@@ -660,22 +667,23 @@
                             <h3 class="text-2xl font-bold text-[#1d1d1f] mb-2 tracking-tight">TKC Properties</h3>
                             <p class="text-xs text-[#86868b] font-medium px-2">Multi-tenant portfolio ops and live maintenance sync.</p>
                         </div>
-                        <div class="flex flex-col gap-3 relative z-10 w-full mt-auto">
-                            <a href="https://rezflow.co.za/tkc/signup" target="_blank" class="neu-button px-3 py-3 rounded-xl text-sm font-bold text-[#1e3a8a] text-center w-full flex justify-center items-center gap-2 hover:bg-white">
+                        <div class="flex flex-col gap-2 relative z-10 w-full mt-auto">
+                            <a href="https://rezflow.co.za/tkc/signup" target="_blank" class="neu-button px-4 py-3.5 rounded-xl text-sm font-bold text-[#1e3a8a] flex justify-center items-center gap-2 hover:bg-white">
                                 <i class="fa-solid fa-mobile-screen"></i> Student App
                             </a>
-                            <div class="grid grid-cols-2 gap-3">
-                                <a href="https://rezflow.co.za/admin/tkc" target="_blank" class="neu-button px-2 py-3 rounded-xl text-[10px] font-bold text-indigo-600 flex flex-col items-center justify-center gap-1.5 text-center hover:bg-white">
-                                    <i class="fa-solid fa-wrench text-sm"></i> Maintenance
+                            <a href="https://rezflow.co.za/admin/tkc" target="_blank" class="neu-button px-4 py-3.5 rounded-xl text-sm font-bold text-[#06b6d4] flex justify-center items-center gap-2 hover:bg-white">
+                                <i class="fa-solid fa-server"></i> Command Center
+                            </a>
+                            <div class="w-10 h-px bg-slate-200/60 mx-auto my-1"></div>
+                            <div class="flex flex-col gap-2">
+                                <a href="https://rezflow.co.za/admin/tkc" target="_blank" class="neu-button px-4 py-2.5 rounded-xl text-xs font-bold text-indigo-600 flex items-center gap-3 hover:bg-white">
+                                    <i class="fa-solid fa-wrench w-5 text-center"></i> Maintenance Portal
                                 </a>
-                                <a href="https://rezflow.co.za/admin/tkc" target="_blank" class="neu-button px-2 py-3 rounded-xl text-[10px] font-bold text-rose-600 flex flex-col items-center justify-center gap-1.5 text-center hover:bg-white">
-                                    <i class="fa-solid fa-shield-halved text-sm"></i> Security
+                                <a href="https://rezflow.co.za/admin/tkc" target="_blank" class="neu-button px-4 py-2.5 rounded-xl text-xs font-bold text-rose-600 flex items-center gap-3 hover:bg-white">
+                                    <i class="fa-solid fa-shield-halved w-5 text-center"></i> Security Portal
                                 </a>
-                                <a href="https://rezflow.co.za/admin/tkc" target="_blank" class="neu-button px-2 py-3 rounded-xl text-[10px] font-bold text-emerald-600 flex flex-col items-center justify-center gap-1.5 text-center hover:bg-white">
-                                    <i class="fa-solid fa-bus text-sm"></i> Transport
-                                </a>
-                                <a href="https://rezflow.co.za/admin/tkc" target="_blank" class="neu-button px-2 py-3 rounded-xl text-[10px] font-bold text-[#06b6d4] flex flex-col items-center justify-center gap-1.5 text-center hover:bg-white">
-                                    <i class="fa-solid fa-server text-sm"></i> Command
+                                <a href="https://rezflow.co.za/admin/tkc" target="_blank" class="neu-button px-4 py-2.5 rounded-xl text-xs font-bold text-emerald-600 flex items-center gap-3 hover:bg-white">
+                                    <i class="fa-solid fa-bus w-5 text-center"></i> Transport Portal
                                 </a>
                             </div>
                         </div>
