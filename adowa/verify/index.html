@@ -2,99 +2,98 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verify Your Account | Adowa Living</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Adowa Living | Verify Account</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Base Reset */
-        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
-        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
-        img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
-        
-        /* Client-specific styles */
-        body { margin: 0; padding: 0; width: 100% !important; background-color: #e2e8f0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-        
-        /* Hover Effects (for clients that support it) */
-        .btn:hover { background-color: #1d4ed8 !important; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #e2e8f0; -webkit-font-smoothing: antialiased; margin: 0; padding: 0; }
+
+        .liquid-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; overflow: hidden; z-index: 0; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); }
+        .blob { position: absolute; filter: blur(80px); opacity: 0.6; animation: breathe 12s infinite alternate cubic-bezier(0.4, 0, 0.2, 1); }
+        .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #60a5fa; animation-delay: 0s; }
+        .blob-2 { bottom: -20%; right: -10%; width: 60vw; height: 60vw; background: #2dd4bf; animation-delay: -4s; }
+        .blob-3 { top: 40%; left: 60%; width: 40vw; height: 40vw; background: #818cf8; animation-delay: -8s; }
+        @keyframes breathe { 0% { transform: scale(1) translate(0, 0); } 100% { transform: scale(1.1) translate(20px, -20px); } }
+
+        .glass-panel { background: rgba(255, 255, 255, 0.45); backdrop-filter: blur(40px) saturate(150%); -webkit-backdrop-filter: blur(40px) saturate(150%); border: 1px solid rgba(255, 255, 255, 0.7); box-shadow: 0 30px 60px -12px rgba(0,0,0,0.1), 0 15px 25px -10px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,1), inset 0 0 20px rgba(255,255,255,0.5); }
+        .tap-effect:active { transform: scale(0.98); transition: transform 0.1s ease; }
     </style>
 </head>
-<body style="margin: 0; padding: 0; background-color: #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+<body class="text-slate-800 min-h-screen flex flex-col relative overflow-hidden justify-center items-center py-10">
 
-    <!-- Preheader text (Hidden but shows in inbox preview) -->
-    <div style="display: none; max-height: 0px; overflow: hidden; opacity: 0; font-size: 1px; line-height: 1px; color: #e2e8f0;">
-        Action Required: Please verify your email address to activate your resident portal access for Adowa Living.
+    <div class="liquid-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
     </div>
 
-    <!-- Main Container -->
-    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #e2e8f0; padding: 40px 20px;">
-        <tr>
-            <td align="center">
-                <!-- Content Card -->
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #ffffff; border-radius: 24px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); overflow: hidden;">
-                    
-                    <!-- Header Area -->
-                    <tr>
-                        <td align="center" style="padding: 40px 40px 20px 40px; background-color: #ffffff;">
-                            <img src="https://rezflow.co.za/adowa/adowa%20living%20logo.png" alt="Adowa Living Logo" width="80" style="display: block; margin: 0 auto 15px auto; border-radius: 16px;">
-                            <h2 style="margin: 0; color: #0f172a; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">Adowa Living</h2>
-                        </td>
-                    </tr>
+    <main class="relative z-10 w-full max-w-[420px] px-5 sm:px-0 flex flex-col items-center">
+        <div class="flex flex-col items-center justify-center gap-4 mb-8">
+            <div class="relative">
+                <div class="absolute inset-0 bg-white rounded-3xl blur-md opacity-60"></div>
+                <img src="../adowa living logo.png" onerror="this.src='https://placehold.co/400x400/0f172a/ffffff?text=AL'" alt="Logo" class="relative w-24 h-24 object-cover rounded-3xl shadow-xl shadow-blue-900/10 ring-2 ring-white/80">
+            </div>
+            <span class="font-black text-2xl tracking-tight text-slate-800 drop-shadow-sm text-center">Adowa Living</span>
+        </div>
 
-                    <!-- Body Content -->
-                    <tr>
-                        <td align="center" style="padding: 0 40px 30px 40px;">
-                            <p style="margin: 0 0 20px 0; color: #475569; font-size: 16px; line-height: 24px; font-weight: 500;">
-                                Welcome to the gateway. Your account has been created successfully, but we need to verify your email address before granting you access to the resident portal.
-                            </p>
-                            <p style="margin: 0 0 20px 0; color: #64748b; font-size: 14px; line-height: 22px;">
-                                Click the button below to securely activate your profile. <strong>This link will expire in 2 hours.</strong>
-                            </p>
-                        </td>
-                    </tr>
+        <div class="glass-panel rounded-[32px] p-8 sm:p-10 w-full relative overflow-hidden text-center">
+            <h2 class="text-xl font-black text-slate-900 mb-2">Almost There!</h2>
+            <p class="text-sm text-slate-500 mb-8 font-medium leading-relaxed">Click the button below to officially activate your account and access the portal.</p>
+            
+            <button id="verifyBtn" onclick="executeVerification()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl py-4 font-bold transition-all shadow-xl shadow-emerald-500/20 tap-effect flex items-center justify-center gap-2">
+                <i class="fa-solid fa-shield-check"></i> Activate My Account
+            </button>
 
-                    <!-- Call to Action Button -->
-                    <tr>
-                        <td align="center" style="padding: 10px 40px 40px 40px;">
-                            <table border="0" cellpadding="0" cellspacing="0">
-                                <tr>
-                                    <td align="center" bgcolor="#2563eb" style="border-radius: 12px;">
-                                        <!-- SECURE FRONTEND URL INJECTED HERE -->
-                                        <a href="https://rezflow.co.za/adowa/verify/?token={{ $('Code in JavaScript').item.json.verification_token }}" target="_blank" class="btn" style="display: inline-block; padding: 16px 32px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: bold; color: #ffffff; text-decoration: none; border-radius: 12px; letter-spacing: 0.5px;">
-                                            Activate Account
-                                        </a>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
+            <div id="statusMessage" class="hidden mt-6 p-4 rounded-xl text-sm font-bold shadow-sm"></div>
+        </div>
+    </main>
 
-                    <!-- Divider -->
-                    <tr>
-                        <td align="center" style="padding: 0 40px;">
-                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                                <tr>
-                                    <td style="border-top: 1px solid #e2e8f0;"></td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
+    <script>
+        async function executeVerification() {
+            const btn = document.getElementById('verifyBtn');
+            const statusBox = document.getElementById('statusMessage');
+            
+            // Extract the token from the URL the email sent them to
+            const token = new URLSearchParams(window.location.search).get('token');
 
-                    <!-- Footer & Technical Note -->
-                    <tr>
-                        <td align="center" style="padding: 30px 40px;">
-                            <p style="margin: 0 0 10px 0; color: #94a3b8; font-size: 12px; line-height: 18px;">
-                                If you did not request this registration, you can safely ignore this email. Your data remains secure.
-                            </p>
-                            <p style="margin: 0; color: #cbd5e1; font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">
-                                Engineered by Automania
-                            </p>
-                        </td>
-                    </tr>
+            if (!token) {
+                statusBox.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-700');
+                statusBox.classList.add('bg-rose-50', 'text-rose-700');
+                statusBox.textContent = "No verification token found in URL.";
+                return;
+            }
 
-                </table>
-                <!-- End Content Card -->
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Activating...';
+            btn.disabled = true;
+
+            try {
+                // Pointing to your active production webhook
+                const res = await fetch('https://n8n.automania.cloud/webhook/reziflow-verify', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ token: token })
+                });
                 
-            </td>
-        </tr>
-    </table>
+                const data = await res.json();
+
+                if (data.status === 'success') {
+                    btn.classList.add('hidden'); // Hide button on success to prevent double clicks
+                    statusBox.classList.remove('hidden', 'bg-rose-50', 'text-rose-700');
+                    statusBox.classList.add('bg-emerald-50', 'text-emerald-700');
+                    statusBox.innerHTML = '<i class="fa-solid fa-circle-check text-lg mb-2 block"></i> Account Verified!<br><a href="/adowa/signin/" class="underline mt-2 inline-block hover:text-emerald-900">Click here to sign in</a>';
+                } else {
+                    throw new Error(data.message || "Verification failed.");
+                }
+            } catch (err) {
+                btn.innerHTML = 'Retry Activation';
+                btn.disabled = false;
+                statusBox.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-700');
+                statusBox.classList.add('bg-rose-50', 'text-rose-700');
+                statusBox.textContent = err.message || "Link may be expired or invalid.";
+            }
+        }
+    </script>
 </body>
 </html>
