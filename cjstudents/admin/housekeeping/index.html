@@ -168,6 +168,10 @@
     </div>
 </div>
 
+<!-- ========================================== -->
+<!-- HOUSEKEEPING MODALS                        -->
+<!-- ========================================== -->
+
 <!-- Image Lightbox Modal -->
 <div id="imageLightboxModal" class="modal-overlay" onclick="if(event.target === this) this.classList.remove('active')">
     <div class="modal-content !max-w-2xl !bg-transparent !shadow-none !border-none flex flex-col items-center relative">
@@ -220,54 +224,63 @@
     };
 
     // ----------------------------------------------------
-    // STRICT DATA PIPELINE
+    // INDEPENDENT DATA PIPELINE (Bypasses parent strict filters)
     // ----------------------------------------------------
     window.fetchFeedbackData = async function(forcedRefresh = false) {
         const body = document.getElementById('fb-body');
         if (forcedRefresh && body) { body.innerHTML = '<tr><td colspan="7" class="p-8 text-center"><i class="fa-solid fa-circle-notch fa-spin text-teal-500 text-2xl"></i></td></tr>'; }
         
         try {
-            // CACHE BUSTING to ensure the latest logs pull through
-            const res = await fetch('https://n8n.automania.cloud/webhook/housekept?t=' + Date.now(), { 
+            // Aggressive Cache-Busting added directly to the URL and Headers
+            const cacheBuster = `_t=${new Date().getTime()}`;
+            const res = await fetch(`https://n8n.automania.cloud/webhook/housekept?${cacheBuster}`, { 
                 method: 'GET',
-                headers: { 'Accept': 'application/json' }
+                headers: { 
+                    'Accept': 'application/json',
+                    'Cache-Control': 'no-cache, no-store, must-revalidate',
+                    'Pragma': 'no-cache',
+                    'Expires': '0'
+                }
             });
             
             if (res.ok) {
                 let rawData = await res.json();
                 let arr = [];
                 
-                // Fortified array extraction
-                if (typeof window.parseN8n === 'function') {
-                    arr = window.parseN8n(rawData);
-                } else {
-                    if (typeof rawData === 'string') rawData = JSON.parse(rawData);
-                    if (rawData.data && Array.isArray(rawData.data)) rawData = rawData.data;
-                    if (Array.isArray(rawData)) { arr = rawData.flat(Infinity); } 
-                    else if (typeof rawData === 'object') { arr = [rawData]; }
-                    arr = arr.map(i => i.json ? i.json : i);
-                }
+                // Fortified array extraction independent of main OS constraints
+                if (typeof rawData === 'string') rawData = JSON.parse(rawData);
+                if (rawData.data && Array.isArray(rawData.data)) rawData = rawData.data;
+                
+                if (Array.isArray(rawData)) { arr = rawData.flat(Infinity); } 
+                else if (typeof rawData === 'object') { arr = [rawData]; }
+                
+                // Flatten n8n json property if wrapped
+                arr = arr.map(i => i.json ? i.json : i);
+
+                // Filter out empty rows, but allow anything with a Room, Desc, or Image
+                arr = arr.filter(i => i && (i.Room || i.Description || i.Image_URL || i.Student_Number));
 
                 window.globalHousekeepingData = arr.map((item, idx) => {
-                    // Strict Classification Engine
+                    // Smart Feedback Classification Engine
                     let type = 'Complaint';
                     const rawType = String(item.Type || item.Feedback_Type || '').toLowerCase();
                     const desc = String(item.Description || item.Notes || '').toLowerCase();
                     
                     if (rawType.includes('commendation') || rawType.includes('good') || desc.includes('good') || desc.includes('clean') || desc.includes('excellent')) {
+                        // Ensure "not clean" doesn't get flagged as a Commendation
                         if (!desc.includes('not clean') && !desc.includes('dirty')) {
                             type = 'Commendation';
                         }
                     }
 
-                    // Extract Image_URL explicitly based on your payload schema
+                    // Explicitly maps Image_URL based on your webhook
                     const imgTarget = item.Image_URL || item.Image || item.Photo || item.Proof || '';
 
                     return {
                         id: item.row_number ? `row-${item.row_number}` : `fb-${idx}`,
-                        Timestamp: item.Timestamp || item.Date || new Date().toISOString(), // Injects ISO if missing
-                        Student_Number: item.Student_Number || 'Unknown',
-                        Room: item.Room || item.Location || 'Unknown',
+                        Timestamp: item.Timestamp || item.Date || new Date().toISOString(),
+                        Student_Number: item.Student_Number || '--',
+                        Room: item.Room || item.Location || '--',
                         Description: item.Description || item.Notes || 'No description provided',
                         Image: imgTarget,
                         Type: type,
@@ -387,7 +400,7 @@
                 
                 // High-End Image Preview Rendering
                 let imgEl = '<div class="w-8 h-8 rounded-md bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-300 mx-auto"><i class="fa-solid fa-image-slash text-[10px]"></i></div>';
-                if (item.Image && item.Image.length > 10 && item.Image.startsWith('http')) {
+                if (item.Image && String(item.Image).length > 10 && String(item.Image).startsWith('http')) {
                     const safeUrl = String(item.Image).replace(/'/g, "\\'");
                     imgEl = `<img src="${item.Image}" onclick="window.openImageLightbox('${safeUrl}')" class="w-8 h-8 rounded-md object-cover border border-slate-200 cursor-pointer hover:border-teal-400 transition-colors shadow-sm mx-auto" alt="Proof">`;
                 }
