@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CJ Students Gateway | Sign In</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #e2e8f0; -webkit-font-smoothing: antialiased; margin: 0; padding: 0; }
+
+        .liquid-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; overflow: hidden; z-index: 0; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); }
+        .blob { position: absolute; filter: blur(80px); opacity: 0.6; animation: breathe 12s infinite alternate cubic-bezier(0.4, 0, 0.2, 1); }
+        .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #60a5fa; animation-delay: 0s; }
+        .blob-2 { bottom: -20%; right: -10%; width: 60vw; height: 60vw; background: #2dd4bf; animation-delay: -4s; }
+        .blob-3 { top: 40%; left: 60%; width: 40vw; height: 40vw; background: #818cf8; animation-delay: -8s; }
+        @keyframes breathe { 0% { transform: scale(1) translate(0, 0); } 100% { transform: scale(1.1) translate(20px, -20px); } }
+
+        .glass-panel { background: rgba(255, 255, 255, 0.45); backdrop-filter: blur(40px) saturate(150%); -webkit-backdrop-filter: blur(40px) saturate(150%); border: 1px solid rgba(255, 255, 255, 0.7); box-shadow: 0 30px 60px -12px rgba(0,0,0,0.1), 0 15px 25px -10px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,1), inset 0 0 20px rgba(255,255,255,0.5); }
+        .input-field { width: 100%; background-color: rgba(255, 255, 255, 0.5); border: 1px solid rgba(255, 255, 255, 0.8); border-radius: 1rem; padding: 1rem 1rem 1rem 2.75rem; font-size: 0.875rem; font-weight: 500; color: #0f172a; transition: all 0.3s ease; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+        .input-field:focus { outline: none; border-color: #3b82f6; background-color: rgba(255, 255, 255, 0.9); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15), inset 0 2px 4px rgba(0,0,0,0.01); }
+        
+        .password-toggle { position: absolute; right: 1.25rem; top: 50%; transform: translateY(-50%); color: #64748b; cursor: pointer; transition: color 0.2s ease; padding: 0.5rem; }
+        .password-toggle:hover { color: #3b82f6; }
+        .tap-effect:active { transform: scale(0.98); transition: transform 0.1s ease; }
+
+        .modal-overlay { background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(16px); opacity: 0; visibility: hidden; transition: all 0.4s ease; z-index: 1000; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-content { transform: scale(0.9) translateY(30px); opacity: 0; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .modal-overlay.active .modal-content { transform: scale(1) translateY(0); opacity: 1; }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col relative overflow-hidden justify-center items-center py-10">
+
+    <div class="liquid-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <main class="relative z-10 w-full max-w-[420px] px-5 sm:px-0 flex flex-col items-center">
+        <div class="flex flex-col items-center justify-center gap-4 mb-8">
+            <div class="relative">
+                <div class="absolute inset-0 bg-white rounded-3xl blur-md opacity-60"></div>
+                <img src="../cj.jpg" onerror="this.src='https://placehold.co/400x400/0f172a/ffffff?text=CJ'" alt="CJ Students Logo" class="relative w-24 h-24 object-cover rounded-3xl shadow-xl shadow-blue-900/10 ring-2 ring-white/80">
+            </div>
+            <span class="font-black text-2xl tracking-tight text-slate-800 drop-shadow-sm text-center">CJ Students</span>
+        </div>
+
+        <div class="glass-panel rounded-[32px] p-8 sm:p-10 w-full relative overflow-hidden">
+            <div class="text-center mb-8">
+                <h1 class="text-xl font-black text-slate-900 mb-2 tracking-tight">Welcome Back</h1>
+                <p class="text-xs text-slate-500 font-medium leading-relaxed px-4">Enter your credentials to access the portal.</p>
+            </div>
+
+            <form id="signinForm" onsubmit="handleSignin(event)">
+                <div class="space-y-5 mb-6">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 pl-2">Email</label>
+                        <div class="relative group">
+                            <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"><i class="fa-solid fa-envelope"></i></div>
+                            <input type="email" id="email" class="input-field" placeholder="student@email.com" required>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-2 pl-2 pr-1">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Password</label>
+                            <button type="button" onclick="openModal('forgotModal')" class="text-[10px] font-bold text-blue-500 hover:text-blue-700 transition-colors">Forgot?</button>
+                        </div>
+                        <div class="relative group">
+                            <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"><i class="fa-solid fa-lock"></i></div>
+                            <input type="password" id="password" class="input-field pr-12" placeholder="••••••••" required>
+                            <i class="fa-solid fa-eye password-toggle" onclick="togglePassword('password', this)"></i>
+                        </div>
+                    </div>
+                </div>
+                <div id="apiError" class="hidden mb-6 bg-rose-50 border border-rose-200 rounded-2xl p-3 flex items-center justify-center gap-2 text-rose-600 text-xs font-bold shadow-sm">
+                    <span id="apiErrorText">Error message here</span>
+                </div>
+                <button type="submit" id="submitBtn" class="w-full bg-slate-900 hover:bg-blue-600 text-white rounded-2xl py-4 font-bold transition-all shadow-xl shadow-slate-900/20 tap-effect text-sm">Sign In</button>
+            </form>
+        </div>
+    </main>
+
+    <div id="forgotModal" class="fixed inset-0 z-[200] modal-overlay flex items-center justify-center p-4">
+        <div class="modal-content glass-panel w-full max-w-sm rounded-[32px] p-8">
+            <button onclick="closeModal('forgotModal')" class="absolute top-6 right-6 text-slate-400"><i class="fa-solid fa-times"></i></button>
+            <h2 class="text-xl font-black text-slate-900 mb-2">Reset Password</h2>
+            <form id="forgotForm" onsubmit="handleForgotPassword(event)">
+                <input type="email" id="forgotEmail" class="input-field mb-4" placeholder="Enter registered email" required>
+                <div id="forgotFeedback" class="hidden mb-4 p-3 rounded-xl text-xs font-bold text-center"></div>
+                <button type="submit" id="forgotBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-3 font-bold transition-colors shadow-lg shadow-blue-600/30">Send Reset Link</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword(id, icon) { const i = document.getElementById(id); i.type = i.type === "password" ? "text" : "password"; icon.classList.toggle("fa-eye"); icon.classList.toggle("fa-eye-slash"); }
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        async function handleSignin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const apiError = document.getElementById('apiError');
+            const apiErrorText = document.getElementById('apiErrorText');
+            
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating...'; 
+            btn.disabled = true;
+            apiError.classList.add('hidden');
+            
+            const rawEmail = document.getElementById('email').value;
+            const cleanEmail = rawEmail.toLowerCase().trim();
+
+            try {
+                localStorage.removeItem('reziflow_session');
+                localStorage.removeItem('reziflow_portal_init');
+
+                const res = await fetch('https://n8n.automania.cloud/webhook/reziflow-sign', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ Email_Address: cleanEmail, Password: document.getElementById('password').value })
+                });
+                
+                if (!res.ok) throw new Error("Invalid email or password.");
+                
+                const data = await res.json();
+                
+                // --- THE INDESTRUCTIBLE PAYLOAD EXTRACTOR ---
+                // This recursive function drills through any arrays or wrapper objects
+                // to find the exact database row containing the First_Name.
+                function extractProfile(obj) {
+                    if (!obj) return null;
+                    // If we hit the actual row data, return it immediately
+                    if (obj.First_Name !== undefined || obj.Student_Number !== undefined) return obj;
+                    
+                    if (Array.isArray(obj)) {
+                        for (let item of obj) {
+                            let found = extractProfile(item);
+                            if (found) return found;
+                        }
+                    } else if (typeof obj === 'object') {
+                        // Check specifically for n8n error formats before digging deeper
+                        if (obj.status === 'error') throw new Error(obj.message || "Invalid email or password.");
+                        
+                        for (let key in obj) {
+                            let found = extractProfile(obj[key]);
+                            if (found) return found;
+                        }
+                    }
+                    return null;
+                }
+
+                let userData = extractProfile(data);
+
+                // Failsafe: if the row is entirely blank but n8n didn't error out
+                if (!userData) {
+                    if (Array.isArray(data) && data.length > 0) userData = data[0]; 
+                    else userData = data; 
+                }
+
+                if (!userData || userData.status === 'error') throw new Error("Invalid email or password.");
+
+                // Lock the email in to prevent 'unknown@student.com'
+                userData.Email_Address = userData.Email_Address || cleanEmail;
+
+                localStorage.setItem('reziflow_session', JSON.stringify(userData));
+
+                // ---> THE SHIELD WRISTBAND HAS BEEN ADDED HERE <---
+                sessionStorage.setItem('reziAuthToken', 'true');
+
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Success'; 
+                btn.classList.replace('bg-slate-900', 'bg-emerald-500');
+
+                setTimeout(() => {
+                    window.location.href = 'https://rezflow.co.za/cjstudents/portal/'; 
+                }, 500);
+
+            } catch (err) {
+                apiErrorText.textContent = err.message || "Invalid email or password.";
+                apiError.classList.remove('hidden');
+                btn.innerHTML = 'Sign In'; 
+                btn.disabled = false;
+            }
+        }
+
+        async function handleForgotPassword(e) {
+            e.preventDefault();
+            const btn = document.getElementById('forgotBtn');
+            const feedback = document.getElementById('forgotFeedback');
+            
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sending...'; 
+            btn.disabled = true;
+            
+            const rawEmail = document.getElementById('forgotEmail').value;
+            const cleanEmail = rawEmail.toLowerCase().trim();
+
+            try {
+                const res = await fetch('https://n8n.automania.cloud/webhook/reziflow-forgot-password', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ Email_Address: cleanEmail })
+                });
+                
+                if (!res.ok) throw new Error("Connection failed.");
+                const data = await res.json();
+                if (data.status === 'error') throw new Error("Email not found. Please sign up to create an account.");
+
+                feedback.classList.remove('hidden', 'bg-rose-50', 'text-rose-700');
+                feedback.classList.add('bg-emerald-50', 'text-emerald-700');
+                feedback.innerHTML = '<i class="fa-solid fa-check-circle"></i> Check your email for the reset link.';
+                btn.innerHTML = 'Link Sent'; 
+
+            } catch (err) {
+                feedback.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-700');
+                feedback.classList.add('bg-rose-50', 'text-rose-700');
+                feedback.textContent = err.message || "An error occurred. Please try again.";
+                btn.innerHTML = 'Try Again'; 
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
