@@ -1,0 +1,806 @@
+<style>
+    /* ---------------------------------------------------
+       FLUID COMPACT LAYOUT & SIDEBAR CONFIG
+       --------------------------------------------------- */
+    .glass-segmented {
+        background: rgba(230, 230, 235, 0.45); backdrop-filter: blur(20px); border-radius: 12px; padding: 3px; 
+        border: 1px solid rgba(255, 255, 255, 0.5); box-shadow: inset 0 1px 4px rgba(0,0,0,0.03); 
+        display: inline-flex; flex-wrap: wrap; gap: 3px; align-items: center;
+    }
+    
+    /* Responsive High-Density Filter Buttons */
+    .glass-seg-btn {
+        padding: 4px 10px; font-size: 0.65rem; font-weight: 700; color: #64748b; border-radius: 8px; 
+        transition: all 0.2s ease; cursor: pointer; display: flex; align-items: center; gap: 4px; border: 1px solid transparent;
+    }
+    @media (min-width: 640px) {
+        .glass-seg-btn { padding: 6px 12px; font-size: 0.7rem; gap: 6px; border-radius: 10px; }
+    }
+    .glass-seg-btn:hover:not(.active) { background: rgba(255, 255, 255, 0.4); color: #334155; }
+    .glass-seg-btn.active {
+        background: rgba(255, 255, 255, 0.95); color: #1d1d1f; box-shadow: 0 2px 6px rgba(0,0,0,0.04); border: 1px solid rgba(255, 255, 255, 1);
+    }
+    .glass-seg-btn.active.accent-blue { color: #0071e3; } 
+    .glass-seg-btn.active.accent-emerald { color: #10b981; }
+
+    /* Right Sidebar */
+    .hub-sidebar { width: 22%; max-width: 224px; min-width: 150px; flex-shrink: 0; display: flex; flex-direction: column; gap: 0.75rem; transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), min-width 0.4s; position: relative; }
+    .hub-sidebar.collapsed { width: 48px !important; min-width: 48px !important; }
+    .hub-sidebar.collapsed .nav-text { display: none !important; }
+    .hub-sidebar.collapsed .nav-block { padding: 6px !important; }
+    .hub-sidebar.collapsed .block-btn { padding: 10px 0 !important; justify-content: center !important; }
+    .hub-sidebar.collapsed .block-btn i { margin: 0 !important; font-size: 1.1rem; }
+    
+    .nav-block { background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 1); box-shadow: 0 4px 20px -10px rgba(0,0,0,0.05); border-radius: 14px; padding: 8px; transition: all 0.3s ease; }
+    .block-btn { width: 100%; display: flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 10px; font-size: 0.65rem; font-weight: 700; transition: all 0.2s ease; cursor: pointer; white-space: nowrap; overflow: hidden; }
+    
+    /* Table Compression Layout */
+    .compact-table th { padding: 8px 10px; font-size: 0.55rem; letter-spacing: 0.05em; text-transform: uppercase; font-weight: 800; color: #94a3b8; border-bottom: 1px solid rgba(226, 232, 240, 0.5); }
+    .compact-table td { padding: 6px 10px; border-bottom: 1px solid rgba(226, 232, 240, 0.4); vertical-align: middle; font-size: 0.68rem; }
+    .glass-panel { background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05); border-radius: 20px; }
+    
+    /* Modals */
+    .modal-overlay { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; background: rgba(29, 29, 31, 0.4); backdrop-filter: blur(12px); z-index: 3000; display: flex; align-items: center; justify-content: center; position: fixed; inset: 0; padding: 1rem; }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .modal-content { transform: scale(0.95) translateY(20px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1); background: #ffffff; border-radius: 24px; padding: 1.25rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); max-height: 90vh; overflow-y: auto; overflow-x: visible; }
+    .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
+
+    /* Custom CSS Pie Chart Animation */
+    .pie-chart-anim { transition: background 1s ease-out; }
+    
+    /* Scrollbar */
+    .custom-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
+    .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+</style>
+
+<!-- Main Component Structure -->
+<div class="flex-1 flex flex-col sm:flex-row w-full h-full min-h-0 gap-3 overflow-hidden relative">
+    
+    <!-- Canvas (Left) -->
+    <div class="flex-1 flex flex-col min-w-0 min-h-0 overflow-y-auto custom-scroll pr-1 pb-10">
+        
+        <!-- Primary KPI View Switcher -->
+        <div class="flex justify-start sm:justify-center w-full mb-3 z-10 relative shrink-0">
+            <div class="glass-segmented shadow-sm bg-white/50 backdrop-blur-md">
+                <button onclick="window.toggleOccupancyView('allocated_students')" id="btn-occ-allocated_students" class="glass-seg-btn active accent-blue text-[10px] sm:text-xs">
+                    <i class="fa-solid fa-door-open"></i> Allocation
+                    <span id="stat-available-beds" class="bg-blue-50 border border-blue-100 text-blue-600 px-2 py-0.5 rounded-full text-[8px] shadow-sm ml-1">-</span>
+                </button>
+                <div class="w-px h-4 bg-slate-300/50 mx-1"></div>
+                <button onclick="window.toggleOccupancyView('student_info')" id="btn-occ-student_info" class="glass-seg-btn accent-emerald text-[10px] sm:text-xs">
+                    <i class="fa-solid fa-users"></i> Student Info
+                    <span id="stat-allocated-beds" class="bg-emerald-50 border border-emerald-100 text-emerald-600 px-2 py-0.5 rounded-full text-[8px] shadow-sm ml-1">-</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Dynamic CSS Analytics Dashboard -->
+        <div id="analytics-dashboard" class="mb-3 w-full shrink-0 z-10 relative transition-all"></div>
+
+        <!-- Data Grid Area -->
+        <div class="glass-panel rounded-[20px] lg:rounded-[24px] overflow-hidden mt-1 shrink-0 flex flex-col flex-1">
+            
+            <div class="px-3 py-3 border-b border-white/60 flex flex-col xl:flex-row gap-3 justify-between xl:items-center bg-white/50 backdrop-blur-md z-20 relative">
+                <div class="flex items-center gap-2 shrink-0">
+                    <div class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm"><i id="occ-icon" class="fa-solid fa-door-open text-xs"></i></div>
+                    <h3 id="occupancy-title" class="font-black text-slate-800 text-xs sm:text-sm whitespace-nowrap">Allocation</h3>
+                </div>
+                
+                <div class="flex items-center gap-2 flex-wrap xl:flex-nowrap justify-end w-full xl:w-auto">
+                    <!-- Adaptive Filter Segment Control -->
+                    <div id="occupancy-room-filters" class="flex flex-wrap gap-1.5 w-full sm:w-auto">
+                        <div class="glass-segmented max-w-full overflow-x-auto custom-scroll">
+                            <button onclick="window.setOccupancyBlock('all')" id="occ-blk-all" class="glass-seg-btn active accent-emerald text-[8px] sm:text-[9px]">All</button>
+                            <button onclick="window.setOccupancyBlock('A')" id="occ-blk-A" class="glass-seg-btn accent-emerald text-[8px] sm:text-[9px]">Blk A</button>
+                            <button onclick="window.setOccupancyBlock('B')" id="occ-blk-B" class="glass-seg-btn accent-emerald text-[8px] sm:text-[9px]">Blk B</button>
+                            <button onclick="window.setOccupancyBlock('C')" id="occ-blk-C" class="glass-seg-btn accent-emerald text-[8px] sm:text-[9px]">Blk C</button>
+                        </div>
+                        <div class="glass-segmented max-w-full overflow-x-auto custom-scroll">
+                            <button onclick="window.setOccupancyGender('all')" id="occ-gen-all" class="glass-seg-btn active accent-emerald text-[8px] sm:text-[9px]">All Wings</button>
+                            <button onclick="window.setOccupancyGender('male')" id="occ-gen-male" class="glass-seg-btn accent-emerald text-[8px] sm:text-[9px]">Male</button>
+                            <button onclick="window.setOccupancyGender('female')" id="occ-gen-female" class="glass-seg-btn accent-emerald text-[8px] sm:text-[9px]">Female</button>
+                        </div>
+                    </div>
+
+                    <!-- Download Report Button -->
+                    <button onclick="window.downloadOccupancyReport()" class="bg-[#1d1d1f] hover:bg-[#333336] text-white font-bold px-3 py-1.5 rounded-lg shadow-md flex items-center gap-1.5 shrink-0 text-[10px] transition-all">
+                        <i class="fa-solid fa-download"></i> <span class="hidden sm:inline">Report</span>
+                    </button>
+
+                    <div class="relative w-full sm:w-36">
+                        <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 transform -translate-y-1/2 text-slate-400 text-[9px]"></i>
+                        <input type="text" id="search-occupancy" onkeyup="window.filterOccupancyTable()" placeholder="Search..." class="w-full bg-white/80 border border-slate-200 rounded-lg py-1 pl-7 pr-2 text-[10px] outline-none focus:border-blue-400 shadow-sm">
+                    </div>
+                    <button onclick="if(typeof window.fetchStatsData === 'function') window.fetchStatsData(true);" class="bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 font-bold px-2 py-1 rounded-lg shadow-sm flex items-center shrink-0 text-[10px]"><i class="fa-solid fa-rotate text-blue-500"></i></button>
+                </div>
+            </div>
+            
+            <div class="overflow-y-auto custom-scroll flex-1 bg-white/40 backdrop-blur-sm relative">
+                <div class="overflow-x-auto w-full">
+                    <table class="w-full text-left border-collapse compact-table min-w-[650px]">
+                        <thead id="occupancy-thead" class="bg-white/70 sticky top-0 backdrop-blur-md z-10 shadow-sm border-b border-slate-200/40"></thead>
+                        <tbody id="stats-inventory-body" class="divide-y divide-slate-100/50"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+    <div id="occ-right-sidebar" class="hub-sidebar collapsed bg-transparent shrink-0">
+        <div class="nav-block flex items-center justify-between !p-1.5 bg-white/80 cursor-pointer hover:bg-white transition-colors" onclick="window.toggleOccSidebar()">
+            <div class="flex items-center gap-1.5 w-full">
+                <div class="w-7 h-7 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-[8px] shadow-sm flex items-center justify-center text-white text-[10px] shrink-0"><i class="fa-solid fa-layer-group"></i></div>
+                <div class="flex flex-col flex-1 overflow-hidden nav-text">
+                    <span class="font-black text-[10px] tracking-tight text-slate-900 leading-none truncate">Space<span class="text-emerald-500">Ctrl</span></span>
+                    <span class="text-[6px] font-bold tracking-widest text-slate-400 uppercase mt-0.5 truncate">Planning Tools</span>
+                </div>
+            </div>
+            <i id="occ-sidebar-toggle-icon" class="fa-solid fa-chevron-left text-slate-300 text-[8px] pr-1"></i>
+        </div>
+
+        <div class="nav-block">
+            <p class="px-1 text-[6px] font-extrabold text-slate-400 uppercase tracking-widest mb-1 truncate nav-text">Logistics</p>
+            <div class="space-y-1">
+                <button onclick="document.getElementById('roomSwapModal').classList.add('active')" class="block-btn bg-emerald-600 hover:bg-emerald-700 text-white justify-center gap-1 !py-1.5 shadow-sm border-none transition-colors">
+                    <i class="fa-solid fa-right-left text-[9px]"></i> <span class="truncate text-[8px] nav-text">Initiate Room Swap</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="mt-auto shrink-0 bg-[#111827] p-1.5 rounded-[12px] border border-slate-700 shadow-lg flex items-center gap-2">
+            <div class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-white border border-white/20 shrink-0"><i class="fa-solid fa-bolt text-[6px]"></i></div>
+            <div class="flex flex-col nav-text">
+                <span class="text-[5px] font-bold text-slate-400 uppercase tracking-widest leading-none">Engineered By</span>
+                <span class="text-[8px] font-black text-white tracking-widest mt-0.5 leading-none">AUTOMANIA</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODALS -->
+<div id="residentFileModal" class="modal-overlay">
+    <div class="modal-content w-full max-w-2xl flex flex-col p-0 overflow-hidden bg-white">
+        <!-- Header -->
+        <div class="p-5 border-b border-slate-200 bg-slate-50 flex justify-between items-start relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 text-slate-200/50 transform rotate-12 pointer-events-none"><i class="fa-solid fa-file-invoice text-9xl"></i></div>
+            <div class="flex gap-4 relative z-10">
+                <div class="w-14 h-14 bg-blue-50 text-blue-600 border border-blue-100 rounded-xl flex items-center justify-center text-2xl shadow-inner"><i class="fa-solid fa-user-graduate"></i></div>
+                <div>
+                    <h2 id="dos-name" class="text-xl font-black text-slate-900 tracking-tight leading-none">--</h2>
+                    <p id="dos-id" class="text-xs font-mono font-bold text-slate-500 mt-1.5">--</p>
+                    <div class="mt-2 flex flex-wrap gap-1.5">
+                        <span id="dos-status" class="bg-slate-100 text-slate-600 text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded border border-slate-200 shadow-sm"><i class="fa-solid fa-shield-halved mr-1"></i> --</span>
+                        <span id="dos-room" class="bg-emerald-50 text-emerald-600 text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded border border-emerald-100 shadow-sm">Room: --</span>
+                        <span id="dos-funding" class="bg-amber-50 text-amber-600 text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded border border-amber-100 shadow-sm">Fund: --</span>
+                        <span id="dos-account" class="hidden text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded border shadow-sm"></span>
+                    </div>
+                </div>
+            </div>
+            <button onclick="document.getElementById('residentFileModal').classList.remove('active')" class="w-8 h-8 bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-50 shadow-sm relative z-10 transition-colors"><i class="fa-solid fa-xmark text-xs"></i></button>
+        </div>
+
+        <!-- Body -->
+        <div class="p-5 flex-1 overflow-y-auto custom-scroll space-y-4 max-h-[65vh]">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-50/50 p-4 rounded-xl border border-slate-100">
+                    <h4 class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-200 pb-1"><i class="fa-solid fa-id-badge mr-1"></i> Academic Profile</h4>
+                    <div class="space-y-2 text-[11px] font-medium text-slate-700">
+                        <div class="flex justify-between"><span class="text-slate-400 font-normal">Nat. ID:</span> <span id="dos-nat-id" class="font-mono font-bold">--</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400 font-normal">Gender:</span> <span id="dos-gender" class="font-bold">--</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400 font-normal">Campus:</span> <span id="dos-campus" class="font-bold text-right truncate max-w-[150px]">--</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400 font-normal">Program:</span> <span id="dos-course" class="font-bold text-right truncate max-w-[150px]">--</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400 font-normal">Year Level:</span> <span id="dos-year" class="font-bold">--</span></div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50/50 p-4 rounded-xl border border-slate-100">
+                    <h4 class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-200 pb-1"><i class="fa-solid fa-address-book mr-1"></i> Contact & Location</h4>
+                    <div class="space-y-2 text-[11px] font-medium text-slate-700">
+                        <div class="flex justify-between"><span class="text-slate-400 font-normal">Mobile Number:</span> <span id="dos-phone" class="font-bold font-mono text-blue-600">--</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400 font-normal">Email Address:</span> <span id="dos-email" class="font-bold truncate max-w-[150px]">--</span></div>
+                        <div class="mt-3"><span class="text-slate-400 font-normal block mb-1">Home Address:</span> <span id="dos-address" class="font-bold block leading-tight text-slate-800 bg-white p-2 border border-slate-100 rounded-lg">--</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-rose-50/30 p-4 rounded-xl border border-rose-100">
+                    <h4 class="text-[9px] font-bold text-rose-500 uppercase tracking-widest mb-3 border-b border-rose-100 pb-1"><i class="fa-solid fa-people-roof mr-1"></i> Guardian / Emergency</h4>
+                    <div class="space-y-2 text-[11px] font-medium text-slate-700">
+                        <div class="flex justify-between"><span class="text-slate-400 font-normal">Full Name:</span> <span id="dos-em-name" class="font-bold text-slate-900">--</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400 font-normal">Relationship:</span> <span id="dos-em-rel" class="font-bold text-slate-900">--</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400 font-normal">Contact No:</span> <span id="dos-em-phone" class="font-bold font-mono text-slate-900">--</span></div>
+                    </div>
+                </div>
+                <div id="medical-panel" class="p-4 rounded-xl border transition-colors">
+                    <h4 id="medical-header" class="text-[9px] font-bold uppercase tracking-widest mb-3 border-b pb-1"><i class="fa-solid fa-truck-medical mr-1"></i> Medical Profile</h4>
+                    <p id="dos-medical" class="text-[10px] font-bold bg-white p-2 rounded-lg border leading-relaxed min-h-[40px] shadow-sm">--</p>
+                </div>
+            </div>
+
+            <div class="bg-slate-50/50 p-4 rounded-xl border border-slate-100">
+                <h4 class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-200 pb-1"><i class="fa-solid fa-folder-open mr-1"></i> Required Documents Vault</h4>
+                <div class="flex flex-wrap gap-2" id="dos-docs-container"></div>
+                <p id="dos-timestamp" class="text-[8px] font-mono text-slate-400 mt-3 text-right">Last Sync: --</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="roomSwapModal" class="modal-overlay">
+    <div class="modal-content magic-border-container w-full max-w-sm overflow-visible">
+        <div class="magic-border-inner flex flex-col relative overflow-visible">
+            <button onclick="document.getElementById('roomSwapModal').classList.remove('active')" class="absolute top-0 right-0 w-6 h-6 bg-slate-50 border border-slate-200 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100"><i class="fa-solid fa-xmark text-[10px]"></i></button>
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-8 h-8 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-lg flex items-center justify-center text-sm"><i class="fa-solid fa-right-left"></i></div>
+                <div><h2 class="text-base font-black text-slate-900 tracking-tight leading-none">Room Transfer</h2><p class="text-[8px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Update Allocation Ledger</p></div>
+            </div>
+            <form onsubmit="window.processRoomSwap(event)">
+                <div class="mb-3 relative">
+                    <label class="block text-[7px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Student / ID</label>
+                    <input type="text" id="swap-student-id" oninput="window.filterSwapStudents()" onfocus="window.filterSwapStudents()" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 text-[9px] font-mono outline-none focus:border-emerald-400 shadow-sm" placeholder="Start typing name or ID..." autocomplete="off" required>
+                    <!-- Poka-Yoke Student Dropdown -->
+                    <div id="swap-student-list" class="hidden absolute z-50 w-full bg-white border border-slate-200 rounded-lg shadow-xl mt-1 max-h-36 overflow-y-auto custom-scroll top-full left-0"></div>
+                </div>
+                <div class="mb-4 relative">
+                    <label class="block text-[7px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Target Room ID</label>
+                    <input type="text" id="swap-new-room" oninput="window.filterSwapRooms()" onfocus="window.filterSwapRooms()" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 text-[9px] font-mono outline-none focus:border-emerald-400 shadow-sm" placeholder="e.g. A-102" autocomplete="off" required>
+                    <!-- Poka-Yoke Room Dropdown -->
+                    <div id="swap-room-list" class="hidden absolute z-50 w-full bg-white border border-slate-200 rounded-lg shadow-xl mt-1 max-h-36 overflow-y-auto custom-scroll top-full left-0"></div>
+                </div>
+                <button type="submit" id="btn-submit-swap" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-[10px] py-2 shadow-md flex justify-center items-center gap-2 text-[9px]">Execute Transfer <i class="fa-solid fa-check"></i></button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ----------------------------------------------------
+    // ROBUST DATA PARSER FALLBACK
+    // ----------------------------------------------------
+    window.parseN8n = window.parseN8n || function(data) {
+        if (!data) return [];
+        if (Array.isArray(data) && data[0] && data[0].json) return data.map(d => d.json);
+        if (Array.isArray(data)) return data;
+        if (data.data) return data.data;
+        return [data];
+    };
+
+    window.globalRoomData = window.globalRoomData || [];
+    window.globalStudentData = window.globalStudentData || [];
+
+    // Global Click Handler to close Poka-Yoke Dropdowns
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('#swap-student-id') && !e.target.closest('#swap-student-list')) {
+            document.getElementById('swap-student-list')?.classList.add('hidden');
+        }
+        if (!e.target.closest('#swap-new-room') && !e.target.closest('#swap-room-list')) {
+            document.getElementById('swap-room-list')?.classList.add('hidden');
+        }
+    });
+
+    // ----------------------------------------------------
+    // N8N API PIPELINE
+    // ----------------------------------------------------
+    (async function initPipelineCheck() {
+        let needsRender = false;
+        
+        try {
+            const responseRooms = await fetch('https://n8n.automania.cloud/webhook/reziflow-get-rooms');
+            if (responseRooms.ok) { 
+                window.globalRoomData = window.parseN8n(await responseRooms.json()); 
+                needsRender = true; 
+            }
+        } catch (e) { console.error("Room sync fallback interrupted"); }
+        
+        try {
+            const responseStudents = await fetch('https://n8n.automania.cloud/webhook/reziflow-admin-data');
+            if (responseStudents.ok) { 
+                window.globalStudentData = window.parseN8n(await responseStudents.json()); 
+                needsRender = true; 
+            }
+        } catch (e) { console.error("Student sync fallback interrupted"); }
+        
+        if(needsRender) {
+            window.processStatsData();
+        }
+    })();
+
+    // ----------------------------------------------------
+    // CONFIGURATION & STATE
+    // ----------------------------------------------------
+    var currentOccupancyView = 'allocated_students'; 
+    var currentOccupancyBlock = 'all'; 
+    var currentOccupancyGender = 'all';
+
+    window.toggleOccSidebar = function() {
+        const sidebar = document.getElementById('occ-right-sidebar');
+        if(sidebar) {
+            sidebar.classList.toggle('collapsed');
+            const icon = document.getElementById('occ-sidebar-toggle-icon');
+            if(icon) { icon.className = sidebar.classList.contains('collapsed') ? "fa-solid fa-chevron-left text-slate-300 text-[8px] pr-1" : "fa-solid fa-chevron-right text-slate-300 text-[8px] pr-1"; }
+        }
+    };
+
+    window.filterOccupancyTable = function() { window.filterTable('search-occupancy', 'stats-inventory-body'); };
+
+    // ----------------------------------------------------
+    // RENDERING LOGIC & TAB SWITCHING
+    // ----------------------------------------------------
+    window.toggleOccupancyView = function(view) {
+        currentOccupancyView = view;
+        ['allocated_students', 'student_info'].forEach(o => document.getElementById(`btn-occ-${o}`)?.classList.remove('active', 'accent-blue', 'accent-emerald'));
+        const el = document.getElementById(`btn-occ-${view}`);
+        if(el) { el.classList.add('active'); el.classList.add(view === 'student_info' ? 'accent-emerald' : 'accent-blue'); }
+
+        const title = document.getElementById('occupancy-title'); 
+        const filters = document.getElementById('occupancy-room-filters');
+        const icon = document.getElementById('occ-icon');
+        const searchInput = document.getElementById('search-occupancy');
+        
+        if(searchInput) searchInput.value = '';
+        
+        if(view === 'allocated_students') { 
+            if(title) title.textContent = 'Allocation'; 
+            if(filters) { filters.classList.remove('hidden'); filters.classList.add('flex'); }
+            if(icon) { icon.className = "fa-solid fa-door-open text-xs"; icon.parentElement.className = "w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm"; }
+        } else { 
+            if(title) title.textContent = 'Student Info'; 
+            if(filters) { filters.classList.remove('flex'); filters.classList.add('hidden'); } 
+            if(icon) { icon.className = "fa-solid fa-users text-xs"; icon.parentElement.className = "w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shadow-sm"; }
+        }
+
+        window.processStatsData();
+    };
+
+    window.setOccupancyBlock = function(block) {
+        currentOccupancyBlock = block;
+        ['all', 'A', 'B', 'C'].forEach(b => document.getElementById(`occ-blk-${b}`)?.classList.remove('active', 'accent-emerald'));
+        document.getElementById(`occ-blk-${block}`)?.classList.add('active', 'accent-emerald');
+        window.processStatsData();
+    };
+
+    window.setOccupancyGender = function(gender) {
+        currentOccupancyGender = gender;
+        ['all', 'male', 'female'].forEach(g => document.getElementById(`occ-gen-${g}`)?.classList.remove('active', 'accent-emerald'));
+        document.getElementById(`occ-gen-${gender}`)?.classList.add('active', 'accent-emerald');
+        window.processStatsData();
+    };
+
+    // ----------------------------------------------------
+    // NATIVE CSS PIE CHART ENGINE (No Chart.js)
+    // ----------------------------------------------------
+    window.renderAnalyticsCharts = function(filteredRooms, filteredStudents) {
+        const dash = document.getElementById('analytics-dashboard');
+        if (!dash) return;
+
+        if (currentOccupancyView === 'student_info') {
+            // CAPACITY (Allocated vs Available) - Fixed to 241 Capacity
+            let totalBeds = 241;
+            
+            let allocated = 0;
+            if (window.globalStudentData) {
+                allocated = window.globalStudentData.filter(s => s && s.Room_Allocation && s.Room_Allocation !== 'Unassigned' && s.Room_Allocation !== '--').length;
+            }
+            
+            let available = Math.max(0, totalBeds - allocated);
+            let totalChart = allocated + available;
+            let allocDeg = totalChart ? (allocated / totalChart) * 360 : 0;
+
+            dash.innerHTML = `
+                <div class="flex items-center justify-center gap-6 bg-white/70 p-6 rounded-2xl border border-white shadow-sm w-full max-w-md mx-auto">
+                    <div class="relative w-24 h-24 shrink-0 rounded-full pie-chart-anim" style="background: conic-gradient(#3b82f6 0deg, #3b82f6 ${allocDeg}deg, #10b981 ${allocDeg}deg, #10b981 360deg); box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                        <div class="absolute inset-2 bg-white rounded-full flex items-center justify-center flex-col shadow-inner">
+                            <span class="text-base font-black text-slate-800 leading-none">${totalBeds}</span>
+                            <span class="text-[6px] text-slate-400 uppercase font-bold tracking-widest mt-0.5">Total Beds</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-2 w-full max-w-[150px]">
+                        <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1 mb-1">Capacity Ratio</p>
+                        <div class="flex items-center justify-between"><div class="flex items-center gap-2"><div class="w-2.5 h-2.5 rounded-full bg-blue-500"></div><span class="text-[10px] font-bold text-slate-600 uppercase">Allocated</span></div><span class="text-xs font-black text-slate-800 bg-blue-50 text-blue-600 px-1.5 rounded">${allocated}</span></div>
+                        <div class="flex items-center justify-between"><div class="flex items-center gap-2"><div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div><span class="text-[10px] font-bold text-slate-600 uppercase">Available</span></div><span class="text-xs font-black text-slate-800 bg-emerald-50 text-emerald-600 px-1.5 rounded">${available}</span></div>
+                    </div>
+                </div>
+            `;
+        } else {
+            // ROOMS TAB (Gender & Funding)
+            
+            // Generate Gender Data
+            let males = 0, females = 0;
+            if (filteredStudents) {
+                filteredStudents.forEach(s => {
+                    let g = String(s.Gender || '').toLowerCase();
+                    if (g.includes('female')) females++;
+                    else if (g.includes('male')) males++;
+                });
+            }
+            let totalGender = males + females;
+            let maleDeg = totalGender ? (males / totalGender) * 360 : 0;
+
+            // Generate Funding Data
+            let fundingObj = {};
+            if (filteredStudents) {
+                filteredStudents.forEach(s => {
+                    let type = String(s.Funding_Type || 'Unknown').trim();
+                    if(type === '') type = 'Unknown';
+                    fundingObj[type] = (fundingObj[type] || 0) + 1;
+                });
+            }
+            
+            let fKeys = Object.keys(fundingObj);
+            let fTotal = fKeys.reduce((sum, key) => sum + fundingObj[key], 0);
+            let fColors = ['#f59e0b', '#8b5cf6', '#10b981', '#ef4444', '#3b82f6', '#64748b'];
+            let fGradArr = [];
+            let currentDeg = 0;
+            let fLegendHtml = '';
+            
+            if (fTotal === 0) {
+                fGradArr.push('#e2e8f0 0deg, #e2e8f0 360deg');
+                fLegendHtml = `<div class="text-[10px] text-slate-400 italic">No Data</div>`;
+            } else {
+                fKeys.forEach((key, i) => {
+                    let color = fColors[i % fColors.length];
+                    let val = fundingObj[key];
+                    let sliceDeg = (val / fTotal) * 360;
+                    fGradArr.push(`${color} ${currentDeg}deg, ${color} ${currentDeg + sliceDeg}deg`);
+                    currentDeg += sliceDeg;
+                    
+                    fLegendHtml += `<div class="flex items-center justify-between mt-1"><div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full" style="background-color: ${color};"></div><span class="text-[9px] font-bold text-slate-600 truncate max-w-[80px]">${key}</span></div><span class="text-[10px] font-black text-slate-800">${val}</span></div>`;
+                });
+            }
+            let fGradientStr = `conic-gradient(${fGradArr.join(', ')})`;
+
+            dash.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                    <!-- Gender Chart -->
+                    <div class="flex items-center justify-center gap-6 bg-white/70 p-5 rounded-2xl border border-white shadow-sm">
+                        <div class="relative w-20 h-20 shrink-0 rounded-full pie-chart-anim" style="background: conic-gradient(#3b82f6 0deg, #3b82f6 ${maleDeg}deg, #ec4899 ${maleDeg}deg, #ec4899 360deg); box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                            <div class="absolute inset-1.5 bg-white rounded-full flex items-center justify-center flex-col shadow-inner">
+                                <i class="fa-solid fa-venus-mars text-slate-300 text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-1 w-full max-w-[120px]">
+                            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1 mb-1">Gender Ratio</p>
+                            <div class="flex items-center justify-between"><div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-blue-500"></div><span class="text-[9px] font-bold text-slate-600">Male</span></div><span class="text-[10px] font-black text-slate-800">${males}</span></div>
+                            <div class="flex items-center justify-between mt-1"><div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-pink-500"></div><span class="text-[9px] font-bold text-slate-600">Female</span></div><span class="text-[10px] font-black text-slate-800">${females}</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Funding Chart -->
+                    <div class="flex items-center justify-center gap-6 bg-white/70 p-5 rounded-2xl border border-white shadow-sm">
+                        <div class="relative w-20 h-20 shrink-0 rounded-full pie-chart-anim" style="background: ${fGradientStr}; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                            <div class="absolute inset-1.5 bg-white rounded-full flex items-center justify-center flex-col shadow-inner">
+                                <i class="fa-solid fa-landmark text-slate-300 text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-0.5 w-full max-w-[140px]">
+                            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1 mb-1">Funding Dist.</p>
+                            <div class="max-h-[60px] overflow-y-auto custom-scroll pr-1">
+                                ${fLegendHtml}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    };
+
+    window.processStatsData = function() {
+        if (!window.globalRoomData || !window.globalStudentData) return;
+
+        let totalBeds = 241;
+        
+        const allAllocated = window.globalStudentData.filter(s => s && s.Room_Allocation && s.Room_Allocation !== 'Unassigned' && s.Room_Allocation !== '--');
+        let occupiedBeds = allAllocated.length;
+        
+        if(document.getElementById('stat-available-beds')) document.getElementById('stat-available-beds').textContent = Math.max(0, totalBeds - occupiedBeds);
+        if(document.getElementById('stat-allocated-beds')) document.getElementById('stat-allocated-beds').textContent = allAllocated.length;
+
+        const thead = document.getElementById('occupancy-thead'); const tbody = document.getElementById('stats-inventory-body');
+        if(!tbody || !thead) return;
+
+        let filteredRooms = window.globalRoomData.filter(room => {
+            let matchBlock = true; let matchGender = true;
+            if (currentOccupancyBlock !== 'all') matchBlock = String(room.Block || '').toUpperCase() === currentOccupancyBlock.toUpperCase();
+            if (currentOccupancyGender !== 'all') { 
+                const blk = String(room.Block || '').toUpperCase(); 
+                if (currentOccupancyGender === 'male') matchGender = (blk === 'A'); 
+                else if (currentOccupancyGender === 'female') matchGender = (blk === 'B' || blk === 'C'); 
+            }
+            return matchBlock && matchGender;
+        });
+
+        let chartStudents = allAllocated.filter(s => {
+            let matchBlock = true; let matchGender = true;
+            let roomAlloc = String(s.Room_Allocation || '').toUpperCase();
+            if (currentOccupancyBlock !== 'all') matchBlock = roomAlloc.startsWith(currentOccupancyBlock);
+            if (currentOccupancyGender !== 'all') {
+                if (currentOccupancyGender === 'male') matchGender = roomAlloc.startsWith('A');
+                else if (currentOccupancyGender === 'female') matchGender = (roomAlloc.startsWith('B') || roomAlloc.startsWith('C'));
+            }
+            return matchBlock && matchGender;
+        });
+
+        // Trigger safe native CSS chart render
+        window.renderAnalyticsCharts(filteredRooms, chartStudents);
+
+        let htmlStr = '';
+
+        if (currentOccupancyView === 'allocated_students') {
+            thead.innerHTML = `<tr class="bg-white/40 text-slate-400 uppercase tracking-widest font-bold text-[9px] border-b border-slate-200/50"><th class="w-1/4">Room Details</th><th class="w-1/4">Zone / Block</th><th class="w-1/4">Bed Capacity</th><th class="text-right">Live Status</th></tr>`;
+            
+            if(filteredRooms.length === 0) { tbody.innerHTML = '<tr><td colspan="4" class="p-8 text-center text-slate-400 font-bold text-[10px]">No rooms match filters (or waiting for N8N sync).</td></tr>'; return; }
+
+            filteredRooms.forEach(room => {
+                const total = parseInt(room.Total_Beds || room.Capacity) || 0; 
+                const occ = parseInt(room.Occupied_Beds || room.Occupied) || 0; 
+                const avail = total - occ;
+                
+                let statusBadge = avail <= 0 ? `<span class="bg-slate-100 text-slate-500 px-2 py-1 rounded text-[8px] font-bold uppercase tracking-widest border border-slate-200">Full</span>` : `<span class="bg-emerald-50 text-emerald-600 px-2 py-1 rounded text-[8px] font-bold uppercase tracking-widest border border-emerald-100">${avail} Open</span>`;
+                
+                htmlStr += `
+                    <tr class="hover:bg-slate-50/50 transition-colors border-b border-slate-100/50">
+                        <td><div class="font-mono font-bold text-slate-800 text-[11px]">${room.Room_ID || '--'}</div><div class="text-[9px] text-slate-500 mt-0.5 capitalize">${room.Room_Type || 'Single'} Unit</div></td>
+                        <td><div class="font-bold text-slate-600 text-[10px]">Block ${room.Block || '-'}</div></td>
+                        <td><div class="text-[10px] font-medium text-slate-600">${occ} / ${total} Assigned</div><div class="w-16 bg-slate-200 rounded-full h-1 mt-1.5 overflow-hidden shadow-inner"><div class="${avail <= 0 ? 'bg-slate-400' : 'bg-emerald-400'} h-full" style="width: ${total > 0 ? (occ/total)*100 : 0}%"></div></div></td>
+                        <td class="text-right">${statusBadge}</td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = htmlStr;
+
+        } else {
+            thead.innerHTML = `<tr class="bg-white/40 text-slate-400 uppercase tracking-widest font-bold text-[9px] border-b border-slate-200/50"><th class="w-1/3">Resident Details</th><th class="w-1/4">Room Assignment</th><th class="w-1/4">Gender / Block</th><th class="text-right">Files</th></tr>`;
+            
+            const allocated = allAllocated.filter(s => s.First_Name);
+            if(allocated.length === 0) { tbody.innerHTML = '<tr><td colspan="4" class="p-8 text-center text-slate-400 font-bold text-[10px]">No resident data active (or waiting for N8N sync).</td></tr>'; return; }
+
+            allocated.forEach(s => {
+                const blockChar = String(s.Room_Allocation).charAt(0).toUpperCase(); 
+                const blockColor = blockChar === 'A' ? 'text-blue-500' : 'text-pink-500'; 
+                const icon = String(s.Gender).toLowerCase() === 'male' ? 'fa-mars' : 'fa-venus';
+                const safeId = String(s.Student_Number || '').replace(/'/g, "\\'");
+
+                htmlStr += `
+                    <tr class="hover:bg-slate-50/50 transition-colors border-b border-slate-100/50">
+                        <td><div class="font-black text-slate-800 text-[10px]">${s.First_Name || ''} ${s.Surname || ''}</div><div class="text-[8px] font-mono font-bold text-slate-400 mt-0.5">${s.Student_Number || '--'}</div></td>
+                        <td><span class="bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded text-[8px] font-bold border border-emerald-100 shadow-sm">${s.Room_Allocation}</span></td>
+                        <td><div class="text-[9px] font-bold text-slate-600"><i class="fa-solid ${icon} ${blockColor} mr-1"></i> ${s.Gender || 'N/A'} (Blk ${blockChar})</div></td>
+                        <td class="text-right"><button onclick="window.viewResidentFile('${safeId}', this)" class="bg-white border border-slate-200 text-blue-600 hover:bg-blue-50 text-[8px] font-bold px-2.5 py-1.5 rounded transition-all shadow-sm flex items-center gap-1.5 inline-flex"><i class="fa-solid fa-folder-open"></i> <span>View File</span></button></td>
+                    </tr>`;
+            });
+            tbody.innerHTML = htmlStr;
+        }
+    };
+
+    // ----------------------------------------------------
+    // LIVE FILES CONTROLLER (Webhook Integration)
+    // ----------------------------------------------------
+    window.viewResidentFile = async function(studentId, btnElement) {
+        const originalHtml = btnElement.innerHTML;
+        btnElement.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> <span>Syncing...</span>';
+        btnElement.disabled = true;
+
+        try {
+            const response = await fetch(`https://n8n.automania.cloud/webhook/reziflow-occupancy?student_number=${studentId}`, {
+                method: 'GET',
+                headers: { 'Accept': 'application/json' }
+            });
+            
+            if (!response.ok) throw new Error("Network response failed");
+            let data = await response.json();
+            
+            let student = Array.isArray(data) ? data[0] : data;
+            if (student && student.data && Array.isArray(student.data)) student = student.data[0];
+            if (student && student.json) student = student.json;
+            if (student && Array.isArray(student) && student[0]) student = student[0];
+            
+            if (!student || Object.keys(student).length === 0) {
+                student = window.globalStudentData.find(s => String(s.Student_Number) === String(studentId));
+                if (!student) throw new Error("Student data not found.");
+            }
+
+            document.getElementById('dos-name').textContent = `${student.First_Name || ''} ${student.Surname || ''}`; 
+            document.getElementById('dos-id').textContent = student.Student_Number || '--'; 
+            document.getElementById('dos-status').innerHTML = `<i class="fa-solid fa-shield-halved mr-1 text-slate-400"></i> ${student.Vetting_Status || 'Pending'}`;
+            document.getElementById('dos-room').textContent = `Room: ${student.Room_Allocation || 'Unassigned'}`;
+            document.getElementById('dos-funding').textContent = `Fund: ${student.Funding_Type || '--'}`;
+            
+            const accBadge = document.getElementById('dos-account');
+            accBadge.classList.remove('hidden');
+            if (student.Account_Status === 'Active') {
+                accBadge.className = "text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded shadow-sm bg-blue-50 text-blue-600 border border-blue-100 inline-block";
+                accBadge.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Active`;
+            } else {
+                accBadge.className = "text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded shadow-sm bg-slate-100 text-slate-500 border border-slate-200 inline-block";
+                accBadge.innerHTML = `Inactive`;
+            }
+
+            if (String(student.AD_ALERT).toLowerCase() === 'alerted') {
+                accBadge.className = "text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded shadow-sm bg-rose-50 text-rose-600 border border-rose-200 inline-block";
+                accBadge.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> System Alert`;
+            }
+            
+            document.getElementById('dos-nat-id').textContent = student.ID_Number || student.Passport_Number || '--';
+            document.getElementById('dos-gender').textContent = student.Gender || '--';
+            document.getElementById('dos-campus').textContent = student.Campus_Hub || '--';
+            document.getElementById('dos-course').textContent = student.Course || '--';
+            document.getElementById('dos-year').textContent = student.Year_Level || '--';
+            
+            let phoneStr = String(student.Mobile_Number || '--');
+            if (phoneStr !== '--' && !phoneStr.startsWith('0') && phoneStr.length >= 9) phoneStr = '0' + phoneStr;
+            
+            document.getElementById('dos-phone').textContent = phoneStr; 
+            document.getElementById('dos-email').textContent = student.Email_Address || '--';
+            const fullAddr = [student.Street_Address, student.City, student.Postal_Code].filter(Boolean).join(', ');
+            document.getElementById('dos-address').textContent = fullAddr !== '' ? fullAddr : 'Address not specified.';
+            
+            document.getElementById('dos-em-name').textContent = student.Guardian_Name || '--'; 
+            document.getElementById('dos-em-rel').textContent = student.Guardian_Relationship || '--'; 
+            
+            let guardPhone = String(student.Guardian_Number || '--');
+            if (guardPhone !== '--' && !guardPhone.startsWith('0') && guardPhone.length >= 9) guardPhone = '0' + guardPhone;
+            document.getElementById('dos-em-phone').textContent = guardPhone; 
+            
+            const medInfo = student.Medical;
+            const medPanel = document.getElementById('medical-panel');
+            const medHeader = document.getElementById('medical-header');
+            const medText = document.getElementById('dos-medical');
+            
+            if (medInfo && String(medInfo).trim() !== '' && String(medInfo).toLowerCase() !== 'none') {
+                medPanel.className = "p-4 rounded-xl border transition-colors bg-rose-50/50 border-rose-200";
+                medHeader.className = "text-[9px] font-bold uppercase tracking-widest mb-3 border-b pb-1 text-rose-600 border-rose-200";
+                medText.className = "text-[10px] font-bold bg-white p-2 rounded-lg border leading-relaxed min-h-[40px] shadow-sm text-rose-700 border-rose-100";
+                medText.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1 text-rose-500"></i> ${medInfo}`;
+            } else {
+                medPanel.className = "p-4 rounded-xl border transition-colors bg-slate-50 border-slate-100";
+                medHeader.className = "text-[9px] font-bold uppercase tracking-widest mb-3 border-b pb-1 text-slate-400 border-slate-200";
+                medText.className = "text-[10px] font-bold bg-white p-2 rounded-lg border leading-relaxed min-h-[40px] shadow-sm text-slate-500 border-slate-100";
+                medText.textContent = "No conditions declared.";
+            }
+
+            const docContainer = document.getElementById('dos-docs-container');
+            let docsHtml = '';
+            if (student.Doc_1_URL_ID) docsHtml += `<a href="${student.Doc_1_URL_ID}" target="_blank" class="flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1.5 rounded-lg text-[9px] font-bold text-slate-600 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm"><i class="fa-solid fa-id-card text-blue-500"></i> Identity File</a>`;
+            if (student.Doc_2_URL_Reg) docsHtml += `<a href="${student.Doc_2_URL_Reg}" target="_blank" class="flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1.5 rounded-lg text-[9px] font-bold text-slate-600 hover:text-indigo-600 hover:border-indigo-200 transition-all shadow-sm"><i class="fa-solid fa-graduation-cap text-indigo-500"></i> Registration</a>`;
+            if (student.Doc_3_URL_Funding) docsHtml += `<a href="${student.Doc_3_URL_Funding}" target="_blank" class="flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1.5 rounded-lg text-[9px] font-bold text-slate-600 hover:text-emerald-600 hover:border-emerald-200 transition-all shadow-sm"><i class="fa-solid fa-landmark text-emerald-500"></i> Funding Proof</a>`;
+            if (student.Doc_4_URL_Payslip) docsHtml += `<a href="${student.Doc_4_URL_Payslip}" target="_blank" class="flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1.5 rounded-lg text-[9px] font-bold text-slate-600 hover:text-amber-600 hover:border-amber-200 transition-all shadow-sm"><i class="fa-solid fa-file-invoice text-amber-500"></i> Payslip</a>`;
+            if (student.Signed_Lease) docsHtml += `<a href="${student.Signed_Lease}" target="_blank" class="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-lg text-[9px] font-bold text-emerald-700 hover:bg-emerald-100 transition-all shadow-sm"><i class="fa-solid fa-signature text-emerald-500"></i> Lease Agreement</a>`;
+            
+            docContainer.innerHTML = docsHtml || '<span class="text-[9px] font-medium text-slate-400 italic">No files synchronized for this resident.</span>';
+            document.getElementById('dos-timestamp').textContent = `Last System Sync: ${student.Timestamp || '--'}`;
+            
+            document.getElementById('residentFileModal').classList.add('active');
+
+        } catch (error) {
+            console.error("Live Fetch Error:", error);
+            if(typeof window.showToast === 'function') window.showToast("Failed to retrieve live data.", "error");
+            else alert("Failed to retrieve live data.");
+        } finally {
+            btnElement.innerHTML = originalHtml;
+            btnElement.disabled = false;
+        }
+    };
+
+    // ----------------------------------------------------
+    // POKA-YOKE: ROOM SWAP AUTOCOMPLETE
+    // ----------------------------------------------------
+    window.filterSwapStudents = function() {
+        const val = document.getElementById('swap-student-id').value.toLowerCase().trim();
+        const list = document.getElementById('swap-student-list');
+        if (!val) { list.classList.add('hidden'); return; }
+        
+        const matches = window.globalStudentData.filter(s => {
+            if(!s || !s.Student_Number) return false;
+            return String(s.Student_Number).toLowerCase().includes(val) || 
+                   (s.First_Name && String(s.First_Name).toLowerCase().includes(val)) ||
+                   (s.Surname && String(s.Surname).toLowerCase().includes(val));
+        });
+        
+        if (matches.length === 0) { list.classList.add('hidden'); return; }
+        list.innerHTML = matches.slice(0, 6).map(s => `
+            <div class="px-3 py-2 text-[9px] hover:bg-emerald-50 cursor-pointer border-b border-slate-100 last:border-none transition-colors" onclick="window.selectSwapStudent('${s.Student_Number}')">
+                <span class="font-bold text-slate-800">${s.Student_Number}</span> - ${s.First_Name || ''} ${s.Surname || ''} 
+                <span class="text-[7px] text-slate-400 bg-slate-50 px-1 py-0.5 rounded ml-1 border border-slate-200">Room: ${s.Room_Allocation || 'Unassigned'}</span>
+            </div>`).join('');
+        list.classList.remove('hidden');
+    };
+
+    window.selectSwapStudent = function(id) {
+        document.getElementById('swap-student-id').value = id;
+        document.getElementById('swap-student-list').classList.add('hidden');
+    };
+
+    window.filterSwapRooms = function() {
+        const val = document.getElementById('swap-new-room').value.toLowerCase().trim();
+        const list = document.getElementById('swap-room-list');
+        if (!val) { list.classList.add('hidden'); return; }
+        
+        const matches = window.globalRoomData.filter(r => r && r.Room_ID && String(r.Room_ID).toLowerCase().includes(val));
+        
+        if (matches.length === 0) { list.classList.add('hidden'); return; }
+        list.innerHTML = matches.slice(0, 6).map(r => {
+            const avail = (parseInt(r.Total_Beds||r.Capacity)||0) - (parseInt(r.Occupied_Beds||r.Occupied)||0);
+            return `
+            <div class="px-3 py-2 text-[9px] hover:bg-emerald-50 cursor-pointer border-b border-slate-100 last:border-none transition-colors flex justify-between items-center" onclick="window.selectSwapRoom('${r.Room_ID}')">
+                <div><span class="font-bold text-slate-800">${r.Room_ID}</span> <span class="text-slate-500 ml-1">(Blk ${r.Block})</span></div>
+                <span class="${avail > 0 ? 'text-emerald-500 bg-emerald-50 border-emerald-100' : 'text-rose-500 bg-rose-50 border-rose-100'} font-bold px-1.5 py-0.5 rounded border text-[8px]">${avail} Open</span>
+            </div>`;
+        }).join('');
+        list.classList.remove('hidden');
+    };
+
+    window.selectSwapRoom = function(id) {
+        document.getElementById('swap-new-room').value = id;
+        document.getElementById('swap-room-list').classList.add('hidden');
+    };
+
+    window.processRoomSwap = async function(e) {
+        e.preventDefault(); const btn = document.getElementById('btn-submit-swap'); const ogText = btn.innerHTML;
+        const studentId = document.getElementById('swap-student-id').value; const newRoom = document.getElementById('swap-new-room').value;
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...'; btn.disabled = true;
+        try {
+            await fetch('https://n8n.automania.cloud/webhook/room-swap', { 
+                method: 'POST', headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify({ Student_Number: studentId, Room_ID: newRoom, Swap_Trigger: true }) 
+            });
+            document.getElementById('roomSwapModal').classList.remove('active'); e.target.reset();
+            if(typeof window.fetchDatabaseData === 'function') window.fetchDatabaseData(true); 
+            if(typeof window.fetchStatsData === 'function') window.fetchStatsData(true);
+            window.showToast("Ledger updated successfully.");
+        } catch(error) { window.showToast("Network fault.", "error"); } finally { btn.innerHTML = ogText; btn.disabled = false; }
+    };
+
+    window.downloadOccupancyReport = function() {
+        const searchVal = document.getElementById('search-occupancy')?.value.toLowerCase() || '';
+        let csvContent = "data:text/csv;charset=utf-8,";
+        let filename = "";
+
+        if (currentOccupancyView === 'allocated_students') {
+            filename = "Filtered_Room_Inventory";
+            csvContent += "Room ID,Block,Type,Capacity,Occupied,Available Status\n";
+            
+            let filteredRooms = window.globalRoomData.filter(room => {
+                let matchBlock = true; let matchGender = true;
+                if (currentOccupancyBlock !== 'all') matchBlock = String(room.Block || '').toUpperCase() === currentOccupancyBlock.toUpperCase();
+                if (currentOccupancyGender !== 'all') {
+                    const blk = String(room.Block || '').toUpperCase();
+                    if (currentOccupancyGender === 'male') matchGender = (blk === 'A');
+                    else if (currentOccupancyGender === 'female') matchGender = (blk === 'B' || blk === 'C');
+                }
+                let matchSearch = JSON.stringify(room).toLowerCase().includes(searchVal);
+                return matchBlock && matchGender && matchSearch;
+            });
+
+            filteredRooms.forEach(r => {
+                const total = parseInt(r.Total_Beds || r.Capacity) || 0;
+                const occ = parseInt(r.Occupied_Beds || r.Occupied) || 0;
+                const status = (total - occ) <= 0 ? "Full" : (total - occ) + " Open";
+                csvContent += `"${r.Room_ID || ''}","Block ${r.Block || ''}","${r.Room_Type || ''}","${total}","${occ}","${status}"\n`;
+            });
+        } else {
+            filename = "Filtered_Allocated_Residents";
+            csvContent += "Student Number,First Name,Surname,Gender,Room Allocation,Funding Type,Course\n";
+            
+            let allocated = window.globalStudentData.filter(s => s && s.Room_Allocation && s.Room_Allocation !== 'Unassigned' && s.Room_Allocation !== '--' && s.First_Name);
+            let filteredStudents = allocated.filter(s => JSON.stringify(s).toLowerCase().includes(searchVal));
+
+            filteredStudents.forEach(s => {
+                csvContent += `"${s.Student_Number || ''}","${s.First_Name || ''}","${s.Surname || ''}","${s.Gender || ''}","${s.Room_Allocation || ''}","${s.Funding_Type || ''}","${s.Course || ''}"\n`;
+            });
+        }
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `${filename}_${new Date().toISOString().split('T')[0]}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+    // Initialize Default View explicitly after all functions define
+    window.processStatsData();
+</script>
