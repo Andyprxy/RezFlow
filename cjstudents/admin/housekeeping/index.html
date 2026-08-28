@@ -20,8 +20,6 @@
     .glass-seg-btn.active.accent-blue { color: #0071e3; } 
     .glass-seg-btn.active.accent-emerald { color: #10b981; }
     .glass-seg-btn.active.accent-amber { color: #f59e0b; }
-    .glass-seg-btn.active.accent-indigo { color: #4f46e5; }
-    .glass-seg-btn.active.accent-rose { color: #e11d48; }
 
     /* Right Sidebar */
     .hub-sidebar { width: 22%; max-width: 240px; min-width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 0.75rem; transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), min-width 0.4s; position: relative; }
@@ -67,11 +65,11 @@
         <div class="flex justify-start sm:justify-center w-full mb-3 z-10 relative shrink-0">
             <div class="glass-segmented shadow-sm bg-white/50 backdrop-blur-md max-w-full overflow-x-auto custom-scroll">
                 <button onclick="window.setHkFilter('All')" id="hk-btn-all" class="glass-seg-btn active accent-blue text-[9px] sm:text-[10px]">
-                    <i class="fa-solid fa-list-check"></i> All Requests
+                    <i class="fa-solid fa-list-check"></i> All Complaints
                 </button>
                 <div class="w-px h-4 bg-slate-300/50 mx-1"></div>
                 <button onclick="window.setHkFilter('Pending')" id="hk-btn-pending" class="glass-seg-btn accent-amber text-[9px] sm:text-[10px]">
-                    <i class="fa-solid fa-clock"></i> Pending Tasks
+                    <i class="fa-solid fa-clock"></i> Unresolved
                 </button>
                 <div class="w-px h-4 bg-slate-300/50 mx-1"></div>
                 <button onclick="window.setHkFilter('Resolved')" id="hk-btn-resolved" class="glass-seg-btn accent-emerald text-[9px] sm:text-[10px]">
@@ -86,7 +84,7 @@
             <div class="px-3 py-3 border-b border-white/60 flex flex-col xl:flex-row gap-3 justify-between xl:items-center bg-white/50 backdrop-blur-md">
                 <div class="flex items-center gap-2 shrink-0">
                     <div class="w-7 h-7 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center shadow-sm"><i class="fa-solid fa-broom text-xs"></i></div>
-                    <h3 class="font-black text-slate-800 text-xs sm:text-sm whitespace-nowrap">Housekeeping Logistics</h3>
+                    <h3 class="font-black text-slate-800 text-xs sm:text-sm whitespace-nowrap">Housekeeping Complaints Ledger</h3>
                 </div>
                 
                 <div class="flex items-center gap-2 flex-wrap xl:flex-nowrap justify-end w-full xl:w-auto">
@@ -97,7 +95,7 @@
 
                     <div class="relative w-full sm:w-48">
                         <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 transform -translate-y-1/2 text-slate-400 text-[9px]"></i>
-                        <input type="text" id="search-hk" onkeyup="window.filterTable('search-hk', 'hk-body')" placeholder="Search rooms, profiles..." class="w-full bg-white/80 border border-slate-200 rounded-lg py-1 pl-7 pr-2 text-[10px] outline-none focus:border-teal-400 shadow-sm">
+                        <input type="text" id="search-hk" onkeyup="window.filterTable('search-hk', 'hk-body')" placeholder="Search rooms, students..." class="w-full bg-white/80 border border-slate-200 rounded-lg py-1 pl-7 pr-2 text-[10px] outline-none focus:border-teal-400 shadow-sm">
                     </div>
                     <button onclick="if(typeof window.fetchHousekeepingData === 'function') window.fetchHousekeepingData(true);" class="bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 font-bold px-2 py-1 rounded-lg shadow-sm flex items-center text-[10px]"><i class="fa-solid fa-rotate text-teal-500"></i></button>
                 </div>
@@ -107,7 +105,7 @@
                 <table class="w-full text-left border-collapse compact-table min-w-[800px]">
                     <thead class="bg-white/70 sticky top-0 backdrop-blur-md z-10 shadow-sm border-b border-slate-200/40 text-[9px]">
                         <tr>
-                            <th>Image</th>
+                            <th>Proof</th>
                             <th>Student ID</th>
                             <th>Location / Room</th>
                             <th>Description</th>
@@ -177,14 +175,6 @@
                 </button>
             </div>
         </div>
-
-        <div class="mt-auto shrink-0 bg-[#111827] p-1.5 rounded-[12px] border border-slate-700 shadow-lg flex items-center gap-2 nav-text">
-            <div class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-white border border-white/20 shrink-0"><i class="fa-solid fa-bolt text-[6px]"></i></div>
-            <div class="flex flex-col">
-                <span class="text-[5px] font-bold text-slate-400 uppercase tracking-widest leading-none">Engineered By</span>
-                <span class="text-[8px] font-black text-white tracking-widest mt-0.5 leading-none">AUTOMANIA</span>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -241,7 +231,6 @@
         }
     };
 
-    // Auto-collapse only on mobile view
     if (window.innerWidth < 768) { window.toggleHkSidebar(); }
 
     window.toggleHkProgress = function() {
@@ -267,7 +256,7 @@
     };
 
     // ----------------------------------------------------
-    // DATA PIPELINE (housekept mapping)
+    // DATA PIPELINE (housekept mapping fix applied here)
     // ----------------------------------------------------
     window.fetchHousekeepingData = async function(forcedRefresh = false) {
         const body = document.getElementById('hk-body');
@@ -291,11 +280,11 @@
                 arr = arr.map(i => i.json ? i.json : i);
 
                 window.globalHousekeepingData = arr.map((item, idx) => ({
-                    id: item.id || `hk-${idx}`,
+                    id: item.row_number ? `row-${item.row_number}` : `hk-${idx}`,
                     Student_Number: item.Student_Number || 'Unknown',
                     Room: item.Room || item.Location || 'Unknown',
                     Description: item.Description || item.Notes || 'No description provided',
-                    Image: item.Image || item.Photo || item.Proof || '',
+                    Image: item.Image_URL || item.Image || item.Photo || item.Proof || '', 
                     Status: item.Status || 'Pending',
                     Timestamp: item.Timestamp || item.Date || new Date().toISOString()
                 }));
@@ -344,9 +333,6 @@
             target.Status = 'Resolved';
             window.renderHousekeepingData();
             if(typeof window.showToast === 'function') window.showToast("Task marked as resolved.");
-            
-            // Background push to a hypothetical resolution webhook
-            // fetch('https://n8n.automania.cloud/webhook/hk-resolve', { method: 'POST', body: JSON.stringify({id: id}) }).catch(e=>e);
         }
     };
 
@@ -357,7 +343,6 @@
         let htmlStr = '';
         let totalResolved = 0; let totalPending = 0;
 
-        // 1. Apply Wing/Region Filter based on Room Name Prefix
         let regionFiltered = window.globalHousekeepingData.filter(item => {
             if (window.hkRegion === 'All') return true;
             const rm = String(item.Room).trim().toUpperCase();
@@ -366,7 +351,6 @@
             return true;
         });
 
-        // 2. Analytics Update
         regionFiltered.forEach(item => {
             if (String(item.Status).toLowerCase() === 'resolved') totalResolved++; else totalPending++;
         });
@@ -374,16 +358,13 @@
         const totalTasks = totalPending + totalResolved;
         const resolvedPct = totalTasks === 0 ? 0 : Math.round((totalResolved / totalTasks) * 100);
         
-        // Sync Sidebar Analytics
         if (document.getElementById('sidebar-hk-pct')) document.getElementById('sidebar-hk-pct').textContent = `${resolvedPct}%`;
         if (document.getElementById('sidebar-hk-pie')) {
-            // #10b981 is emerald, #f59e0b is amber
             document.getElementById('sidebar-hk-pie').style.background = `conic-gradient(#10b981 0% ${resolvedPct}%, #f59e0b ${resolvedPct}% 100%)`;
         }
         if (document.getElementById('hk-stat-pending')) document.getElementById('hk-stat-pending').textContent = totalPending;
         if (document.getElementById('hk-stat-resolved')) document.getElementById('hk-stat-resolved').textContent = totalResolved;
 
-        // 3. Apply Status Filter
         let tableFiltered = regionFiltered.filter(item => {
             const isResolved = String(item.Status).toLowerCase() === 'resolved';
             if (window.hkFilterStatus === 'Resolved') return isResolved;
@@ -391,7 +372,6 @@
             return true;
         });
 
-        // 4. Dynamic Sorting: Newest first
         tableFiltered.sort((a, b) => new Date(b.Timestamp || 0).getTime() - new Date(a.Timestamp || 0).getTime());
 
         if (tableFiltered.length === 0) {
@@ -410,7 +390,6 @@
                 const dateObj = window.formatSafeDate(item.Timestamp);
                 const dateStr = dateObj.date !== '--' ? dateObj.date + ' ' + dateObj.time : 'Just Now';
                 
-                // Image handling logic
                 let imgEl = '<div class="w-8 h-8 rounded-md bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-300"><i class="fa-solid fa-image-slash text-[10px]"></i></div>';
                 if (item.Image && item.Image.length > 10) {
                     const safeUrl = String(item.Image).replace(/'/g, "\\'");
@@ -444,7 +423,7 @@
             Student_Number: document.getElementById('man-hk-id').value || 'System',
             Room: document.getElementById('man-hk-room').value,
             Description: document.getElementById('man-hk-desc').value,
-            Image: '', // Manual logs from OS don't have images attached yet
+            Image: '',
             Status: 'Pending',
             Timestamp: new Date().toISOString()
         };
