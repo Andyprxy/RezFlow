@@ -2030,7 +2030,7 @@
             btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Dispatching...'; btn.disabled = true;
 
             try {
-                const res = await fetch('https://n8n.automania.cloud/webhook/housekeeping', {
+                const res = await fetch('https://n8n.automania.cloud/webhook-test/housekeeping', {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         Student_Number: session.Student_Number || 'Unknown', 
