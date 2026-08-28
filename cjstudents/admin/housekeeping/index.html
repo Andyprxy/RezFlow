@@ -19,7 +19,7 @@
     }
     .glass-seg-btn.active.accent-blue { color: #0071e3; } 
     .glass-seg-btn.active.accent-emerald { color: #10b981; }
-    .glass-seg-btn.active.accent-amber { color: #f59e0b; }
+    .glass-seg-btn.active.accent-rose { color: #e11d48; }
 
     /* Right Sidebar */
     .hub-sidebar { width: 22%; max-width: 240px; min-width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 0.75rem; transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), min-width 0.4s; position: relative; }
@@ -37,12 +37,12 @@
     .compact-table td { padding: 6px 10px; border-bottom: 1px solid rgba(226, 232, 240, 0.4); vertical-align: middle; font-size: 0.65rem; white-space: nowrap; }
     .glass-panel { background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05); border-radius: 20px; }
     
-    /* Housekeeping Specific UI */
+    /* Specific Feedback UI */
     .status-badge { padding: 3px 6px; font-size: 0.55rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; border-radius: 6px; display: inline-block; }
-    .status-pending { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
-    .status-resolved { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+    .status-complaint { background: #fff1f2; color: #e11d48; border: 1px solid #fecdd3; }
+    .status-commendation { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
     
-    .pie-chart-container { position: relative; width: 80px; height: 80px; border-radius: 50%; background: conic-gradient(#10b981 0% 0%, #f59e0b 0% 100%); box-shadow: 0 4px 15px rgba(0,0,0,0.05), inset 0 2px 5px rgba(255,255,255,0.5); transition: background 0.5s ease-out; margin: 0 auto; }
+    .pie-chart-container { position: relative; width: 80px; height: 80px; border-radius: 50%; background: conic-gradient(#10b981 0% 0%, #e11d48 0% 100%); box-shadow: 0 4px 15px rgba(0,0,0,0.05), inset 0 2px 5px rgba(255,255,255,0.5); transition: background 0.5s ease-out; margin: 0 auto; }
     .pie-chart-inner { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 50px; height: 50px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(8px); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
     
     .retractable-wrapper { transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease, margin 0.4s ease; max-height: 200px; opacity: 1; overflow: hidden; }
@@ -64,16 +64,16 @@
         <!-- Primary KPI View Switcher -->
         <div class="flex justify-start sm:justify-center w-full mb-3 z-10 relative shrink-0">
             <div class="glass-segmented shadow-sm bg-white/50 backdrop-blur-md max-w-full overflow-x-auto custom-scroll">
-                <button onclick="window.setHkFilter('All')" id="hk-btn-all" class="glass-seg-btn active accent-blue text-[9px] sm:text-[10px]">
-                    <i class="fa-solid fa-list-check"></i> All Complaints
+                <button onclick="window.setFbFilter('All')" id="fb-btn-all" class="glass-seg-btn active accent-blue text-[9px] sm:text-[10px]">
+                    <i class="fa-solid fa-list-check"></i> All Reports
                 </button>
                 <div class="w-px h-4 bg-slate-300/50 mx-1"></div>
-                <button onclick="window.setHkFilter('Pending')" id="hk-btn-pending" class="glass-seg-btn accent-amber text-[9px] sm:text-[10px]">
-                    <i class="fa-solid fa-clock"></i> Unresolved
+                <button onclick="window.setFbFilter('Complaint')" id="fb-btn-complaint" class="glass-seg-btn accent-rose text-[9px] sm:text-[10px]">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Complaints
                 </button>
                 <div class="w-px h-4 bg-slate-300/50 mx-1"></div>
-                <button onclick="window.setHkFilter('Resolved')" id="hk-btn-resolved" class="glass-seg-btn accent-emerald text-[9px] sm:text-[10px]">
-                    <i class="fa-solid fa-check-double"></i> Cleaned & Verified
+                <button onclick="window.setFbFilter('Commendation')" id="fb-btn-commendation" class="glass-seg-btn accent-emerald text-[9px] sm:text-[10px]">
+                    <i class="fa-solid fa-award"></i> Commendations
                 </button>
             </div>
         </div>
@@ -83,21 +83,21 @@
             
             <div class="px-3 py-3 border-b border-white/60 flex flex-col xl:flex-row gap-3 justify-between xl:items-center bg-white/50 backdrop-blur-md">
                 <div class="flex items-center gap-2 shrink-0">
-                    <div class="w-7 h-7 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center shadow-sm"><i class="fa-solid fa-broom text-xs"></i></div>
-                    <h3 class="font-black text-slate-800 text-xs sm:text-sm whitespace-nowrap">Housekeeping Complaints Ledger</h3>
+                    <div class="w-7 h-7 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center shadow-sm"><i class="fa-solid fa-comments text-xs"></i></div>
+                    <h3 class="font-black text-slate-800 text-xs sm:text-sm whitespace-nowrap">Resident Feedback Ledger</h3>
                 </div>
                 
                 <div class="flex items-center gap-2 flex-wrap xl:flex-nowrap justify-end w-full xl:w-auto">
                     <!-- Download Report Button -->
-                    <button onclick="window.downloadHkReport()" class="bg-[#1d1d1f] hover:bg-[#333336] text-white font-bold px-3 py-1.5 rounded-lg shadow-md flex items-center gap-1.5 shrink-0 text-[10px] transition-all">
+                    <button onclick="window.downloadFbReport()" class="bg-[#1d1d1f] hover:bg-[#333336] text-white font-bold px-3 py-1.5 rounded-lg shadow-md flex items-center gap-1.5 shrink-0 text-[10px] transition-all">
                         <i class="fa-solid fa-download"></i> <span class="hidden sm:inline">Export</span>
                     </button>
 
                     <div class="relative w-full sm:w-48">
                         <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 transform -translate-y-1/2 text-slate-400 text-[9px]"></i>
-                        <input type="text" id="search-hk" onkeyup="window.filterTable('search-hk', 'hk-body')" placeholder="Search rooms, students..." class="w-full bg-white/80 border border-slate-200 rounded-lg py-1 pl-7 pr-2 text-[10px] outline-none focus:border-teal-400 shadow-sm">
+                        <input type="text" id="search-fb" onkeyup="window.filterTable('search-fb', 'fb-body')" placeholder="Search rooms, students..." class="w-full bg-white/80 border border-slate-200 rounded-lg py-1 pl-7 pr-2 text-[10px] outline-none focus:border-teal-400 shadow-sm">
                     </div>
-                    <button onclick="if(typeof window.fetchHousekeepingData === 'function') window.fetchHousekeepingData(true);" class="bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 font-bold px-2 py-1 rounded-lg shadow-sm flex items-center text-[10px]"><i class="fa-solid fa-rotate text-teal-500"></i></button>
+                    <button onclick="if(typeof window.fetchFeedbackData === 'function') window.fetchFeedbackData(true);" class="bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 font-bold px-2 py-1 rounded-lg shadow-sm flex items-center text-[10px]"><i class="fa-solid fa-rotate text-teal-500"></i></button>
                 </div>
             </div>
             
@@ -105,74 +105,64 @@
                 <table class="w-full text-left border-collapse compact-table min-w-[800px]">
                     <thead class="bg-white/70 sticky top-0 backdrop-blur-md z-10 shadow-sm border-b border-slate-200/40 text-[9px]">
                         <tr>
-                            <th>Proof</th>
-                            <th>Student ID</th>
-                            <th>Location / Room</th>
-                            <th>Description</th>
                             <th>Timestamp</th>
-                            <th class="text-center">Status</th>
+                            <th>Student ID</th>
+                            <th>Room</th>
+                            <th>Description</th>
+                            <th class="text-center">Picture</th>
+                            <th class="text-center">Classification</th>
                             <th class="text-right">Action</th>
                         </tr>
                     </thead>
-                    <tbody id="hk-body" class="divide-y divide-slate-100/50"></tbody>
+                    <tbody id="fb-body" class="divide-y divide-slate-100/50"></tbody>
                 </table>
             </div>
         </div>
     </div>
 
     <!-- RIGHT SIDEBAR (Default Open on Desktop) -->
-    <div id="hk-right-sidebar" class="hub-sidebar bg-transparent shrink-0">
-        <div class="nav-block flex items-center justify-between !p-1.5 bg-white/80 cursor-pointer hover:bg-white transition-colors" onclick="window.toggleHkSidebar()">
+    <div id="fb-right-sidebar" class="hub-sidebar bg-transparent shrink-0">
+        <div class="nav-block flex items-center justify-between !p-1.5 bg-white/80 cursor-pointer hover:bg-white transition-colors" onclick="window.toggleFbSidebar()">
             <div class="flex items-center gap-1.5 w-full">
-                <div class="w-7 h-7 bg-gradient-to-br from-teal-500 to-emerald-600 rounded-[8px] shadow-sm flex items-center justify-center text-white text-[10px] shrink-0"><i class="fa-solid fa-sparkles"></i></div>
+                <div class="w-7 h-7 bg-gradient-to-br from-teal-500 to-emerald-600 rounded-[8px] shadow-sm flex items-center justify-center text-white text-[10px] shrink-0"><i class="fa-solid fa-chart-pie"></i></div>
                 <div class="flex flex-col flex-1 overflow-hidden nav-text">
-                    <span class="font-black text-[10px] tracking-tight text-slate-900 leading-none truncate">Clean<span class="text-teal-500">Ops</span></span>
+                    <span class="font-black text-[10px] tracking-tight text-slate-900 leading-none truncate">Feedback<span class="text-teal-500">Ops</span></span>
                     <span class="text-[6px] font-bold tracking-widest text-slate-400 uppercase mt-0.5 truncate">Efficiency Metrics</span>
                 </div>
             </div>
-            <i id="hk-sidebar-toggle-icon" class="fa-solid fa-chevron-right text-slate-300 text-[8px] pr-1"></i>
+            <i id="fb-sidebar-toggle-icon" class="fa-solid fa-chevron-right text-slate-300 text-[8px] pr-1"></i>
         </div>
 
         <!-- Live Analytics Block -->
         <div class="nav-block bg-white/80 nav-text">
             <div class="flex justify-between items-center w-full mb-1 border-b border-slate-100 pb-1">
-                <span class="text-[7px] font-bold tracking-widest text-slate-400 uppercase">Resolution Rate</span>
-                <button onclick="window.toggleHkProgress()" class="w-4 h-4 rounded-full hover:bg-slate-100 text-slate-400 flex items-center justify-center transition-colors"><i id="hk-progress-toggle-icon" class="fa-solid fa-chevron-up text-[8px]"></i></button>
+                <span class="text-[7px] font-bold tracking-widest text-slate-400 uppercase">Feedback Distribution</span>
+                <button onclick="window.toggleFbProgress()" class="w-4 h-4 rounded-full hover:bg-slate-100 text-slate-400 flex items-center justify-center transition-colors"><i id="fb-progress-toggle-icon" class="fa-solid fa-chevron-up text-[8px]"></i></button>
             </div>
 
             <div class="flex justify-center mt-2 mb-1">
                 <div class="glass-segmented scale-[0.85] origin-center bg-slate-50">
-                    <button onclick="window.filterHkRegion('All')" id="hk-reg-tab-all" class="glass-seg-btn active accent-teal text-[8px] !px-2 py-0.5">All</button>
-                    <button onclick="window.filterHkRegion('East')" id="hk-reg-tab-east" class="glass-seg-btn text-[8px] !px-2 py-0.5">East</button>
-                    <button onclick="window.filterHkRegion('West')" id="hk-reg-tab-west" class="glass-seg-btn text-[8px] !px-2 py-0.5">West</button>
+                    <button onclick="window.filterFbRegion('All')" id="fb-reg-tab-all" class="glass-seg-btn active accent-teal text-[8px] !px-2 py-0.5">All</button>
+                    <button onclick="window.filterFbRegion('East')" id="fb-reg-tab-east" class="glass-seg-btn text-[8px] !px-2 py-0.5">East</button>
+                    <button onclick="window.filterFbRegion('West')" id="fb-reg-tab-west" class="glass-seg-btn text-[8px] !px-2 py-0.5">West</button>
                 </div>
             </div>
             
             <!-- Progress Bar Container -->
-            <div id="hk-progress-wrapper" class="retractable-wrapper">
+            <div id="fb-progress-wrapper" class="retractable-wrapper">
                 
                 <div class="py-3 flex justify-center">
-                    <div id="sidebar-hk-pie" class="pie-chart-container scale-[0.8]">
+                    <div id="sidebar-fb-pie" class="pie-chart-container scale-[0.8]">
                         <div class="pie-chart-inner">
-                            <span id="sidebar-hk-pct" class="text-xs font-black text-slate-800 leading-none">0%</span>
+                            <span id="sidebar-fb-pct" class="text-xs font-black text-slate-800 leading-none">0%</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-1.5 mt-1.5">
-                    <div class="bg-amber-50 border border-amber-100 p-1.5 rounded-lg text-center shadow-sm"><p class="text-[7px] font-bold text-amber-600 uppercase tracking-widest mb-0.5">Pending</p><p id="hk-stat-pending" class="text-sm font-black text-slate-800 leading-tight">0</p></div>
-                    <div class="bg-emerald-50 border border-emerald-100 p-1.5 rounded-lg text-center shadow-sm"><p class="text-[7px] font-bold text-emerald-600 uppercase tracking-widest mb-0.5">Resolved</p><p id="hk-stat-resolved" class="text-sm font-black text-slate-800 leading-tight">0</p></div>
+                    <div class="bg-rose-50 border border-rose-100 p-1.5 rounded-lg text-center shadow-sm"><p class="text-[7px] font-bold text-rose-600 uppercase tracking-widest mb-0.5">Complaints</p><p id="fb-stat-complaints" class="text-sm font-black text-slate-800 leading-tight">0</p></div>
+                    <div class="bg-emerald-50 border border-emerald-100 p-1.5 rounded-lg text-center shadow-sm"><p class="text-[7px] font-bold text-emerald-600 uppercase tracking-widest mb-0.5">Commendations</p><p id="fb-stat-commendations" class="text-sm font-black text-slate-800 leading-tight">0</p></div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Actions & Routing -->
-        <div class="nav-block nav-text mt-1">
-            <p class="px-1 text-[6px] font-extrabold text-slate-400 uppercase tracking-widest mb-1 truncate">Quick Tools</p>
-            <div class="space-y-1">
-                <button onclick="document.getElementById('manualHkModal').classList.add('active')" class="block-btn bg-teal-600 hover:bg-teal-700 text-white justify-center gap-1 !py-1.5 shadow-sm border-none transition-colors">
-                    <i class="fa-solid fa-plus text-[9px]"></i> <span class="truncate text-[8px]">Log Manual Task</span>
-                </button>
             </div>
         </div>
     </div>
@@ -190,40 +180,18 @@
     </div>
 </div>
 
-<!-- Manual Report Modal -->
-<div id="manualHkModal" class="modal-overlay">
-    <div class="modal-content max-w-md relative">
-        <button onclick="document.getElementById('manualHkModal').classList.remove('active')" class="absolute top-4 right-4 w-6 h-6 bg-slate-50 border border-slate-200 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 z-20"><i class="fa-solid fa-xmark text-[10px]"></i></button>
-        <div class="flex items-center gap-3 mb-4">
-            <div class="w-10 h-10 bg-teal-50 text-teal-600 border border-teal-100 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-broom"></i></div>
-            <div><h2 class="text-base font-black text-slate-900 tracking-tight leading-none">Log Task</h2><p class="text-[8px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Manual Housekeeping Capture</p></div>
-        </div>
-        <form onsubmit="window.submitManualHk(event)">
-            <div class="grid grid-cols-2 gap-3 mb-3">
-                <div><label class="block text-[7px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Student Number (Optional)</label><input type="text" id="man-hk-id" class="w-full bg-white border border-slate-200 rounded-xl py-2 px-3 text-[9px] font-mono outline-none focus:border-teal-400 shadow-sm" placeholder="e.g. 21900000"></div>
-                <div><label class="block text-[7px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Location / Room</label><input type="text" id="man-hk-room" class="w-full bg-white border border-slate-200 rounded-xl py-2 px-3 text-[9px] font-mono outline-none focus:border-teal-400 shadow-sm" required></div>
-            </div>
-            <div class="mb-4">
-                <label class="block text-[7px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Description of Mess / Task</label>
-                <textarea id="man-hk-desc" rows="3" class="w-full bg-white border border-slate-200 rounded-xl py-2 px-3 text-[9px] outline-none focus:border-teal-400 shadow-sm resize-none" placeholder="Provide details..." required></textarea>
-            </div>
-            <button type="submit" id="btn-submit-man-hk" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-[10px] py-2 shadow-md flex justify-center items-center gap-2 text-[10px]"><i class="fa-solid fa-paper-plane"></i> Push to Ledger</button>
-        </form>
-    </div>
-</div>
-
 <script>
     // ----------------------------------------------------
     // STATE & CONFIG
     // ----------------------------------------------------
-    window.hkFilterStatus = 'All'; // All, Pending, Resolved
-    window.hkRegion = 'All'; // All, East, West
+    window.fbFilterStatus = 'All'; // All, Complaint, Commendation
+    window.fbRegion = 'All'; // All, East, West
 
-    window.toggleHkSidebar = function() {
-        const sidebar = document.getElementById('hk-right-sidebar');
+    window.toggleFbSidebar = function() {
+        const sidebar = document.getElementById('fb-right-sidebar');
         if(sidebar) {
             sidebar.classList.toggle('collapsed');
-            const icon = document.getElementById('hk-sidebar-toggle-icon');
+            const icon = document.getElementById('fb-sidebar-toggle-icon');
             if(icon) {
                 if(sidebar.classList.contains('collapsed')) { icon.className = "fa-solid fa-chevron-left text-slate-300 text-[8px] pr-1"; } 
                 else { icon.className = "fa-solid fa-chevron-right text-slate-300 text-[8px] pr-1"; }
@@ -231,11 +199,11 @@
         }
     };
 
-    if (window.innerWidth < 768) { window.toggleHkSidebar(); }
+    if (window.innerWidth < 768) { window.toggleFbSidebar(); }
 
-    window.toggleHkProgress = function() {
-        const wrapper = document.getElementById('hk-progress-wrapper');
-        const icon = document.getElementById('hk-progress-toggle-icon');
+    window.toggleFbProgress = function() {
+        const wrapper = document.getElementById('fb-progress-wrapper');
+        const icon = document.getElementById('fb-progress-toggle-icon');
         wrapper.classList.toggle('collapsed');
         if(wrapper.classList.contains('collapsed')) { icon.classList.replace('fa-chevron-up', 'fa-chevron-down'); } 
         else { icon.classList.replace('fa-chevron-down', 'fa-chevron-up'); }
@@ -256,10 +224,10 @@
     };
 
     // ----------------------------------------------------
-    // DATA PIPELINE (housekept mapping fix applied here)
+    // DATA PIPELINE (Explicit Fix for the Webhook Payload)
     // ----------------------------------------------------
-    window.fetchHousekeepingData = async function(forcedRefresh = false) {
-        const body = document.getElementById('hk-body');
+    window.fetchFeedbackData = async function(forcedRefresh = false) {
+        const body = document.getElementById('fb-body');
         if (forcedRefresh && body) { body.innerHTML = '<tr><td colspan="7" class="p-8 text-center"><i class="fa-solid fa-circle-notch fa-spin text-teal-500 text-2xl"></i></td></tr>'; }
         
         try {
@@ -270,25 +238,42 @@
             
             if (res.ok) {
                 let rawData = await res.json();
+                
+                // Fallback flat parsing in case n8n wrapper strips it natively
                 if (typeof rawData === 'string') rawData = JSON.parse(rawData);
                 if (rawData.data && Array.isArray(rawData.data)) rawData = rawData.data;
-                
                 let arr = [];
                 if (Array.isArray(rawData)) { arr = rawData.flat(Infinity); } 
                 else if (typeof rawData === 'object') { arr = [rawData]; }
                 
+                // Strip JSON property if it exists, otherwise keep object
                 arr = arr.map(i => i.json ? i.json : i);
 
-                window.globalHousekeepingData = arr.map((item, idx) => ({
-                    id: item.row_number ? `row-${item.row_number}` : `hk-${idx}`,
-                    Student_Number: item.Student_Number || 'Unknown',
-                    Room: item.Room || item.Location || 'Unknown',
-                    Description: item.Description || item.Notes || 'No description provided',
-                    Image: item.Image_URL || item.Image || item.Photo || item.Proof || '', 
-                    Status: item.Status || 'Pending',
-                    Timestamp: item.Timestamp || item.Date || new Date().toISOString()
-                }));
-                if(forcedRefresh && typeof window.showToast === 'function') window.showToast('Housekeeping logs refreshed.', 'success');
+                window.globalHousekeepingData = arr.map((item, idx) => {
+                    // Smart Feedback Classification Engine
+                    let type = item.Type || item.Feedback_Type || '';
+                    if (!type) {
+                        const desc = String(item.Description || '').toLowerCase();
+                        if (desc.includes('good') || desc.includes('clean') && !desc.includes('not') || desc.includes('excellent') || desc.includes('commendation')) {
+                            type = 'Commendation';
+                        } else {
+                            type = 'Complaint';
+                        }
+                    }
+
+                    return {
+                        id: item.row_number ? `row-${item.row_number}` : `fb-${idx}`,
+                        Timestamp: item.Timestamp || item.Date || new Date().toISOString(), // Inject timestamp if null
+                        Student_Number: item.Student_Number || 'Unknown',
+                        Room: item.Room || item.Location || 'Unknown',
+                        Description: item.Description || item.Notes || 'No description provided',
+                        Image: item.Image_URL || item.Image || item.Photo || item.Proof || '', // explicitly checks Image_URL
+                        Type: type,
+                        Status: item.Status || 'Pending'
+                    };
+                });
+
+                if(forcedRefresh && typeof window.showToast === 'function') window.showToast('Feedback ledger refreshed.', 'success');
             }
         } catch (error) {
             console.error("Fetch Error Details:", error);
@@ -299,110 +284,113 @@
     // ----------------------------------------------------
     // RENDERING LOGIC MATRIX
     // ----------------------------------------------------
-    window.setHkFilter = function(filter) {
-        window.hkFilterStatus = filter;
-        ['All', 'Pending', 'Resolved'].forEach(tab => {
-            const el = document.getElementById(`hk-btn-${tab.toLowerCase()}`);
-            if(el) el.classList.remove('active', 'accent-blue', 'accent-emerald', 'accent-amber');
+    window.setFbFilter = function(filter) {
+        window.fbFilterStatus = filter;
+        ['All', 'Complaint', 'Commendation'].forEach(tab => {
+            const el = document.getElementById(`fb-btn-${tab.toLowerCase()}`);
+            if(el) el.classList.remove('active', 'accent-blue', 'accent-emerald', 'accent-rose');
         });
-        const activeEl = document.getElementById(`hk-btn-${filter.toLowerCase()}`);
+        const activeEl = document.getElementById(`fb-btn-${filter.toLowerCase()}`);
         if(activeEl) {
             activeEl.classList.add('active');
             if(filter === 'All') activeEl.classList.add('accent-blue');
-            if(filter === 'Resolved') activeEl.classList.add('accent-emerald');
-            if(filter === 'Pending') activeEl.classList.add('accent-amber');
+            if(filter === 'Commendation') activeEl.classList.add('accent-emerald');
+            if(filter === 'Complaint') activeEl.classList.add('accent-rose');
         }
         window.renderHousekeepingData();
     };
 
-    window.filterHkRegion = function(region) {
-        window.hkRegion = region;
+    window.filterFbRegion = function(region) {
+        window.fbRegion = region;
         ['All', 'East', 'West'].forEach(r => {
-            const el = document.getElementById(`hk-reg-tab-${r.toLowerCase()}`);
+            const el = document.getElementById(`fb-reg-tab-${r.toLowerCase()}`);
             if(el) el.classList.remove('active', 'accent-teal');
         });
-        const activeEl = document.getElementById(`hk-reg-tab-${region.toLowerCase()}`);
+        const activeEl = document.getElementById(`fb-reg-tab-${region.toLowerCase()}`);
         if(activeEl) activeEl.classList.add('active', 'accent-teal');
         window.renderHousekeepingData();
     };
 
-    window.markHkResolved = function(id) {
+    window.markFbAcknowledged = function(id) {
         if(!window.globalHousekeepingData) return;
         const target = window.globalHousekeepingData.find(i => i.id === id);
         if(target) {
-            target.Status = 'Resolved';
+            target.Status = 'Acknowledged';
             window.renderHousekeepingData();
-            if(typeof window.showToast === 'function') window.showToast("Task marked as resolved.");
+            if(typeof window.showToast === 'function') window.showToast("Feedback marked as acknowledged.");
         }
     };
 
     window.renderHousekeepingData = function() {
-        const tbody = document.getElementById('hk-body');
+        // We inject the rendering hook so the parent OS calls this automatically
+        const tbody = document.getElementById('fb-body');
         if (!tbody || !window.globalHousekeepingData) return;
 
         let htmlStr = '';
-        let totalResolved = 0; let totalPending = 0;
+        let totalCommendations = 0; let totalComplaints = 0;
 
         let regionFiltered = window.globalHousekeepingData.filter(item => {
-            if (window.hkRegion === 'All') return true;
+            if (window.fbRegion === 'All') return true;
             const rm = String(item.Room).trim().toUpperCase();
-            if (window.hkRegion === 'East') return rm.startsWith('E');
-            if (window.hkRegion === 'West') return rm.startsWith('W');
+            if (window.fbRegion === 'East') return rm.startsWith('E');
+            if (window.fbRegion === 'West') return rm.startsWith('W');
             return true;
         });
 
         regionFiltered.forEach(item => {
-            if (String(item.Status).toLowerCase() === 'resolved') totalResolved++; else totalPending++;
+            if (item.Type === 'Commendation') totalCommendations++; else totalComplaints++;
         });
 
-        const totalTasks = totalPending + totalResolved;
-        const resolvedPct = totalTasks === 0 ? 0 : Math.round((totalResolved / totalTasks) * 100);
+        const totalTasks = totalComplaints + totalCommendations;
+        const commendationPct = totalTasks === 0 ? 0 : Math.round((totalCommendations / totalTasks) * 100);
         
-        if (document.getElementById('sidebar-hk-pct')) document.getElementById('sidebar-hk-pct').textContent = `${resolvedPct}%`;
-        if (document.getElementById('sidebar-hk-pie')) {
-            document.getElementById('sidebar-hk-pie').style.background = `conic-gradient(#10b981 0% ${resolvedPct}%, #f59e0b ${resolvedPct}% 100%)`;
+        // Update Sidebar Diagnostics
+        if (document.getElementById('sidebar-fb-pct')) document.getElementById('sidebar-fb-pct').textContent = `${commendationPct}%`;
+        if (document.getElementById('sidebar-fb-pie')) {
+            // #10b981 is emerald (Commendation), #e11d48 is rose (Complaint)
+            document.getElementById('sidebar-fb-pie').style.background = `conic-gradient(#10b981 0% ${commendationPct}%, #e11d48 ${commendationPct}% 100%)`;
         }
-        if (document.getElementById('hk-stat-pending')) document.getElementById('hk-stat-pending').textContent = totalPending;
-        if (document.getElementById('hk-stat-resolved')) document.getElementById('hk-stat-resolved').textContent = totalResolved;
+        if (document.getElementById('fb-stat-complaints')) document.getElementById('fb-stat-complaints').textContent = totalComplaints;
+        if (document.getElementById('fb-stat-commendations')) document.getElementById('fb-stat-commendations').textContent = totalCommendations;
 
         let tableFiltered = regionFiltered.filter(item => {
-            const isResolved = String(item.Status).toLowerCase() === 'resolved';
-            if (window.hkFilterStatus === 'Resolved') return isResolved;
-            if (window.hkFilterStatus === 'Pending') return !isResolved;
+            if (window.fbFilterStatus === 'Commendation') return item.Type === 'Commendation';
+            if (window.fbFilterStatus === 'Complaint') return item.Type === 'Complaint';
             return true;
         });
 
         tableFiltered.sort((a, b) => new Date(b.Timestamp || 0).getTime() - new Date(a.Timestamp || 0).getTime());
 
         if (tableFiltered.length === 0) {
-            tbody.innerHTML = `<tr class="no-results"><td colspan="7" class="p-10 text-center text-slate-400 font-bold text-[10px]">No logistics logged for this view.</td></tr>`;
+            tbody.innerHTML = `<tr class="no-results"><td colspan="7" class="p-10 text-center text-slate-400 font-bold text-[10px]">No feedback logged for this view.</td></tr>`;
         } else {
             tableFiltered.forEach(item => {
-                const isResolved = String(item.Status).toLowerCase() === 'resolved';
-                const statusBadge = isResolved 
-                    ? `<span class="status-badge status-resolved"><i class="fa-solid fa-check"></i> Resolved</span>` 
-                    : `<span class="status-badge status-pending"><i class="fa-solid fa-clock"></i> Pending</span>`;
+                const isCommendation = item.Type === 'Commendation';
+                const statusBadge = isCommendation 
+                    ? `<span class="status-badge status-commendation"><i class="fa-solid fa-award"></i> Commendation</span>` 
+                    : `<span class="status-badge status-complaint"><i class="fa-solid fa-triangle-exclamation"></i> Complaint</span>`;
 
-                const actionBtn = !isResolved
-                    ? `<button onclick="window.markHkResolved('${item.id}')" class="bg-white border border-teal-200 hover:bg-teal-50 text-teal-600 text-[8px] font-bold px-2.5 py-1.5 rounded-lg transition-all shadow-sm flex items-center gap-1.5 ml-auto"><i class="fa-solid fa-broom"></i> Mark Clean</button>`
-                    : `<span class="text-[8px] font-bold text-slate-400 border border-dashed border-slate-300 bg-white/50 px-2 py-1 rounded-lg">Verified</span>`;
+                const actionBtn = item.Status !== 'Acknowledged'
+                    ? `<button onclick="window.markFbAcknowledged('${item.id}')" class="bg-white border border-teal-200 hover:bg-teal-50 text-teal-600 text-[8px] font-bold px-2.5 py-1.5 rounded-lg transition-all shadow-sm flex items-center gap-1.5 ml-auto"><i class="fa-solid fa-check"></i> Acknowledge</button>`
+                    : `<span class="text-[8px] font-bold text-slate-400 border border-dashed border-slate-300 bg-white/50 px-2 py-1 rounded-lg">Acknowledged</span>`;
                     
                 const dateObj = window.formatSafeDate(item.Timestamp);
                 const dateStr = dateObj.date !== '--' ? dateObj.date + ' ' + dateObj.time : 'Just Now';
                 
-                let imgEl = '<div class="w-8 h-8 rounded-md bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-300"><i class="fa-solid fa-image-slash text-[10px]"></i></div>';
+                // Image handling logic mapping directly to Picture column
+                let imgEl = '<div class="w-8 h-8 rounded-md bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-300 mx-auto"><i class="fa-solid fa-image-slash text-[10px]"></i></div>';
                 if (item.Image && item.Image.length > 10) {
                     const safeUrl = String(item.Image).replace(/'/g, "\\'");
-                    imgEl = `<img src="${item.Image}" onclick="window.openImageLightbox('${safeUrl}')" class="w-8 h-8 rounded-md object-cover border border-slate-200 cursor-pointer hover:border-teal-400 transition-colors shadow-sm" alt="Proof">`;
+                    imgEl = `<img src="${item.Image}" onclick="window.openImageLightbox('${safeUrl}')" class="w-8 h-8 rounded-md object-cover border border-slate-200 cursor-pointer hover:border-teal-400 transition-colors shadow-sm mx-auto" alt="Proof">`;
                 }
 
                 htmlStr += `
                     <tr class="hover:bg-slate-50/50 transition-colors">
-                        <td class="w-12">${imgEl}</td>
+                        <td class="text-slate-400 font-medium text-[9px]">${dateStr}</td>
                         <td class="font-mono text-slate-600 text-[9px]">${item.Student_Number}</td>
                         <td class="font-black text-slate-800 text-[10px]"><i class="fa-solid fa-location-dot text-slate-400 mr-1"></i> ${item.Room}</td>
                         <td class="text-slate-600 text-[9px] max-w-[200px] truncate" title="${item.Description}">${item.Description}</td>
-                        <td class="text-slate-400 font-medium text-[9px]">${dateStr}</td>
+                        <td class="w-12 text-center">${imgEl}</td>
                         <td class="text-center">${statusBadge}</td>
                         <td class="text-right">${actionBtn}</td>
                     </tr>
@@ -412,51 +400,22 @@
         }
     };
 
-    // ----------------------------------------------------
-    // MANUAL LOGGING
-    // ----------------------------------------------------
-    window.submitManualHk = async function(e) {
-        e.preventDefault(); const btn = document.getElementById('btn-submit-man-hk'); const ogHtml = btn.innerHTML;
-        
-        const payload = {
-            id: 'man-' + Date.now(),
-            Student_Number: document.getElementById('man-hk-id').value || 'System',
-            Room: document.getElementById('man-hk-room').value,
-            Description: document.getElementById('man-hk-desc').value,
-            Image: '',
-            Status: 'Pending',
-            Timestamp: new Date().toISOString()
-        };
-        
-        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Pushing...'; btn.disabled = true;
-        try {
-            if(!window.globalHousekeepingData) window.globalHousekeepingData = [];
-            window.globalHousekeepingData.unshift(payload);
-            window.renderHousekeepingData();
-            
-            document.getElementById('manualHkModal').classList.remove('active');
-            e.target.reset();
-            if(typeof window.showToast === 'function') window.showToast("Task securely logged.");
-        } catch(err) { if(typeof window.showToast === 'function') window.showToast("Network Error", "error"); } finally { btn.innerHTML = ogHtml; btn.disabled = false; }
-    };
-
-    window.downloadHkReport = function() {
-        const searchVal = document.getElementById('search-hk')?.value.toLowerCase() || '';
+    window.downloadFbReport = function() {
+        const searchVal = document.getElementById('search-fb')?.value.toLowerCase() || '';
         let csvContent = "data:text/csv;charset=utf-8,";
-        let filename = `ReziFlow_Housekeeping_Ledger`;
+        let filename = `ReziFlow_Feedback_Ledger`;
 
-        csvContent += "Timestamp,Student ID,Room/Location,Description,Image Link,Status\n";
+        csvContent += "Timestamp,Student ID,Room,Description,Image Link,Classification,Internal Status\n";
         
         let baseData = window.globalHousekeepingData || [];
         
         let filteredData = baseData.filter(item => {
             const rm = String(item.Room).trim().toUpperCase();
-            if (window.hkRegion === 'East' && !rm.startsWith('E')) return false;
-            if (window.hkRegion === 'West' && !rm.startsWith('W')) return false;
+            if (window.fbRegion === 'East' && !rm.startsWith('E')) return false;
+            if (window.fbRegion === 'West' && !rm.startsWith('W')) return false;
             
-            const isRes = String(item.Status).toLowerCase() === 'resolved';
-            if (window.hkFilterStatus === 'Resolved' && !isRes) return false;
-            if (window.hkFilterStatus === 'Pending' && isRes) return false;
+            if (window.fbFilterStatus === 'Commendation' && item.Type !== 'Commendation') return false;
+            if (window.fbFilterStatus === 'Complaint' && item.Type !== 'Complaint') return false;
             
             return JSON.stringify(item).toLowerCase().includes(searchVal);
         });
@@ -467,7 +426,7 @@
 
         filteredData.forEach(item => {
             const cleanDesc = String(item.Description || '').replace(/"/g, '""');
-            csvContent += `"${item.Timestamp || ''}","${item.Student_Number || ''}","${item.Room || ''}","${cleanDesc}","${item.Image || 'N/A'}","${item.Status || 'Pending'}"\n`;
+            csvContent += `"${item.Timestamp || ''}","${item.Student_Number || ''}","${item.Room || ''}","${cleanDesc}","${item.Image || 'N/A'}","${item.Type || 'Unknown'}","${item.Status || 'Pending'}"\n`;
         });
 
         const encodedUri = encodeURI(csvContent);
@@ -476,5 +435,7 @@
     };
 
     // Auto-Fetch on script load
-    setTimeout(() => { window.fetchHousekeepingData(false); }, 200);
+    // The render function is deliberately hooked into renderHousekeepingData to match the OS router logic
+    window.renderHousekeepingData = window.renderHousekeepingData;
+    setTimeout(() => { window.fetchFeedbackData(false); }, 200);
 </script>
