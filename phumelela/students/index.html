@@ -1,1 +1,65 @@
-
+<!doctype html>
+<html lang="en-ZA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#faf9f6">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="Share your current room and 2027 return plans with Phumelela Residence.">
+  
+  <title>Student questionnaire | Phumelela Residence</title>
+  <link rel="canonical" href="https://rezflow.co.za/phumelela/students/">
+  <link rel="icon" type="image/png" href="../assets/residence-icon.png">
+  <link rel="stylesheet" href="../assets/site.css">
+  <script type="module" src="../assets/student.js"></script>
+</head>
+<body class="page-students">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header shell">
+  <a class="brand" href="../" aria-label="Phumelela Residence home">
+    <img src="../assets/phumelela-wordmark.webp" alt="Phumelela" width="580" height="109">
+    <span>STUDENT RESIDENCE</span>
+  </a>
+  <nav class="top-nav" aria-label="Portal navigation"><a href="../">Home</a><a href="../students/" aria-current="page">Students</a><a href="../admin/">Admin</a></nav>
+  <a class="rez-link" href="https://rezflow.co.za/" aria-label="Visit RezFlow"><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#flow"></use></svg>RezFlow</a>
+</header><main id="main" class="shell portal-main">
+<div class="page-intro"><div><span class="eyebrow accent"><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#book"></use></svg> Student portal</span><h1>Resident check-in</h1></div><span class="intake-tag"><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#calendar"></use></svg> 2027 intake</span></div>
+<div class="form-layout">
+  <aside class="journey" aria-label="Questionnaire progress">
+    <div class="journey-body"><span class="eyebrow">Your questionnaire</span><h2>Three quick steps.</h2><p>Let the residence team know your plans for the year ahead.</p><ol class="step-rail"><li data-rail="1" aria-current="step"><span class="step-dot"><span>1</span><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#check"></use></svg></span><span>Your details</span></li><li data-rail="2"><span class="step-dot"><span>2</span><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#check"></use></svg></span><span>Return plans</span></li><li data-rail="3"><span class="step-dot"><span>3</span><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#check"></use></svg></span><span>Final question</span></li></ol></div>
+    <img src="../assets/residents-close.webp" alt="" width="990" height="551" class="journey-photo">
+  </aside>
+  <div class="form-card panel">
+    <noscript><p>Turn on JavaScript in your browser to complete the questionnaire.</p></noscript>
+    <form id="resident-form" novalidate hidden>
+      <div class="form-progress"><span id="step-label">Step 1 of 3</span><span><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#clock"></use></svg> About 2 min</span></div>
+      <div class="progress-track" aria-hidden="true"><span id="progress-fill"></span></div>
+      <fieldset data-step="1"><legend class="sr">Your details</legend>
+        <h2 class="question-title" tabindex="-1">Your details</h2><p class="muted prompt-copy">Use the details on your Phumelela residence record.</p>
+        <div class="fields">
+          <div class="field"><label for="firstName">First name</label><input id="firstName" name="firstName" type="text" placeholder="e.g. Lerato" autocomplete="given-name" maxlength="80" required ></div>
+          <div class="field"><label for="lastName">Surname</label><input id="lastName" name="lastName" type="text" placeholder="e.g. Molefe" autocomplete="family-name" maxlength="80" required ></div>
+          <div class="field"><label for="phone">Contact number</label><input id="phone" name="phone" type="tel" placeholder="e.g. 082 123 4567" autocomplete="tel" maxlength="30" required ></div>
+          <div class="field"><label for="email">Email address</label><input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email" maxlength="254" required autocapitalize="none" spellcheck="false"></div>
+          <div class="field"><label for="gender">Gender</label><select id="gender" name="gender" required><option value="" disabled selected>Select an option</option><option>Woman</option><option>Man</option><option>Non-binary</option><option>Another gender</option><option>Prefer not to say</option></select></div>
+          <div class="field"><label for="room">Current room</label><input id="room" name="room" type="text" placeholder="e.g. B-204" autocomplete="off" maxlength="32" required ></div>
+        </div>
+        <p class="privacy-note"><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#lock"></use></svg> <span>Residence management uses these details to match your response to your resident record.</span></p>
+      </fieldset>
+      <fieldset data-step="2" hidden disabled><legend class="sr">Return plans</legend><h2 class="question-title" tabindex="-1">Are you coming back in 2027?</h2><p class="muted prompt-copy">Will you be living at Phumelela Residence again next year?</p>
+        <div class="choices"><label class="choice"><input type="radio" name="returning" value="yes" required><span class="choice-icon"><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#home"></use></svg></span><span class="choice-text"><strong>Yes, I’m coming back</strong><small>I plan to live at Phumelela in 2027.</small></span><span class="choice-mark" aria-hidden="true"></span></label><label class="choice"><input type="radio" name="returning" value="no" required><span class="choice-icon"><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#door"></use></svg></span><span class="choice-text"><strong>No, I’m leaving</strong><small>I won’t be returning for the 2027 intake.</small></span><span class="choice-mark" aria-hidden="true"></span></label></div>
+      </fieldset>
+      <fieldset data-step="3" hidden disabled><legend class="sr">Final question</legend>
+        <fieldset id="reservation-fields" disabled hidden><legend class="sr">Reservation application</legend><h2 class="question-title" tabindex="-1">Have you applied for a 2027 reservation?</h2><p class="muted prompt-copy">Tell us whether you’ve already submitted your application for Phumelela.</p>
+        <div class="choices"><label class="choice"><input type="radio" name="reservation" value="applied" required><span class="choice-icon"><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#checkcircle"></use></svg></span><span class="choice-text"><strong>Yes, I’ve applied</strong><small>My reservation application has been submitted.</small></span><span class="choice-mark" aria-hidden="true"></span></label><label class="choice"><input type="radio" name="reservation" value="not_applied" required><span class="choice-icon"><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#note"></use></svg></span><span class="choice-text"><strong>Not yet</strong><small>I still need to submit my application.</small></span><span class="choice-mark" aria-hidden="true"></span></label></div></fieldset>
+        <fieldset id="leaving-fields" disabled hidden><legend class="sr">Reason for leaving</legend><h2 class="question-title" tabindex="-1">What’s your main reason for leaving?</h2><p class="muted prompt-copy">Your feedback helps the team understand residents’ plans.</p>
+        <div class="field"><label for="reason">Reason for leaving</label><select id="reason" name="reason" required><option value="" selected disabled>Choose a reason</option><option>Finishing my studies</option><option>Moving to another residence</option><option>Commuting from home</option><option>Financial reasons</option><option>Taking a study break</option><option>Other</option></select></div>
+        <div class="field detail-field"><label for="reasonDetail" id="detail-label">Anything to add? <span class="optional">Optional</span></label><textarea id="reasonDetail" name="reasonDetail" rows="3" maxlength="500" placeholder="Share a little more if you’d like."></textarea></div></fieldset>
+      </fieldset>
+      <p id="form-error" class="notice error" role="alert" hidden></p>
+      <div class="form-actions"><button id="back" class="button quiet" type="button" hidden>Back</button><button id="continue" class="button primary" type="submit">Continue</button></div>
+    </form>
+    <section id="complete" class="complete" hidden aria-labelledby="thanks-heading"><div class="success-symbol"><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#check"></use></svg></div><span class="eyebrow sage">Response recorded</span><h2 id="thanks-heading" tabindex="-1"></h2><p>Your feedback has been recorded successfully.</p><div id="outcome-note" class="outcome-note"></div><div class="complete-actions"><a id="apply-link" class="button primary" target="_blank" rel="noopener noreferrer" hidden>Apply on NSFAS</a><a class="button quiet" href="../">Return to portal home</a></div></section>
+  </div>
+</div></main><footer class="footer shell"><span>Phumelela Residence <span class="foot-sep">/</span> 2027 resident check-in</span><a href="https://rezflow.co.za/"><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#flow"></use></svg> Powered by <b>RezFlow</b></a></footer>
+</body></html>
