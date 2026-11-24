@@ -11,7 +11,7 @@ const examples = [
 ];
 export const sampleRows = examples.map(([firstName,lastName,room,returning,reservation,reason], index) => ({
   submissionId:'69b249b2-321d-47a4-8e44-' + String(index + 1).padStart(12,'0'),
-  residence:'phumelela', intakeYear:2027, receivedAt:'2026-11-20T' + String(15-index).padStart(2,'0') + ':15:00.000Z',
+  residence:index % 2 ? 'ekaya' : 'phumelela', intakeYear:2027, receivedAt:'2026-11-20T' + String(15-index).padStart(2,'0') + ':15:00.000Z',
   firstName, lastName, email:firstName.toLowerCase() + '@residents.example', phone:'+2700000010' + String(index).padStart(2,'0'),
-  room, gender:'Prefer not to say', returning, reservation, reason:reason || '', reasonDetail:''
+  room, gender:index % 2 ? 'Male' : 'Female', returning, reservation, reason:reason || '', reasonDetail:''
 }));

@@ -1,5 +1,5 @@
 import {config} from './config.js';
-import {responseHistory} from './contract.js';
+import {responseHistory, residences} from './contract.js';
 import {classify, statusLabels, summarise} from './report.js';
 import {sampleRows} from './sample.js';
 import {fetchJSON} from './http.js';
@@ -25,7 +25,7 @@ const timeFmt = new Intl.DateTimeFormat('en-ZA', {hour:'2-digit',minute:'2-digit
 const number = new Intl.NumberFormat('en-ZA');
 const pct = (n,total) => total ? Math.round(100 * n / total) + '%' : '—';
 const pageSize = 15;
-let records = [], currentIds = new Set(), counts = summarise([]).counts;
+let allRecords = [], records = [], currentIds = new Set(), counts = summarise([]).counts;
 let mode = 'locked', key = '', page = 0, revision = 0, loadedAt = null;
 let dialogTrigger = null;
 
@@ -82,7 +82,7 @@ function responseRow(row) {
   const wrap = node('div','response-row');
   const who = node('div','identity'), initials = (Array.from(row.firstName)[0] || '') + (Array.from(row.lastName)[0] || '');
   const labels = node('div');
-  labels.append(node('strong','',row.firstName + ' ' + row.lastName),node('small','','Room ' + row.room + (currentIds.has(row.submissionId) ? '' : ' · Earlier response')));
+  labels.append(node('strong','',row.firstName + ' ' + row.lastName),node('small','',residences[row.residence] + ' · Room ' + row.room + (currentIds.has(row.submissionId) ? '' : ' · Earlier response')));
   who.append(node('span','avatar',initials.toUpperCase()),labels);
   const when = node('div','row-time'), date = new Date(row.receivedAt);
   when.append(node('span','',dateFmt.format(date)),node('small','',timeFmt.format(date) + ' SAST'));
@@ -100,7 +100,7 @@ function showDetail(row, trigger) {
   byId('detail-sub').textContent = 'Room ' + row.room + ' · ' + statusLabels[classify(row)];
   const date = new Date(row.receivedAt);
   const rows = [
-    ['Email address',row.email], ['Contact number',row.phone], ['Gender',row.gender], ['Current room',row.room],
+    ['Residence',residences[row.residence]], ['Email address',row.email], ['Contact number',row.phone], ['Gender',row.gender], ['Current room',row.room],
     ['Return plans',row.returning === 'yes' ? 'Returning in 2027' : 'Not returning in 2027'],
     ['Reservation application',row.returning === 'yes' ? statusLabels[classify(row)] : 'Not applicable'],
   ];
@@ -131,10 +131,21 @@ function renderLog() {
   byId('prev-page').disabled = page === 0;
   byId('next-page').disabled = page === totalPages-1;
 }
+function renderResidence() {
+  const selected = byId('report-residence').value;
+  records = selected === 'all' ? allRecords : allRecords.filter(row => row.residence === selected);
+  // Attribute each resident to the residence in their newest response across the group.
+  currentIds = summarise(allRecords).currentIds;
+  counts = summarise(records.filter(row => currentIds.has(row.submissionId))).counts;
+  counts.responses = records.length;
+  page = 0;
+  updateSync();
+  renderOverview();
+  if (!byId('log-view').hidden) renderLog();
+}
 function display(rows, source) {
   mode = source;
-  records = rows;
-  ({currentIds, counts} = summarise(rows));
+  allRecords = rows;
   byId('access-view').hidden = true;
   byId('workspace').hidden = false;
   byId('admin-title').textContent = 'Intake dashboard';
@@ -142,9 +153,7 @@ function display(rows, source) {
   byId('sample-notice').hidden = mode !== 'sample';
   byId('refresh').hidden = mode === 'sample';
   byId('sign-out').textContent = mode === 'sample' ? 'Exit preview' : 'Sign out';
-  updateSync();
-  renderOverview();
-  if (!byId('log-view').hidden) renderLog();
+  renderResidence();
 }
 function updateSync() {
   const summary = counts.residents + (counts.residents === 1 ? ' resident' : ' residents') + ' · ' + counts.responses + (counts.responses === 1 ? ' response' : ' responses');
@@ -154,7 +163,8 @@ function lock(focus = true) {
   revision++;
   if (byId('detail').open) byId('detail').close();
   dialogTrigger = null;
-  key = ''; records = []; currentIds = new Set(); counts = summarise([]).counts; mode = 'locked'; page = 0; loadedAt = null;
+  byId('report-residence').value = config.hostResidence;
+  key = ''; allRecords = []; records = []; currentIds = new Set(); counts = summarise([]).counts; mode = 'locked'; page = 0; loadedAt = null;
   byId('staff-key').value = ''; byId('search').value = ''; byId('filter').value = 'all';
   for (const id of ['stats','return-legend','reserve-bars','latest-list','log-list','detail-fields','detail-title','detail-sub','sync-status','log-count','source-label','donut-val','page-number']) byId(id).replaceChildren();
   byId('donut').style.background = '';
@@ -200,6 +210,8 @@ async function loadLive(candidate, refresh) {
     }
   }
 }
+byId('report-residence').value = config.hostResidence;
+byId('report-residence').addEventListener('change', renderResidence);
 byId('access-form').addEventListener('submit',event => {
   event.preventDefault();
   const candidate = byId('staff-key').value.trim();

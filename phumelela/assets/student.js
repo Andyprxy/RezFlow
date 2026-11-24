@@ -1,5 +1,6 @@
-import {config} from './config.js';
-import {normalisePhone, validateSubmission} from './contract.js';
+import {config, applicationUrls} from './config.js';
+import {deviceReference, readReceipt, rememberReceipt} from './device.js';
+import {normalisePhone, validateSubmission, residences} from './contract.js';
 import {fetchJSON} from './http.js';
 
 const get = (id) => document.getElementById(id);
@@ -9,7 +10,7 @@ const rails = [...document.querySelectorAll('[data-rail]')];
 const submit = get('continue'), back = get('back');
 const field = (name) => form.elements.namedItem(name);
 const answer = (name) => String(field(name)?.value || '').trim();
-const pendingKey = 'phumelela-2027-pending';
+const pendingKey = 'rezflow-residences-2027-pending';
 let step = 1, busy = false, previousReturn = '';
 let attempt = null;
 
@@ -58,6 +59,7 @@ form.addEventListener('change', (event) => {
     setDetailRequirement();
   }
   if (event.target.name === 'reason') setDetailRequirement();
+  if (event.target.name === 'residence') updateResidence();
 });
 form.addEventListener('input', e => {
   e.target.setCustomValidity?.('');
@@ -82,7 +84,7 @@ function validStep() {
 function answers() {
   const returning = answer('returning');
   return {
-    residence: 'phumelela', intakeYear: 2027,
+    residence: answer('residence'), intakeYear: 2027,
     firstName: answer('firstName'), lastName: answer('lastName'), email: answer('email').toLowerCase(),
     phone: normalisePhone(answer('phone')), gender: answer('gender'), room: answer('room'), returning,
     reservation: returning === 'yes' ? answer('reservation') : 'not_applicable',
@@ -109,25 +111,42 @@ async function referenceFor(payload) {
   try { sessionStorage.setItem(pendingKey, JSON.stringify(attempt)); } catch {}
   return attempt.id;
 }
-function complete(payload) {
+function updateResidence() {
+  const selected = residences[answer('residence')] || residences[config.hostResidence];
+  document.querySelectorAll('[data-selected-residence]').forEach(el => { el.textContent = selected; });
+}
+function showReceipt(receipt, firstName = '') {
+  const wasHidden = get('complete').hidden;
   form.hidden = true;
   get('complete').hidden = false;
-  get('thanks-heading').textContent = 'Thank you, ' + payload.firstName + '!';
-  const pending = payload.reservation === 'not_applied';
-  get('outcome-note').textContent = pending
-    ? 'Your next step is to apply for a 2027 reservation on Phumelela’s NSFAS accommodation page.'
-    : payload.returning === 'yes'
-      ? 'We’ve noted that you plan to return and have already submitted your 2027 reservation application.'
-      : 'We’ve shared your reason for leaving with the residence team. Thank you for being part of Phumelela.';
+  get('thanks-heading').textContent = firstName ? 'Thank you, ' + firstName + '!' : 'Your check-in is complete.';
+  get('receipt-description').textContent = firstName ? 'Your feedback has been recorded successfully.' : 'A 2027 response has already been recorded from this browser.';
+  const place = residences[receipt.residence];
+  const needsApplication = Boolean(place && receipt.reservation === 'not_applied');
+  const note = get('outcome-note');
+  note.textContent = needsApplication ? 'Your next step is to apply for a 2027 reservation at ' + place + '.'
+    : firstName && receipt.reservation === 'applied' ? 'We’ve noted that you plan to return and have already applied for your room.'
+    : firstName ? 'Thank you for sharing your plans with the residence team.' : 'If your plans change, please contact residence management.';
   const link = get('apply-link');
-  link.href = config.applicationUrl;
-  link.hidden = !pending;
+  link.hidden = !needsApplication;
+  if (needsApplication) link.href = applicationUrls[receipt.residence];
+  else link.removeAttribute('href');
   rails.forEach(li => { li.removeAttribute('aria-current'); li.classList.add('done'); });
-  form.reset();
-  attempt = null;
-  try { sessionStorage.removeItem(pendingKey); } catch {}
-  get('thanks-heading').focus();
-  get('complete').scrollIntoView({block: 'nearest'});
+  if (wasHidden) {
+    form.reset();
+    get('thanks-heading').focus();
+    get('complete').scrollIntoView({block: 'nearest'});
+  }
+}
+async function checkStoredReceipt() {
+  const receipt = await readReceipt();
+  const newApplicationLink = receipt?.reservation === 'not_applied' && get('apply-link').hidden;
+  if (receipt && (get('complete').hidden || newApplicationLink)) showReceipt(receipt);
+  return Boolean(receipt);
+}
+function storageFailure() {
+  form.hidden = true;
+  get('storage-message').hidden = false;
 }
 back.addEventListener('click', () => { if (!busy && step > 1) showStep(step - 1); });
 form.addEventListener('submit', async event => {
@@ -142,15 +161,28 @@ form.addEventListener('submit', async event => {
   submit.textContent = 'Saving…';
   form.setAttribute('aria-busy','true');
   try {
+    if (await checkStoredReceipt()) return;
+    const deviceId = await deviceReference();
     const submissionId = await referenceFor(payload);
     const validated = validateSubmission({...payload, submissionId});
     if (!validated.ok) { showError(validated.error); return; }
     const receipt = await fetchJSON(config.submitUrl, {
-      method: 'POST', headers: {'Content-Type':'application/json','Accept':'application/json'}, body: JSON.stringify(validated.row)
+      method: 'POST', headers: {'Content-Type':'application/json','Accept':'application/json'}, body: JSON.stringify({...validated.row, deviceId})
     });
     if (receipt?.ok !== true || receipt.submissionId !== submissionId) throw new Error('Receipt not confirmed.');
-    complete(payload);
+    const saved = {residence:payload.residence, reservation:payload.reservation};
+    try { await rememberReceipt(saved); } catch { /* The sheet already holds the device lock. */ }
+    try { sessionStorage.removeItem(pendingKey); } catch {}
+    showReceipt(saved, payload.firstName);
   } catch (error) {
+    if (error.status === 409 && error.code === 'device_already_recorded') {
+      const residence = error.applicationResidence;
+      let saved = Object.hasOwn(residences, residence)
+        ? {residence, reservation:'not_applied'} : {recorded:true};
+      try { saved = await rememberReceipt(saved); } catch {}
+      showReceipt(saved);
+      return;
+    }
     showError(error.status === 400 ? 'The form could not be accepted. Use Back to check your answers and try again.' : 'We couldn’t confirm that your response was saved. Your answers are still here. Check your connection and tap Submit response again.');
   } finally {
     busy = false;
@@ -160,5 +192,21 @@ form.addEventListener('submit', async event => {
     form.removeAttribute('aria-busy');
   }
 });
-form.hidden = false;
-showStep(1, false);
+async function initialise() {
+  try {
+    await deviceReference();
+    if (await checkStoredReceipt()) return;
+    field('residence').value = config.hostResidence;
+    updateResidence();
+    form.hidden = false;
+    showStep(1, false);
+  } catch { storageFailure(); }
+}
+window.addEventListener('storage', event => {
+  if (event.key === 'rezflow-2027-complete') checkStoredReceipt().catch(storageFailure);
+});
+window.addEventListener('pageshow', () => checkStoredReceipt().catch(storageFailure));
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && !busy) checkStoredReceipt().catch(storageFailure);
+});
+initialise();

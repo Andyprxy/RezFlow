@@ -306,3 +306,8 @@ dialog p{margin-top:.26rem}
   .stats{gap:.5rem}.metric .metric-icon{display:none}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:0s!important}}
+
+.residence-field{grid-column:1/-1}
+.report-scope{flex:1 1 180px;max-width:270px;display:flex;flex-direction:row;align-items:center;gap:.55rem}
+.report-scope select{width:auto;max-width:100%;min-width:0;flex:1}
+@media(max-width:650px){.report-scope{max-width:100%;width:100%;flex-basis:100%;order:2}.report-scope select{max-width:260px}}

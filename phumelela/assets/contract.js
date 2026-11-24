@@ -1,5 +1,7 @@
 // Also embedded in the n8n Code nodes, so both ends use the same field rules.
-export const genders = ['Woman', 'Man', 'Non-binary', 'Another gender', 'Prefer not to say'];
+export const genders = ['Male', 'Female'];
+const recordedGenders = [...genders, 'Woman', 'Man', 'Non-binary', 'Another gender', 'Prefer not to say'];
+export const residences = Object.freeze({phumelela:'Phumelela Residence', ekaya:'eKaya Student Accommodation'});
 export const reasons = ['Finishing my studies', 'Moving to another residence', 'Commuting from home', 'Financial reasons', 'Taking a study break', 'Other'];
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -10,21 +12,22 @@ export function normalisePhone(value) {
   return /^\+[1-9]\d{7,14}$/.test(phone) ? phone : '';
 }
 
-export function validateSubmission(input) {
+export function validateSubmission(input, allowedGenders = genders) {
   const bad = (error) => ({ok: false, error});
   if (!input || typeof input !== 'object' || Array.isArray(input)) return bad('A questionnaire is required.');
   const field = (key) => typeof input[key] === 'string' ? input[key].trim() : '';
   const shortText = (value, limit) => value.length > 0 && value.length <= limit && !/[\u0000-\u001f\u007f]/.test(value);
   const submissionId = field('submissionId').toLowerCase();
   if (!uuidPattern.test(submissionId)) return bad('The response reference is missing or invalid.');
-  if (input.residence !== 'phumelela' || Number(input.intakeYear) !== 2027) return bad('This questionnaire is for Phumelela’s 2027 intake.');
+  const residence = field('residence');
+  if (!Object.hasOwn(residences, residence) || Number(input.intakeYear) !== 2027) return bad('Choose your residence for the 2027 intake.');
   const firstName = field('firstName'), lastName = field('lastName');
   const email = field('email').toLowerCase(), phone = normalisePhone(field('phone'));
   const gender = field('gender'), room = field('room');
   if (!shortText(firstName, 80) || !shortText(lastName, 80)) return bad('Enter your first name and surname.');
   if (!shortText(email, 254) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return bad('Enter a complete email address.');
   if (!phone) return bad('Enter a 10-digit South African number or an international number with a country code.');
-  if (!genders.includes(gender) || !shortText(room, 32)) return bad('Choose a gender option and enter your current room.');
+  if (!allowedGenders.includes(gender) || !shortText(room, 32)) return bad('Choose a gender option and enter your current room.');
   const returning = field('returning'), reservation = field('reservation');
   const reason = field('reason'), reasonDetail = field('reasonDetail');
   if (returning === 'yes') {
@@ -36,7 +39,7 @@ export function validateSubmission(input) {
   } else {
     return bad('Let us know whether you plan to return.');
   }
-  return {ok: true, row: {submissionId, residence: 'phumelela', intakeYear: 2027, firstName, lastName, email, phone, gender, room, returning, reservation, reason, reasonDetail}};
+  return {ok: true, row: {submissionId, residence, intakeYear: 2027, firstName, lastName, email, phone, gender, room, returning, reservation, reason, reasonDetail}};
 }
 
 // The raw sheet is an append-only receipt log. Keep the first accepted copy of
@@ -48,8 +51,10 @@ export function responseHistory(rawRows) {
     const keys = Object.keys(raw).filter(k => k !== 'row_number' && raw[k] !== '');
     if (!keys.length) continue; // A header-only sheet produces one empty item in n8n.
     if (!raw.residence || !raw.intakeYear) throw new Error('Check the sheet headers.');
-    if (raw.residence !== 'phumelela' || Number(raw.intakeYear) !== 2027) continue;
-    const result = validateSubmission(raw);
+    if (!Object.hasOwn(residences, raw.residence) || Number(raw.intakeYear) !== 2027) continue;
+    let phone = String(raw.phone ?? '').trim();
+    if (/^27\d{9}$/.test(phone)) phone = '+' + phone;
+    const result = validateSubmission({...raw, phone, room:String(raw.room ?? '')}, recordedGenders);
     const time = Date.parse(raw.receivedAt);
     if (!result.ok || !Number.isFinite(time)) throw new Error('Check the data in sheet row ' + (raw.row_number || index + 2) + '.');
     entries.push({row: {...result.row, receivedAt: new Date(time).toISOString()}, index, time});
