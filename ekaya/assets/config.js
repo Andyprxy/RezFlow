@@ -1,7 +1,7 @@
 // Both route pairs feed the same n8n workflow and the same response sheet.
 export const config = Object.freeze({
-  submitUrl: 'https://n8n.automania.cloud/webhook/ekaya-2027-check-in',
-  responsesUrl: 'https://n8n.automania.cloud/webhook/ekaya-2027-responses',
+  submitUrl: 'https://engine.automania.cloud/webhook/ekaya-2027-check-in',
+  responsesUrl: 'https://engine.automania.cloud/webhook/ekaya-2027-responses',
   hostResidence: 'ekaya',
   staffHeader: 'X-Phumelela-Key',
 });
