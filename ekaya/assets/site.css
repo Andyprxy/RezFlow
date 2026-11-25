@@ -317,3 +317,9 @@ dialog p{margin-top:.26rem}
 @media(max-width:820px){.hero h1{font-size:clamp(3rem,7.7vw,4.4rem)}}
 @media(max-width:650px){.brand img{width:5.45rem}.hero h1{font-size:clamp(2.9rem,10.3vw,3.8rem)}}
 @media(max-width:360px){.brand img{width:4.8rem}.hero h1{font-size:2.6rem}}
+
+.switch-help{color:var(--muted);font-size:.82rem;line-height:1.45}
+@media(prefers-reduced-motion:no-preference){
+  .page-students .portal-main,.page-student .portal-main{transition:opacity .12s ease}
+  body.switching-residence main{opacity:.58;transition:opacity .12s ease}
+}

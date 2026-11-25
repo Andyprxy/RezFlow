@@ -1,6 +1,5 @@
 // Also embedded in the n8n Code nodes, so both ends use the same field rules.
 export const genders = ['Male', 'Female'];
-const recordedGenders = [...genders, 'Woman', 'Man', 'Non-binary', 'Another gender', 'Prefer not to say'];
 export const residences = Object.freeze({phumelela:'Phumelela Residence', ekaya:'eKaya Student Accommodation'});
 export const reasons = ['Finishing my studies', 'Moving to another residence', 'Commuting from home', 'Financial reasons', 'Taking a study break', 'Other'];
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -40,30 +39,4 @@ export function validateSubmission(input, allowedGenders = genders) {
     return bad('Let us know whether you plan to return.');
   }
   return {ok: true, row: {submissionId, residence, intakeYear: 2027, firstName, lastName, email, phone, gender, room, returning, reservation, reason, reasonDetail}};
-}
-
-// The raw sheet is an append-only receipt log. Keep the first accepted copy of
-// each retry ID before finding the newest distinct questionnaire per email.
-export function responseHistory(rawRows) {
-  const entries = [];
-  for (const [index, raw] of rawRows.entries()) {
-    if (!raw || typeof raw !== 'object') throw new Error('Invalid response row.');
-    const keys = Object.keys(raw).filter(k => k !== 'row_number' && raw[k] !== '');
-    if (!keys.length) continue; // A header-only sheet produces one empty item in n8n.
-    if (!raw.residence || !raw.intakeYear) throw new Error('Check the sheet headers.');
-    if (!Object.hasOwn(residences, raw.residence) || Number(raw.intakeYear) !== 2027) continue;
-    let phone = String(raw.phone ?? '').trim();
-    if (/^27\d{9}$/.test(phone)) phone = '+' + phone;
-    const result = validateSubmission({...raw, phone, room:String(raw.room ?? '')}, recordedGenders);
-    const time = Date.parse(raw.receivedAt);
-    if (!result.ok || !Number.isFinite(time)) throw new Error('Check the data in sheet row ' + (raw.row_number || index + 2) + '.');
-    entries.push({row: {...result.row, receivedAt: new Date(time).toISOString()}, index, time});
-  }
-  entries.sort((a, b) => a.time - b.time || a.index - b.index);
-  const seen = new Set();
-  return entries.filter(({row}) => {
-    if (seen.has(row.submissionId)) return false;
-    seen.add(row.submissionId);
-    return true;
-  }).reverse().map(entry => entry.row);
 }
