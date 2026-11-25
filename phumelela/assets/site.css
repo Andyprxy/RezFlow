@@ -311,3 +311,9 @@ dialog p{margin-top:.26rem}
 .report-scope{flex:1 1 180px;max-width:270px;display:flex;flex-direction:row;align-items:center;gap:.55rem}
 .report-scope select{width:auto;max-width:100%;min-width:0;flex:1}
 @media(max-width:650px){.report-scope{max-width:100%;width:100%;flex-basis:100%;order:2}.report-scope select{max-width:260px}}
+
+.switch-help{color:var(--muted);font-size:.82rem;line-height:1.45}
+@media(prefers-reduced-motion:no-preference){
+  .page-students .portal-main,.page-student .portal-main{transition:opacity .12s ease}
+  body.switching-residence main{opacity:.58;transition:opacity .12s ease}
+}
