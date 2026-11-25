@@ -11,9 +11,10 @@
   <link rel="canonical" href="https://rezflow.co.za/phumelela/admin/">
   <link rel="icon" type="image/png" href="../assets/residence-icon.png">
   <link rel="stylesheet" href="../assets/site.css">
+  <link rel="stylesheet" href="../assets/admin.css">
   <script type="module" src="../assets/admin.js"></script>
 </head>
-<body class="page-admin">
+<body class="page-admin theme-phumelela">
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header shell">
   <a class="brand" href="../" aria-label="Phumelela Residence home">
@@ -23,28 +24,52 @@
   <nav class="top-nav" aria-label="Portal navigation"><a href="../">Home</a><a href="../students/">Students</a><a href="../admin/" aria-current="page">Admin</a></nav>
   <a class="rez-link" href="https://rezflow.co.za/" aria-label="Visit RezFlow"><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#flow"></use></svg>RezFlow</a>
 </header><main id="main" class="shell portal-main">
-  <div class="page-intro"><div><span class="eyebrow sage"><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#grid"></use></svg> Management portal</span><h1 id="admin-title" tabindex="-1">Management access</h1></div><span class="intake-tag"><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#calendar"></use></svg> 2027 intake</span></div>
+  <div class="page-intro"><div><span class="eyebrow sage"><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#grid"></use></svg> Management portal</span><h1 id="admin-title" tabindex="-1">Phumelela management</h1></div><span class="intake-tag"><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#calendar"></use></svg> 2027 intake</span></div>
   <section id="access-view" class="access-layout">
-    <div class="access-story"><div class="access-blurb"><span class="glass-tag"><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#shield"></use></svg> Residence staff</span><h2>Who’s coming <br><em>back in 2027?</em></h2><p>See who’s returning, who has applied and which residents need a follow-up.</p></div><div class="access-details"><span><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#chart"></use></svg> Intake overview</span><span><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#clipboard"></use></svg> Response log</span></div></div>
+    <div class="access-story"><div class="access-blurb"><span class="glass-tag"><svg class="icon" aria-hidden="true" focusable="false"><use href="../assets/icons.svg#building"></use></svg> Phumelela Residence</span><h2>Coming back <br><em>in 2027?</em></h2><p>Track return plans and reservation applications at Phumelela, or review both residences together.</p></div><div class="access-details"><span><svg class="icon" aria-hidden="true" focusable="false"><use href="../assets/icons.svg#chart"></use></svg> Intake overview</span><span><svg class="icon" aria-hidden="true" focusable="false"><use href="../assets/icons.svg#clipboard"></use></svg> Resident responses</span></div></div>
     <div class="access-form-card panel"><span class="tile-icon mint"><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#key"></use></svg></span><h2>Staff sign-in</h2><p class="muted">Enter your management access key to view resident responses.</p>
     <noscript><p>Turn on JavaScript in your browser to use the management dashboard.</p></noscript>
     <form id="access-form" hidden><div class="field"><label for="staff-key">Staff access key</label><input type="password" id="staff-key" placeholder="Enter your access key" required autocomplete="current-password" maxlength="512" spellcheck="false"></div>
       <p id="access-error" class="notice error" role="alert" hidden></p><button id="sign-in" class="button primary wide" type="submit"><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#lock"></use></svg> <span>Open dashboard</span></button></form>
     <button type="button" class="text-button" id="preview" hidden>Explore with sample data</button></div>
   </section>
-  <section id="workspace" hidden aria-labelledby="admin-title">
-    <div class="workspace-tools"><div class="view-switch" role="group" aria-label="Dashboard view"><button id="show-overview" type="button" aria-pressed="true"><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#grid"></use></svg> Overview</button><button id="show-log" type="button" aria-pressed="false"><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#clipboard"></use></svg> Response log</button></div>
-      <div class="field report-scope"><label for="report-residence">Residence</label><select id="report-residence"><option value="phumelela" selected>Phumelela Residence</option><option value="ekaya">eKaya Student Accommodation</option><option value="all">Both residences</option></select></div><div class="staff-tools"><span id="source-label" class="source-label"></span><button id="refresh" class="button small secondary" type="button"><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#refresh"></use></svg> Refresh</button><button id="sign-out" class="button small secondary" type="button">Sign out</button></div></div>
-    <p class="notice sample-notice" id="sample-notice" hidden>Sample dashboard · All resident details shown here are fictional.</p>
-    <p class="notice error" id="workspace-error" role="alert" hidden></p><p id="sync-status" class="sync-status" role="status"></p>
-    <section id="overview"><h2 class="sr">Overview</h2><div id="stats" class="stats"></div>
-    <div class="chart-grid"><article class="panel chart-panel"><h3>Return plans</h3><p>Latest check-in per resident email</p><div class="return-plot"><div class="donut" id="donut" aria-hidden="true"><div><strong id="donut-val"></strong><small>returning</small></div></div><div class="legend-list" id="return-legend"></div></div></article>
-    <article class="panel chart-panel"><h3>Reservation applications</h3><p>Among residents planning to return</p><div class="bars" id="reserve-bars"></div></article></div>
-    <article class="panel recent"><div class="box-title"><h3>Latest responses</h3><button class="text-button" id="view-all" type="button">View response log</button></div><div id="latest-list"></div></article></section>
-    <section id="log-view" class="panel log-panel" hidden aria-labelledby="log-heading"><div class="box-title"><div><h2 id="log-heading">Response log</h2><p>Open a response to view the resident’s details and feedback.</p></div></div>
-    <div class="filters"><div class="field search-field"><label for="search">Search responses</label><div><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#search"></use></svg><input type="search" id="search" placeholder="Name, room, email or phone" autocomplete="off"></div></div>
-    <div class="field"><label for="filter">Response status</label><select id="filter"><option value="all">All statuses</option><option value="returning">Returning · all</option><option value="applied">Applied</option><option value="not_applied">Yet to apply</option><option value="leaving">Not returning</option></select></div></div>
-    <p id="log-count" class="list-count" role="status"></p><div id="log-list"></div><div class="pager" id="pager" hidden><button type="button" class="button quiet small" id="prev-page">Previous</button><span id="page-number"></span><button type="button" class="button quiet small" id="next-page">Next</button></div></section>
+<section id="workspace" hidden aria-labelledby="admin-title">
+    <div class="console-bar">
+      <div class="view-switch" role="group" aria-label="Dashboard view">
+        <button id="show-overview" type="button" aria-pressed="true"><svg class="icon" aria-hidden="true" focusable="false"><use href="../assets/icons.svg#grid"></use></svg> Overview</button>
+        <button id="show-log" type="button" aria-pressed="false"><svg class="icon" aria-hidden="true" focusable="false"><use href="../assets/icons.svg#clipboard"></use></svg> Response log</button>
+      </div>
+      <div class="console-actions"><span id="source-label" class="feed-source"></span><button id="refresh" class="button secondary small" type="button"><svg class="icon" aria-hidden="true" focusable="false"><use href="../assets/icons.svg#refresh"></use></svg> Refresh</button><button id="sign-out" class="button secondary small" type="button">Sign out</button></div>
+    </div>
+    <p class="notice sample-notice" id="sample-notice" hidden>Sample dashboard. These responses are fictional.</p>
+    <p class="notice error" id="workspace-error" role="alert" hidden></p>
+    <section class="scope-panel" aria-label="Dashboard filters">
+      <div class="scope-intro"><div><span class="scope-caption">Viewing</span><h2 id="scope-name">Phumelela Residence</h2><p id="sync-status" class="scope-count" role="status"></p></div>
+        <button type="button" class="scope-link" id="all-logs">View all logs <span class="nav-chevron" aria-hidden="true"></span></button></div>
+      <div class="scope-controls">
+        <div class="field"><label for="report-residence">Residence</label><select id="report-residence"><option value="phumelela" selected>Phumelela Residence</option><option value="ekaya">eKaya Student Accommodation</option><option value="all">All residences</option><option value="other" id="other-option" hidden>Other / unassigned</option></select></div>
+        <div class="field"><label for="filter">Response status</label><select id="filter"><option value="all">All statuses</option><option value="returning">Returning</option><option value="leaving">Not returning</option><option value="applied">Applied</option><option value="not_applied">Yet to apply</option><option value="unknown_return" hidden>Return plan unspecified</option><option value="unknown_application" hidden>Application unspecified</option></select></div>
+        <div class="field"><label for="search">Search responses</label><div class="scope-search"><svg class="icon" aria-hidden="true" focusable="false"><use href="../assets/icons.svg#search"></use></svg><input type="search" id="search" placeholder="Name, room, email, phone or reference" autocomplete="off"></div></div>
+        <button type="button" class="scope-link reset" id="reset-filters">Reset filters</button>
+      </div>
+    </section>
+    <section id="overview" aria-label="Overview">
+      <div id="stats" class="kpi-grid"></div>
+      <div class="insight-grid">
+        <article class="panel insight"><h3>Return plans</h3><p>Share of matching responses</p><div class="return-plot"><div id="donut" class="donut" aria-hidden="true"><div><strong id="donut-val"></strong><small>returning</small></div></div><div id="return-legend" class="legend-list"></div></div></article>
+        <article class="panel insight"><h3>Reservation applications</h3><p id="reserve-caption">Among returning responses</p><div id="reserve-bars" class="bars"></div></article>
+      </div>
+      <div class="insight-grid breakdown-grid">
+        <article class="panel insight"><h3>By residence</h3><p>Open a residence to see its matching log.</p><div id="residence-summary"></div></article>
+        <article class="panel insight"><h3>Reasons for leaving</h3><p id="reason-caption">Reasons reported in non-returning responses</p><ul id="reasons-summary" class="reason-list"></ul></article>
+      </div>
+      <article class="panel record-panel"><div class="record-heading"><h3>Latest responses</h3><button id="view-all" type="button" class="scope-link">View matching log <span class="nav-chevron" aria-hidden="true"></span></button></div><div id="latest-list"></div></article>
+    </section>
+    <section id="log-view" class="panel record-panel" hidden aria-labelledby="log-heading">
+      <div class="record-heading"><div><h2 id="log-heading">Response log</h2><p id="log-count" class="record-count" role="status"></p></div></div>
+      <div id="log-list"></div>
+      <div class="pager" id="pager" hidden><button type="button" class="button quiet small" id="prev-page">Previous</button><span id="page-number"></span><button type="button" class="button quiet small" id="next-page">Next</button></div>
+    </section>
   </section>
   <dialog id="detail" aria-labelledby="detail-title"><header><span class="eyebrow accent"><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#clipboard"></use></svg> Resident response</span><button class="icon-button" id="close-detail" aria-label="Close response details" type="button"><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#close"></use></svg></button></header><h2 id="detail-title"></h2><p id="detail-sub" class="muted"></p><dl id="detail-fields" class="details-list"></dl></dialog>
 </main><footer class="footer shell"><span>Phumelela Residence <span class="foot-sep">/</span> 2027 resident check-in</span><a href="https://rezflow.co.za/"><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#flow"></use></svg> Powered by <b>RezFlow</b></a></footer>
