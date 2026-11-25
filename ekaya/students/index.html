@@ -11,6 +11,7 @@
   <link rel="canonical" href="https://rezflow.co.za/ekaya/students/">
   <link rel="icon" type="image/png" href="../assets/residence-icon.png">
   <link rel="stylesheet" href="../assets/site.css">
+  <style>@view-transition{navigation:auto}@media(prefers-reduced-motion:reduce){::view-transition-group(*){animation-duration:0s!important}}</style>
   <script type="module" src="../assets/student.js"></script>
 </head>
 <body class="page-students">
@@ -26,7 +27,7 @@
 <div class="form-layout">
   <aside class="journey" aria-label="Questionnaire progress">
     <div class="journey-body"><span class="eyebrow">Your questionnaire</span><h2>Three quick steps.</h2><p>Let the residence team know your plans for the year ahead.</p><ol class="step-rail"><li data-rail="1" aria-current="step"><span class="step-dot"><span>1</span><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#check"></use></svg></span><span>Your details</span></li><li data-rail="2"><span class="step-dot"><span>2</span><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#check"></use></svg></span><span>Return plans</span></li><li data-rail="3"><span class="step-dot"><span>3</span><svg class="icon " aria-hidden="true" focusable="false"><use href="../assets/icons.svg#check"></use></svg></span><span>Final question</span></li></ol></div>
-    <img src="../assets/residents-close.webp" alt="" width="990" height="551" class="journey-photo">
+    <img src="../assets/residents-close.webp" alt="" width="1100" height="614" class="journey-photo">
   </aside>
   <div class="form-card panel">
     <noscript><p>Turn on JavaScript in your browser to complete the questionnaire.</p></noscript>
@@ -36,7 +37,7 @@
       <div class="progress-track" aria-hidden="true"><span id="progress-fill"></span></div>
       <fieldset data-step="1"><legend class="sr">Your details</legend>
         <h2 class="question-title" tabindex="-1">Your details</h2><p class="muted prompt-copy">Use the details on your current residence record.</p>
-        <div class="fields"><div class="field residence-field"><label for="residence">Current residence</label><select id="residence" name="residence" required><option value="ekaya" selected>eKaya Student Accommodation</option><option value="phumelela">Phumelela Residence</option></select></div>
+        <div class="fields"><div class="field residence-field"><label for="residence">Current residence</label><select id="residence" name="residence" aria-describedby="switch-help" required><option value="ekaya" selected>eKaya Student Accommodation</option><option value="phumelela">Phumelela Residence</option></select><small id="switch-help" class="switch-help">Changing residence opens its questionnaire and carries over your answers.</small><span id="switch-status" class="sr" role="status"></span></div>
           <div class="field"><label for="firstName">First name</label><input id="firstName" name="firstName" type="text" placeholder="e.g. Lerato" autocomplete="given-name" maxlength="80" required ></div>
           <div class="field"><label for="lastName">Surname</label><input id="lastName" name="lastName" type="text" placeholder="e.g. Molefe" autocomplete="family-name" maxlength="80" required ></div>
           <div class="field"><label for="phone">Contact number</label><input id="phone" name="phone" type="tel" placeholder="e.g. 082 123 4567" autocomplete="tel" maxlength="30" required ></div>
@@ -56,6 +57,7 @@
         <div class="field"><label for="reason">Reason for leaving</label><select id="reason" name="reason" required><option value="" selected disabled>Choose a reason</option><option>Finishing my studies</option><option>Moving to another residence</option><option>Commuting from home</option><option>Financial reasons</option><option>Taking a study break</option><option>Other</option></select></div>
         <div class="field detail-field"><label for="reasonDetail" id="detail-label">Anything to add? <span class="optional">Optional</span></label><textarea id="reasonDetail" name="reasonDetail" rows="3" maxlength="500" placeholder="Share a little more if you’d like."></textarea></div></fieldset>
       </fieldset>
+      <button id="switch-fresh" class="text-button" type="button" hidden></button>
       <p id="form-error" class="notice error" role="alert" hidden></p>
       <div class="form-actions"><button id="back" class="button quiet" type="button" hidden>Back</button><button id="continue" class="button primary" type="submit">Continue</button></div>
     </form>
