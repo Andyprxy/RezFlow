@@ -1,98 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en-ZA">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CJ Students | Student Accommodation for 2026</title>
-    
-    <!-- Lightweight Tailwind CSS for styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <style>
-        /* Clean glassmorphism aesthetic for the main card and header */
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .glass-header {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#faf7fb">
+  <meta name="description" content="Register or return to your CJ Students accommodation account.">
+  <link rel="canonical" href="https://rezflow.co.za/cjstudents/">
+  <link rel="icon" href="./cj.jpg">
+  <link rel="stylesheet" href="/home-assets/home.css">
+  <link rel="stylesheet" href="./entry.css">
+  <script defer src="/assets/canonical.js"></script>
+  <title>CJ Students | Student accommodation</title>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans antialiased overflow-x-hidden">
-
-    <!-- Fixed Header -->
-    <header class="fixed w-full top-0 z-50 glass-header shadow-sm transition-all duration-300">
-        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
-            
-            <!-- Logo -->
-            <a href="#" class="flex items-center">
-                <img src="https://cjstudents.co.za/wp-content/uploads/2023/10/CJ-Students-2023-Logo-90px.png" alt="CJ Students Accommodation" class="h-10 md:h-12 object-contain">
-            </a>
-
-            <!-- Desktop Navigation -->
-            <nav class="hidden lg:flex space-x-8 items-center text-sm font-medium text-gray-600">
-                <a href="#" class="hover:text-[#ec009b] transition-colors">Home</a>
-                <a href="#" class="hover:text-[#ec009b] transition-colors">Residences</a>
-                <a href="#" class="hover:text-[#ec009b] transition-colors">News & Events</a>
-                <a href="#" class="hover:text-[#ec009b] transition-colors">About</a>
-            </nav>
-
-            <!-- Action Buttons -->
-            <div class="flex items-center space-x-4">
-                <a href="https://rubix.cjstudents.co.za/#/student/login" class="hidden md:block text-sm font-semibold text-gray-600 hover:text-[#ec009b] transition-colors">
-                    Returning Students
-                </a>
-                <!-- Updated RezFlow Link -->
-                <a href="https://rezflow.co.za/cjstudents/signup/" class="bg-gray-900 text-white text-sm px-5 py-2.5 rounded-full font-medium hover:bg-[#ec009b] transition-all duration-300 shadow-md">
-                    Register Now
-                </a>
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Hero Section -->
-    <section class="relative min-h-screen flex items-center justify-center bg-cover bg-center" style="background-image: url('https://cjstudents.co.za/wp-content/uploads/2024/11/CJ-Students-Web-Headers-Main-A.png');">
-        
-        <!-- Dark Overlay for readability -->
-        <div class="absolute inset-0 bg-black/40"></div>
-
-        <!-- Centered UI Card -->
-        <div class="relative z-10 text-center text-white px-6 md:px-12 py-12 max-w-3xl mx-4 glass-panel rounded-3xl shadow-2xl">
-            
-            <h1 class="text-4xl md:text-6xl font-bold mb-4 tracking-tight leading-tight">
-                Safe, Secure & Connected
-            </h1>
-            
-            <p class="text-lg md:text-xl mb-8 font-light text-gray-200">
-                CJ Students is your ultimate destination for affordable student accommodation across South Africa. Elevate your experience with sleek apartments and an epic student community.
-            </p>
-            
-            <!-- Updated Primary RezFlow CTA -->
-            <a href="https://rezflow.co.za/cjstudents/signup/" class="inline-block bg-gradient-to-r from-[#ec009b] to-[#7b008b] text-white text-lg px-10 py-4 rounded-full font-bold hover:scale-105 transition-transform duration-300 shadow-xl border border-white/20">
-                REGISTER NOW
-            </a>
-            
-        </div>
+<body class="cj-entry">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="cj-header"><div class="shell"><a class="cj-brand" href="./" aria-label="CJ Students home"><img src="./cj.jpg" alt="" width="56" height="56">CJ Students</a><a href="#contact">Contact</a></div></header>
+  <main id="main" class="shell">
+    <section class="cj-panel" aria-labelledby="title">
+      <div class="cj-copy"><p class="overline">Student accommodation</p><h1 id="title">Your CJ Students account.</h1><p>Open registration or sign in to your returning student account.</p>
+        <div class="cj-actions"><a class="button deep" href="./signup/">Register now</a><a class="button" href="https://rubix.cjstudents.co.za/#/student/login">Returning students</a></div>
+      </div>
+      <aside aria-label="Interactive product demo"><img src="./cj.jpg" width="138" height="138" alt=""><h2>Explore the portal</h2><p>Try the residence experience with fictional records.</p><a href="./demo/">Open CJ Students demo</a></aside>
     </section>
-
-    <!-- Simple Footer -->
-    <footer class="bg-gray-900 text-gray-400 py-8 text-center text-sm">
-        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center">
-            <p>&copy; 2026 CJ Students. All Rights Reserved.</p>
-            <div class="mt-4 md:mt-0 space-x-4">
-                <a href="mailto:hello@cjstudents.co.za" class="hover:text-white transition-colors">hello@cjstudents.co.za</a>
-                <span>|</span>
-                <a href="tel:0871639625" class="hover:text-white transition-colors">087 163 9625</a>
-            </div>
-        </div>
-    </footer>
-
+  </main>
+  <footer id="contact" class="shell cj-footer"><span>CJ Students</span><a href="mailto:hello@cjstudents.co.za">hello@cjstudents.co.za</a><a href="tel:0871639625">087 163 9625</a></footer>
 </body>
 </html>

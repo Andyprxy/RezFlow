@@ -86,6 +86,10 @@ h2 em, h3 em, .hero em {font-family:Georgia,"Times New Roman",serif;font-weight:
 .directory {padding-top:clamp(2.35rem,4.2vw,4.45rem)}
 .demo-grid,.plan-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(.75rem,1.3vw,1.35rem);align-items:start}
 .demo-card {--wash:#f7e7d8;position:relative;border:1px solid #d4e0dc;border-radius:var(--radius);padding:clamp(1.2rem,1.85vw,1.95rem);background:radial-gradient(ellipse at 100% 0,var(--wash),transparent 62%),linear-gradient(145deg,#fff,#f5f8f7);box-shadow:inset 0 1px 0 #fff,0 4px 13px #0d2f3c04}
+.demo-ekaya {--wash:#e2eef9}
+.demo-cjstudents {--wash:#fae4ee}
+.demo-cjstudents .demo-logo img {height:3rem;border-radius:.55rem}
+.directory-note a {text-decoration:underline;text-underline-offset:.15em;color:var(--deep)}
 .demo-adowa {--wash:#fde5d2}
 .demo-tkc {--wash:#dcece5}
 .demo-logo {height:3.65rem;display:flex;align-items:center;margin-bottom:.84rem}

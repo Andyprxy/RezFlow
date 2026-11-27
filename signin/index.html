@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en-ZA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#eef3ef">
+  <title>Sign in | RezFlow</title>
+  <link rel="stylesheet" href="/assets/css/portal.css">
+  <link rel="icon" href="/home-assets/rezflow-icon.png">
+  <script defer src="/assets/canonical.js"></script>
+  <script type="module" src="/assets/js/account.js"></script>
+</head>
+<body class="workspace auth-view" data-account-page="signin">
+  <main class="auth-layout">
+    <section class="auth-card" aria-labelledby="account-title">
+      <a class="wordmark" href="/" aria-label="RezFlow home"><img src="/home-assets/rezflow.webp" alt="RezFlow" width="390" height="137"></a>
+      <header>
+        <p class="eyebrow" id="residence-name">Residence account</p>
+        <h1 id="account-title">Sign in</h1>
+        <p id="account-instruction">Open your residence workspace using your account email and password.</p>
+      </header>
+      <p class="notice" id="account-status" role="status" aria-live="polite" tabindex="-1" hidden></p>
+      <noscript>Enable JavaScript to use account services.</noscript>
+      <form id="signin-form" method="post">
+        <fieldset class="stack" disabled>
+          <label class="field">Email address<input type="email" name="email" autocomplete="email" inputmode="email" required maxlength="254"></label>
+          <label class="field">Password<input type="password" name="password" autocomplete="current-password" required></label>
+          <button class="button primary" type="submit">Sign in</button>
+        </fieldset>
+      </form>
+      <p id="continue-area" class="actions" hidden><a class="button primary" id="account-continue" href="/students/">Continue to workspace</a></p>
+      <nav aria-label="Account options" class="stack">
+        <a data-account-link href="/signup/">Create an account</a>
+        <a data-account-link href="/reset-password/">Forgot password?</a>
+        <a id="account-demo" href="/phumelela/demo/" hidden>Explore the sample workspace</a>
+      </nav>
+    </section>
+  </main>
+</body>
+</html>
